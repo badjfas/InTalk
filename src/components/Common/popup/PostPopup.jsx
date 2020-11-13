@@ -1,19 +1,20 @@
-import { useMutation, useQuery } from "@apollo/client";
-import React from "react";
+import { useMutation } from "@apollo/client";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRef } from "react";
 import { SEE_POSTS, UPLOAD_POST } from "../../../pages/Feed/post";
 import Portal from "../../../libs/portal";
 import axios from "axios";
+import styled from "styled-components";
 
-const PostPopup = ({ setVisible, visible, setText, text, refetch, user }) => {
+const PostPopup = ({ setVisible, visible, setText, text, refetch, user, inputRef }) => {
     const fileImageRef = useRef(null);
     const [imageDetail, setImageDetail] = useState([]);
     const [imageDetailFile, setImageDetailFile] = useState([]);
     const [imageDetailName, setImageDetailName] = useState([]);
     const [actived, setActived] = useState(0);
 
-    const [postUploadMutation, { error, data }] = useMutation(UPLOAD_POST, {
+    const [postUploadMutation] = useMutation(UPLOAD_POST, {
         refetchQueries: [
             {
                 query: SEE_POSTS,
@@ -106,17 +107,35 @@ const PostPopup = ({ setVisible, visible, setText, text, refetch, user }) => {
         setImageDetailFile(imgFileList);
         setImageDetailName(imgFileNameList);
     };
-
+    //모덜 포커싱
+    useEffect(() => {
+        console.log("postpopup mounted");
+        inputRef.current.focus();
+        // window.history.pushState({ page: "/" }, document.title, "/");
+        return () => {
+            console.log("postpopup unmounted");
+            setText("");
+        };
+    }, []);
+    //모달 스크롤 방지
+    useEffect(() => {
+        document.body.style.cssText = `position: fixed; top: -${window.scrollY}px`;
+        return () => {
+            const scrollY = document.body.style.top;
+            document.body.style.cssText = `position: ""; top: "";`;
+            window.scrollTo(0, parseInt(scrollY || "0") * -1);
+        };
+    }, []);
     return (
         <Portal elementId={"popup_root"}>
-            <div className="post_popup">
-                <div
+            <Wrapper className="post_popup">
+                <Overlay
                     className="overlay"
                     onClick={() => {
                         setVisible(!visible);
                     }}
-                ></div>
-                <div className="box">
+                />
+                <Box className="box">
                     <div className="title">
                         <span className="title_text">게시물 만들기</span>
                     </div>
@@ -131,6 +150,7 @@ const PostPopup = ({ setVisible, visible, setText, text, refetch, user }) => {
                         <form>
                             <textarea
                                 value={text}
+                                ref={inputRef}
                                 placeholder={`${user?.fullName}님, 무슨 생각을 하고 계신가요?`}
                                 onChange={e => setText(e.target.value)}
                             >
@@ -174,10 +194,154 @@ const PostPopup = ({ setVisible, visible, setText, text, refetch, user }) => {
                         </label>
                     </div>
                     <button onClick={onSubmit}>게시</button>
-                </div>
-            </div>
+                </Box>
+            </Wrapper>
         </Portal>
     );
 };
 
 export default PostPopup;
+
+const Wrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 100;
+    position: fixed;
+    height: fit-content;
+    left: 0;
+    top: 25%;
+    right: 0;
+`;
+
+const Overlay = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    position: fixed;
+`;
+
+const Box = styled.div`
+    max-height: 750px;
+    max-width: 500px;
+    margin: 0px auto;
+    width: 100%;
+    z-index: 1000;
+    padding: 12px;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    .title {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid #e6e6e6;
+        .title_text {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+    }
+    .user {
+        display: flex;
+        align-items: center;
+        padding-top: 1rem;
+        img {
+            border-radius: 70%;
+            width: 2rem;
+            height: 2rem;
+        }
+        .user_text {
+            display: flex;
+            flex-direction: column;
+            padding-left: 3%;
+            .name {
+                font-weight: 550;
+                font-size: 0.9rem;
+                padding: 0.3rem;
+            }
+            .opt {
+                font-weight: 600;
+                padding: 0.3rem;
+                font-size: 1rem;
+                border-radius: 5px;
+                background-color: #f0f2f5;
+            }
+        }
+    }
+    .content_box {
+        display: flex;
+        flex-direction: column;
+        margin-top: 5%;
+        width: 100%;
+        > form {
+            overflow-y: scroll;
+            .preview_box {
+                display: flex;
+                .preview {
+                    max-height: 450px;
+                    .preview_dot {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                    span {
+                        cursor: pointer;
+                        &:not(:last-child) {
+                            margin-right: 0.5rem;
+                        }
+                    }
+                    .actived {
+                        color: #1877f2;
+                    }
+                    .preview_img {
+                        position: relative;
+                        > span {
+                            cursor: pointer;
+                            position: absolute;
+                            top: 5px;
+                            right: 0;
+                            font-size: 2rem;
+                        }
+                        > img {
+                            height: 100%;
+                            width: 100%;
+                            background-position: center center;
+                            background-size: cover;
+                        }
+                    }
+                }
+            }
+            textarea {
+                resize: none;
+                width: 100%;
+                border: none;
+                padding: 0.5rem;
+            }
+        }
+    }
+    > button {
+        margin-top: 1rem;
+        width: 100%;
+        border: 1px solid #1877f2;
+        border-radius: 10px;
+        height: 36px;
+        background-color: #1877f2;
+        color: #fff;
+    }
+    .file_upload_box {
+        display: flex;
+        justify-content: flex-end;
+        .upload_btn {
+            display: none;
+        }
+    }
+`;

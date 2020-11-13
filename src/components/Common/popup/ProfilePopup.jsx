@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 import Portal from "../../../libs/portal";
 import Avatar from "../Avatar";
@@ -77,9 +77,16 @@ let to = {
 
 const ProfilePopup = ({ userProfileData, visible, onClickAddFriend, setVisible }) => {
     const [chat, setChat] = useState({ visible: false, toUserId: 0 });
+    useEffect(() => {
+        console.log("profile Popup mounted");
+
+        return () => {
+            console.log("profile Popup Unmounted");
+        };
+    });
     return (
         <Fragment>
-            {chat.visible ? <Chat to={to} /> : <div />}
+            {chat.visible ? <Chat to={to} setVisible={setVisible} visible={visible} /> : <div />}
 
             <Portal elementId={"popup_root"}>
                 <Overlay
