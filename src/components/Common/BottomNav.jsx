@@ -10,10 +10,22 @@ import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
+    width: 100%;
+    height: 3rem;
     position: fixed;
+    max-width: 1024px;
     bottom: 0;
+    z-index: 102;
+    .selected {
+        border-radius: 0;
+        border-top: 3px solid #ffc548;
+        transition: 0.1s ease;
+    }
+`;
+const NavBox = styled.div`
     max-width: 1024px;
     display: flex;
+    margin: 0px auto;
     width: 100%;
     height: 3rem;
     justify-content: center;
@@ -26,7 +38,6 @@ const Container = styled.div`
         transition: 0.1s ease;
     }
 `;
-
 const Navi = styled(NavLink)`
     display: flex;
     justify-content: center;
@@ -44,18 +55,20 @@ const Navi = styled(NavLink)`
 const Nav = () => {
     return (
         <Container>
-            <Navi to="/" exact activeClassName="selected">
-                <AiFillHome />
-            </Navi>
-            <Navi to="/friends" activeClassName="selected">
-                <BsPeopleFill />
-            </Navi>
-            <Navi to="/group" activeClassName="selected">
-                <TiGroup />
-            </Navi>
-            <Navi to="/undefinde2" activeClassName="selected">
-                <BsPeopleCircle />
-            </Navi>
+            <NavBox>
+                <Navi to="/" exact activeClassName="selected">
+                    <AiFillHome />
+                </Navi>
+                <Navi to="/friends" activeClassName="selected">
+                    <BsPeopleFill />
+                </Navi>
+                <Navi to="/group" activeClassName="selected">
+                    <TiGroup />
+                </Navi>
+                <Navi to="/undefinde2" activeClassName="selected">
+                    <BsPeopleCircle />
+                </Navi>
+            </NavBox>
         </Container>
     );
 };

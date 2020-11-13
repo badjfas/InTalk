@@ -10,12 +10,19 @@ import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
-    position: fixed;
-    top: 0;
-    max-width: 1024px;
-    display: flex;
     width: 100%;
     height: 3rem;
+    position: fixed;
+    max-width: 1024px;
+    z-index: 102;
+`;
+
+const NavBox = styled.div`
+    display: flex;
+    width: 100%;
+    margin: 0px auto;
+    height: 3rem;
+    max-width: 1024px;
     justify-content: space-between;
     align-items: center;
     background-color: #004680;
@@ -47,12 +54,14 @@ const Title = styled.span`
 const TopNav = () => {
     return (
         <Container>
-            <Navi to="/" exact activeClassName="selected">
-                <Title>InTalk</Title>
-            </Navi>
-            <Navi to="/messages" activeClassName="selected">
-                <AiFillMessage />
-            </Navi>
+            <NavBox>
+                <Navi to="/" exact activeClassName="selected">
+                    <Title>InTalk</Title>
+                </Navi>
+                <Navi to="/messages" activeClassName="selected">
+                    <AiFillMessage />
+                </Navi>
+            </NavBox>
         </Container>
     );
 };
