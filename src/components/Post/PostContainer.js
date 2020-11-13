@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { DecodeToken } from "../../libs/decodeToken";
 import { ADD_CHILD_COMMENT, ADD_COMMENT, TOGGLE_LIKE } from "../../pages/Feed/post";
@@ -9,7 +9,7 @@ const Posts = ({ postData, refetch, setOpenDepartMenu }) => {
     const [visible, setVisible] = useState(false);
     const [text, setText] = useState("");
     const [user, setUser] = useState({});
-    console.log(text);
+    const inputRef = useRef(null);
     useEffect(() => {
         const { user: data } = DecodeToken(localStorage.getItem("token"));
         setUser({ ...data });
@@ -86,6 +86,7 @@ const Posts = ({ postData, refetch, setOpenDepartMenu }) => {
             user={user}
             refetch={refetch}
             setOpenDepartMenu={setOpenDepartMenu}
+            inputRef={inputRef}
         />
     );
 };

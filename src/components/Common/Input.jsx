@@ -19,6 +19,5 @@ const Input = styled.input`
 `;
 
 export default ({ placeholer, onClick, width, height, onChange }) => {
-    console.log(onChange);
     return <Input placeholer={placeholer} onClick={onClick} width={width} height={height} onChange={onChange} />;
 };

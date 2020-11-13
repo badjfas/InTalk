@@ -20,7 +20,6 @@ const FeedContainer = props => {
             departmentId: queryData?.depart ? parseInt(queryData?.depart) : 0
         }
     });
-    console.log(posts);
     const { data: me } = useQuery(ME);
     //스크롤 데이터 패칭
     const handleScroll = () => {

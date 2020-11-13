@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Avatar from "../Common/Avatar";
 import Comment from "./Comment";
 const Wrapper = styled.div`
-    max-width: 650px;
+    max-width: 1024px;
     width: 100%;
     margin: 0px auto;
     padding-top: 1rem;
@@ -170,6 +170,7 @@ const PostCard = ({ isLiked, postId, user, contents, comments, toggleLike, addCo
                             splitFile?.map((photo, index) => {
                                 return (
                                     <span
+                                        key={index}
                                         onClick={() => onClickDot(index)}
                                         className={`${actived === index ? "actived" : ""}`}
                                     >

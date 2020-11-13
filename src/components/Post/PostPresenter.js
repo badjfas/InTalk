@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import styled from "styled-components";
 import PostCard from "../Common/PostCard";
 import PostInput from "../Common/PostInput";
@@ -23,7 +23,8 @@ export default ({
     toggleLike,
     addComment,
     addChildComment,
-    user
+    user,
+    inputRef
 }) => {
     return (
         <Container>
@@ -35,10 +36,11 @@ export default ({
                     visible={visible}
                     setText={setText}
                     user={user}
+                    inputRef={inputRef}
                 />
             ) : null}
-            <PostInput setVisible={setVisible} visible={visible} text={text} />
-            <PostBox>
+            <PostInput setVisible={setVisible} visible={visible} text={text} inputRef={inputRef} />
+            <PostBox ref={inputRef}>
                 {postData?.seePosts?.rows?.map(post => {
                     return (
                         <PostCard

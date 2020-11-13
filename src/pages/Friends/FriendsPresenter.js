@@ -23,6 +23,7 @@ const FriendsPresenter = ({ usersData, visible, setVisible, userProfileData, onC
                     userProfileData={userProfileData}
                     onClickAddFriend={onClickAddFriend}
                     setVisible={setVisible}
+                    visible={visible}
                 />
             ) : null}
 
@@ -30,6 +31,7 @@ const FriendsPresenter = ({ usersData, visible, setVisible, userProfileData, onC
                 {usersData?.seeUsers?.map(user => {
                     return (
                         <FriendCard
+                            key={user.userId}
                             userInfoData={user}
                             visible={visible}
                             setVisible={setVisible}
