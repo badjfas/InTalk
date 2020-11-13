@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChatPresenter from "./ChatPresenter";
 import { GET_MESSEGES, NEW_MESSAGE, SEND_MESSAGE } from "./chat";
 import { useMutation, useQuery, useSubscription } from "@apollo/client";
 import { DecodeToken } from "../../../../libs/decodeToken";
 import { ME } from "../../../../libs/SharedQuery";
 let roomId;
-export default ({ to }) => {
+export default ({ to, setVisible, visible }) => {
+    const inputMessageRef = useRef(null);
     const { user: userData } = DecodeToken(localStorage.getItem("token"));
 
     const { data: myInfo } = useQuery(ME);
@@ -49,10 +50,23 @@ export default ({ to }) => {
             setMessages(prev => [...prev, newMessage]);
         }
     };
-    console.log(to, roomId);
+
+    const onClickBackButton = e => {
+        setVisible({
+            id: 0,
+            open: false
+        });
+        to = null;
+    };
 
     useEffect(() => {
+        console.log("ChatPop is Mounted");
+        inputMessageRef.current.focus();
         handleNewMessage();
+
+        return () => {
+            console.log("ChatPop is Unmounted");
+        };
     }, [data]);
     return (
         <ChatPresenter
@@ -63,6 +77,8 @@ export default ({ to }) => {
             userData={userData}
             to={to}
             myInfo={myInfo}
+            inputMessageRef={inputMessageRef}
+            onClickBackButton={onClickBackButton}
         />
     );
 };

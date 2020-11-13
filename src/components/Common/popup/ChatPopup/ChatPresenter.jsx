@@ -2,6 +2,29 @@ import React from "react";
 import styled from "styled-components";
 import Portal from "../../../../libs/portal";
 import Avatar from "../../Avatar";
+import { IoMdArrowRoundBack } from "react-icons/io";
+const Header = styled.div`
+    position: fixed;
+    height: 3rem;
+    width: 100%;
+    top: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    background-color: #004680;
+    .left {
+        position: fixed;
+        svg {
+            fill: #fff;
+            font-size: 1.5rem;
+        }
+    }
+    .center {
+        color: #fff;
+        font-weight: 600;
+        margin: 0px auto;
+    }
+`;
 
 const Wrapper = styled.div`
     box-sizing: border-box;
@@ -12,9 +35,11 @@ const Wrapper = styled.div`
     width: 100%;
     height: 100%;
     position: fixed;
+    margin: 0px auto;
     top: 0;
     background-color: #fff;
-    z-index: 9999;
+    z-index: 1000;
+    max-width: 1024px;
     ::-webkit-scrollbar {
         display: none;
     }
@@ -32,28 +57,27 @@ const ChatListBox = styled.div`
         align-items: center;
         margin-bottom: 1rem;
         .from_chat_text {
-            margin-left: 1rem;
             background-color: #eee;
             border-radius: 10px;
-            height: 1rem;
             display: flex;
             align-items: center;
-            padding: 1rem;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
         }
         .to_chat_text {
-            margin-left: 1rem;
             display: flex;
             align-items: center;
-
             justify-content: flex-end;
             width: 100%;
-            > span {
+            font-size: 0.8rem;
+            > pre {
                 display: flex;
                 align-items: center;
                 border-radius: 10px;
-                height: 1rem;
-                padding: 1rem;
+                padding: 0.5rem;
                 background-color: #eee;
+                white-space: pre-wrap;
             }
         }
         .from_user {
@@ -75,13 +99,20 @@ const InputBox = styled.div`
         border-radius: 10px;
         border: 1px solid #eee;
         background-color: #eee;
-        height: 2rem;
+        height: 3rem;
         width: 100%;
+        padding-left: 1rem;
     }
 `;
-export default ({ userData, setText, sendMessageMutation, messages, to, text, myInfo }) => {
+export default ({ userData, setText, sendMessageMutation, messages, to, text, inputMessageRef, onClickBackButton }) => {
     return (
         <Portal elementId={"chat_root"}>
+            <Header>
+                <span className="left" onClick={onClickBackButton}>
+                    <IoMdArrowRoundBack />
+                </span>
+                <span className="center">{to.fullName}</span>
+            </Header>
             <Wrapper className="chat_room">
                 <ChatListBox className="chat_list_box" id="chat_list_box">
                     {messages?.map(m => (
@@ -92,9 +123,9 @@ export default ({ userData, setText, sendMessageMutation, messages, to, text, my
                                 </div>
                             ) : null}
                             {userData.id !== parseInt(m.fromUser.id) ? (
-                                <span className="from_chat_text">{m.text}</span>
+                                <pre className="from_chat_text">{m.text}</pre>
                             ) : (
-                                <div className="to_chat_text">{<span>{m.text}</span>}</div>
+                                <div className="to_chat_text">{<pre>{m.text}</pre>}</div>
                             )}
                         </div>
                     ))}
@@ -103,6 +134,7 @@ export default ({ userData, setText, sendMessageMutation, messages, to, text, my
                 <InputBox className="submit_box">
                     <input
                         value={text}
+                        ref={inputMessageRef}
                         onChange={e => setText(e.target.value)}
                         onKeyPress={e => {
                             if (e.key === "Enter") {
