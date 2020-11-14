@@ -14,7 +14,15 @@ const FreindsBox = styled.div`
     display: flex;
     flex-direction: column;
 `;
-const FriendsPresenter = ({ usersData, visible, setVisible, userProfileData, onClickAddFriend, createChatRoom }) => {
+const FriendsPresenter = ({
+    usersData,
+    visible,
+    setVisible,
+    userProfileData,
+    onClickAddFriend,
+    createChatRoom,
+    roomsData
+}) => {
     return (
         <Container className="friends">
             {visible.open ? (
@@ -24,20 +32,23 @@ const FriendsPresenter = ({ usersData, visible, setVisible, userProfileData, onC
                     onClickAddFriend={onClickAddFriend}
                     setVisible={setVisible}
                     visible={visible}
+                    roomsData={roomsData}
                 />
             ) : null}
 
             <FreindsBox>
                 {usersData?.seeUsers?.map(user => {
-                    return (
-                        <FriendCard
-                            key={user.userId}
-                            userInfoData={user}
-                            visible={visible}
-                            setVisible={setVisible}
-                            createChatRoom={createChatRoom}
-                        />
-                    );
+                    if (!user?.isMe) {
+                        return (
+                            <FriendCard
+                                key={user.userId}
+                                userInfoData={user}
+                                visible={visible}
+                                setVisible={setVisible}
+                                createChatRoom={createChatRoom}
+                            />
+                        );
+                    }
                 })}
             </FreindsBox>
         </Container>

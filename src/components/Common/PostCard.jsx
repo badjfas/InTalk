@@ -183,7 +183,7 @@ const PostCard = ({ isLiked, postId, user, contents, comments, toggleLike, addCo
                         {files !== "" && splitFile ? (
                             <img
                                 onClick={() => onClickDot(actived + 1)}
-                                src={`http://1.229.102.77:4000/file/${splitFile[actived]?.split("^")[0]}`}
+                                src={`http://1.229.102.77:4000/file/${splitFile[actived]}`}
                                 alt=""
                             />
                         ) : (

@@ -1,7 +1,5 @@
-import React from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
-import Portal from "../../../../libs/portal";
-import Avatar from "../../Avatar";
 import { IoMdArrowRoundBack } from "react-icons/io";
 const Header = styled.div`
     position: fixed;
@@ -9,6 +7,7 @@ const Header = styled.div`
     width: 100%;
     top: 0;
     z-index: 1200;
+    max-width: 1024px;
     display: flex;
     align-items: center;
     background-color: #004680;
@@ -104,14 +103,14 @@ const InputBox = styled.div`
         padding-left: 1rem;
     }
 `;
-export default ({ userData, setText, sendMessageMutation, messages, to, text, inputMessageRef, onClickBackButton }) => {
+export default ({ userData, setText, sendMessageMutation, messages, to, text, inputMessageRef, history }) => {
     return (
-        <Portal elementId={"chat_root"}>
+        <Fragment>
             <Header>
-                <span className="left" onClick={onClickBackButton}>
+                <span className="left" onClick={() => history.push("/messages")}>
                     <IoMdArrowRoundBack />
                 </span>
-                <span className="center">{to.fullName}</span>
+                <span className="center">{to?.seeProfile?.fullName}</span>
             </Header>
             <Wrapper className="chat_room">
                 <ChatListBox className="chat_list_box" id="chat_list_box">
@@ -145,6 +144,6 @@ export default ({ userData, setText, sendMessageMutation, messages, to, text, in
                     />
                 </InputBox>
             </Wrapper>
-        </Portal>
+        </Fragment>
     );
 };

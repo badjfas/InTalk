@@ -4,7 +4,7 @@ import Nav from "./components/Common/BottomNav";
 import TopNav from "./components/Common/TopNav";
 
 // import Header from "./components/common/Header";
-import { Auth, Feed, Friends } from "./pages";
+import { Auth, Chat, Feed, Friends, Rooms } from "./pages";
 
 const LoggedInRoutes = () => {
     return (
@@ -14,14 +14,14 @@ const LoggedInRoutes = () => {
                 <div style={{ padding: "3rem 0 3rem 0" }}>
                     <Switch>
                         <Route exact path="/" component={Feed} />
-                        <Route exact path="/friends" component={Friends} />/
+                        <Route exact path="/friends" component={Friends} />
+                        <Route exact path="/messages" component={Rooms} />
+                        <Route exact path="/chat/:roomId/:toId" component={Chat} />
                     </Switch>
                 </div>
                 <Nav />
                 <Redirect from="*" to="/" />
             </BrowserRouter>
-            {/* <Route exact path="/friends" component={Friends} />
-                <Route exact path="/group" component={Group} /> */}
         </Fragment>
     );
 };

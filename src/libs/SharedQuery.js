@@ -24,3 +24,21 @@ export const ME = gql`
         }
     }
 `;
+
+export const MY_CHAT_ROOMS = gql`
+    {
+        me {
+            id
+            rooms {
+                id
+                existMessage
+                participants {
+                    id
+                    avatar
+                    departmentName
+                    fullName
+                }
+            }
+        }
+    }
+`;

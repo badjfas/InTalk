@@ -1,22 +1,29 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { ME } from "../../libs/SharedQuery";
+import { ME, MY_CHAT_ROOMS } from "../../libs/SharedQuery";
 import { CREATE_ROOM, FOLLOW, SEE_PROFILE, SEE_USERS } from "./friends";
 import FriendsPresenter from "./FriendsPresenter";
+
 const FriendsContainer = props => {
     const [visible, setVisible] = useState({
         id: 0,
         open: false
     });
 
+    //모든 유저
     const { data: usersData } = useQuery(SEE_USERS);
 
+    //나의 챗룸
+    const [getRooms, { data: roomsData }] = useLazyQuery(MY_CHAT_ROOMS);
+
+    //상대방 프로필
     const { data: userProfile } = useQuery(SEE_PROFILE, {
         variables: {
             userId: parseInt(visible.id)
         }
     });
 
+    //프로필 클릭시 챗룸 생성
     const [createChatRoom] = useMutation(CREATE_ROOM, {
         variables: {
             toId: parseInt(visible.id)
@@ -51,6 +58,7 @@ const FriendsContainer = props => {
     };
 
     useEffect(() => {
+        getRooms();
         return () => {
             setVisible({
                 id: 0,
@@ -67,6 +75,7 @@ const FriendsContainer = props => {
             visible={visible}
             setVisible={setVisible}
             createChatRoom={createChatRoom}
+            roomsData={roomsData}
         />
     );
 };

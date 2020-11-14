@@ -1,84 +1,73 @@
 import React, { useEffect, useRef, useState } from "react";
 import ChatPresenter from "./ChatPresenter";
 import { GET_MESSEGES, NEW_MESSAGE, SEND_MESSAGE } from "./chat";
-import { useMutation, useQuery, useSubscription } from "@apollo/client";
-import { DecodeToken } from "../../../../libs/decodeToken";
-import { ME } from "../../../../libs/SharedQuery";
-let roomId;
-export default ({ to, setVisible, visible }) => {
+import { useLazyQuery, useMutation, useQuery, useSubscription } from "@apollo/client";
+import { DecodeToken } from "../../libs/decodeToken";
+import { ME } from "../../libs/SharedQuery";
+import { SEE_PROFILE } from "../Friends/friends";
+export default props => {
     const inputMessageRef = useRef(null);
+
     const { user: userData } = DecodeToken(localStorage.getItem("token"));
 
-    const { data: myInfo } = useQuery(ME);
+    const {
+        match: {
+            params: { roomId, toId }
+        }
+    } = props;
 
+    //상대방 정보 불러오기
+    const [getUser, { data: to }] = useLazyQuery(SEE_PROFILE, {
+        variables: {
+            userId: parseInt(toId)
+        }
+    });
+    //메시지 전송
     const [text, setText] = useState("");
-
     const [sendMessageMutation] = useMutation(SEND_MESSAGE, {
         variables: {
-            toId: parseInt(to.id),
+            toId: parseInt(toId),
             message: text
         }
     });
 
-    roomId = myInfo?.me?.rooms?.filter(e => {
-        if (e.participantId === parseInt(to.id)) {
-            return e.participantId === parseInt(to.id);
-        } else {
-            return e.myId === parseInt(to.id);
-        }
-    });
-
+    //메시지 목록 불러오기
     const [messages, setMessages] = useState([]);
-
     const { data: oldMessages, error } = useQuery(GET_MESSEGES, {
         variables: {
-            userId: parseInt(to.id),
+            userId: parseInt(toId),
             _userId: parseInt(userData.id)
         },
         onCompleted: () => setMessages(oldMessages.getMessages)
     });
 
+    //Subscription
     const { data } = useSubscription(NEW_MESSAGE, {
         variables: {
-            id: parseInt(roomId[0]?.id)
+            id: parseInt(roomId)
         }
     });
-
     const handleNewMessage = () => {
         if (data !== undefined) {
             const { newMessage } = data;
             setMessages(prev => [...prev, newMessage]);
         }
     };
-
-    const onClickBackButton = e => {
-        setVisible({
-            id: 0,
-            open: false
-        });
-        to = null;
-    };
-
     useEffect(() => {
-        console.log("ChatPop is Mounted");
+        getUser();
         inputMessageRef.current.focus();
         handleNewMessage();
-
-        return () => {
-            console.log("ChatPop is Unmounted");
-        };
     }, [data]);
     return (
         <ChatPresenter
+            {...props}
             text={text}
             setText={setText}
             messages={messages}
             sendMessageMutation={sendMessageMutation}
             userData={userData}
-            to={to}
-            myInfo={myInfo}
             inputMessageRef={inputMessageRef}
-            onClickBackButton={onClickBackButton}
+            to={to}
         />
     );
 };
