@@ -15,6 +15,7 @@ export const SEE_POSTS = gql`
                 postId: id
                 contents
                 isLiked
+                likesCount
                 user {
                     fullName
                     departmentName

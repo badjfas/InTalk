@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { BsArrowReturnRight } from "react-icons/bs";
 import styled from "styled-components";
 import Avatar from "../Common/Avatar";
@@ -11,6 +11,7 @@ const ParentComment = styled.div`
         border-radius: 15px;
         padding: 0.7rem;
         line-height: 1.2rem;
+        margin-left: 0.5rem;
         .user_box {
             display: flex;
             flex-direction: column;
@@ -36,6 +37,12 @@ const AddChildBtn = styled.div`
     padding: 0.2rem;
     margin-left: 2rem;
     > form {
+        position: relative;
+        span {
+            position: absolute;
+            top: 12px;
+            left: 6px;
+        }
         input {
             display: flex;
             align-items: center;
@@ -44,7 +51,7 @@ const AddChildBtn = styled.div`
             border: none;
             border-radius: 10px;
             background-color: #eee;
-            padding-left: 1rem;
+            padding-left: 3rem;
             overflow: hidden;
             cursor: pointer;
         }
@@ -110,17 +117,17 @@ const ChildComment = styled.div`
 `;
 
 const Comment = ({ comment, addChildComment }) => {
+    const inputRef = useRef(null);
     const [commentVisible, setCommentVisible] = useState(false);
+    const [childName, setChildName] = useState("");
     const [childInput, setChildInput] = useState({
         targetCommentId: "",
         targetUserId: "",
         text: "",
         visible: false
     });
-
+    console.log(childName);
     const onClick = ({ target, visible, rootTarget }) => {
-        console.log(target, rootTarget);
-
         setChildInput({
             targetCommentId: target.commentId ? target.commentId : rootTarget.commentId,
             targetUserId: target.user.id ? target.user.id : target.user.myId,
@@ -128,6 +135,14 @@ const Comment = ({ comment, addChildComment }) => {
             visible: visible
         });
     };
+
+    useEffect(() => {
+        if (inputRef.current === null) {
+            return;
+        } else {
+            inputRef.current.focus();
+        }
+    }, [childInput]);
     return (
         <Fragment>
             <Fragment key={comment.commentId}>
@@ -141,7 +156,14 @@ const Comment = ({ comment, addChildComment }) => {
                     </div>
                 </ParentComment>
                 <AddChildBtn className="reply">
-                    <span onClick={() => onClick({ target: comment, visible: !childInput.visible })}>답글달기</span>
+                    <span
+                        onClick={() => {
+                            onClick({ target: comment, visible: !childInput.visible });
+                            // handleFocus();
+                        }}
+                    >
+                        답글달기
+                    </span>
                     {childInput.visible ? (
                         <form
                             onSubmit={e => {
@@ -157,8 +179,10 @@ const Comment = ({ comment, addChildComment }) => {
                                 });
                             }}
                         >
+                            <span>@{childName}</span>
                             <input
                                 value={childInput.text}
+                                ref={inputRef}
                                 onChange={e => setChildInput({ ...childInput, text: e.target.value })}
                             />
                         </form>
@@ -184,13 +208,14 @@ const Comment = ({ comment, addChildComment }) => {
                                 <div
                                     key={childComment.childId}
                                     className="child_comments"
-                                    onClick={() =>
+                                    onClick={() => {
                                         onClick({
                                             target: childComment,
                                             rootTarget: comment,
                                             visible: !childInput.visible
-                                        })
-                                    }
+                                        });
+                                        setChildName(childComment.user.fullName);
+                                    }}
                                 >
                                     <img className="child_comment_avatar" src={childComment.user.avatar} alt="" />
                                     <div className="child_comment">

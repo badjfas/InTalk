@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { AiOutlineLike, AiTwotoneLike, AiOutlineShareAlt } from "react-icons/ai";
 import { VscComment } from "react-icons/vsc";
 import styled from "styled-components";
@@ -32,6 +32,7 @@ const UserBox = styled.div`
         font-size: 0.9rem;
         line-height: 1.3rem;
         flex-direction: column;
+        margin-left: 0.5rem;
         .department_name {
             font-size: 0.75rem;
         }
@@ -74,25 +75,24 @@ const ContentBox = styled.div`
 `;
 
 const OptionBox = styled.div`
+    span {
+        font-size: 0.8rem;
+        padding-left: 0.5rem;
+    }
     > ul {
         display: flex;
-        justify-content: space-between;
         align-items: center;
         li {
             cursor: pointer;
-            width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            &:not(:last-child) {
-                border-right: 1px solid #999;
-            }
+            padding: 0 0.5rem 0.5rem 0.5rem;
             span {
                 height: 1.3rem;
                 padding-top: 0.3rem;
             }
             svg {
-                margin-right: 0.5rem;
                 width: 1.3rem;
                 height: 1.3rem;
             }
@@ -105,7 +105,7 @@ const CommentBox = styled.div`
     align-items: center;
     flex-direction: column;
     margin-top: 1rem;
-    padding: 0 1rem 1rem 1rem;
+    padding: 0 0.5rem 0.5rem 0.5rem;
     .add_comment {
         width: 100%;
         display: flex;
@@ -143,11 +143,23 @@ const Input = styled.input`
     }
 `;
 
-const PostCard = ({ isLiked, postId, user, contents, comments, toggleLike, addComment, addChildComment, files }) => {
+const PostCard = ({
+    isLiked,
+    postId,
+    likesCount,
+    user,
+    contents,
+    comments,
+    toggleLike,
+    addComment,
+    addChildComment,
+    files
+}) => {
     const [isLikdes, setIsLikeds] = useState(isLiked);
     const [comment, setComment] = useState("");
     const [actived, setActived] = useState(0);
     const splitFile = files?.split(",");
+    const inputRef = useRef(null);
     const onClickDot = index => {
         if (splitFile.length <= index) {
             return setActived(0);
@@ -155,6 +167,11 @@ const PostCard = ({ isLiked, postId, user, contents, comments, toggleLike, addCo
             return setActived(index);
         }
     };
+
+    const handleFocus = () => {
+        inputRef.current.focus();
+    };
+
     return (
         <Wrapper className="post" id={postId} key={postId}>
             <div className="post_posting">
@@ -202,17 +219,15 @@ const PostCard = ({ isLiked, postId, user, contents, comments, toggleLike, addCo
                             }}
                         >
                             {isLikdes ? <AiTwotoneLike fill="#1877f2" /> : <AiOutlineLike />}
-                            <span>좋아요</span>
                         </li>
-                        <li>
+                        <li onClick={handleFocus}>
                             <VscComment />
-                            <span> 댓글 달기</span>
                         </li>
                         <li>
                             <AiOutlineShareAlt />
-                            <span>공유하기</span>
                         </li>
                     </ul>
+                    <span>{likesCount}명이 좋아합니다.</span>
                 </OptionBox>
                 <CommentBox className="add_comment_box">
                     <div className="add_comment">
@@ -233,6 +248,7 @@ const PostCard = ({ isLiked, postId, user, contents, comments, toggleLike, addCo
                                 type="text"
                                 value={comment}
                                 width={"100%"}
+                                ref={inputRef}
                                 height={2}
                                 onChange={e => {
                                     setComment(e.target.value);
