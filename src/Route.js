@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
 import Nav from "./components/Common/Nav";
 
-import { Auth, Chat, Feed, Friends, Rooms } from "./pages";
+import { Add, Auth, Chat, Feed, Friends, Rooms } from "./pages";
 
 const LoggedInRoutes = () => {
     return (
@@ -12,6 +12,7 @@ const LoggedInRoutes = () => {
                     <Switch>
                         <Route exact path="/" component={Feed} />
                         <Route exact path="/friends" component={Friends} />
+                        <Route exact path="/add" component={Add} />
                         <Route exact path="/messages" component={Rooms} />
                         <Route exact path="/chat/:roomId/:toId" component={Chat} />
                     </Switch>

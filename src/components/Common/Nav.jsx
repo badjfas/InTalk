@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { AiFillHome, AiFillMessage } from "react-icons/ai";
 import { BsPeopleFill, BsPeopleCircle } from "react-icons/bs";
 import { TiGroup } from "react-icons/ti";
-
+import { CgAddR } from "react-icons/cg";
 import { NavLink, useHistory } from "react-router-dom";
 import styled from "styled-components";
 const Container = styled.div`
@@ -92,6 +92,12 @@ const NaviBottom = styled(NavLink)`
         width: 1.8rem;
         height: 1.8rem;
     }
+    :nth-child(3) {
+        > svg {
+            width: 1.8rem;
+            height: 1.8rem;
+        }
+    }
 `;
 const Title = styled.span`
     font-weight: 600;
@@ -118,6 +124,8 @@ const Nav = () => {
             titleRef.current.innerText = "학부";
         } else if (pathname === "/mypage") {
             titleRef.current.innerText = "내 정보";
+        } else if (pathname === "/add") {
+            titleRef.current.innerText = "게시물 추가";
         } else {
             titleRef.current.innerText = "Intalk";
         }
@@ -144,6 +152,9 @@ const Nav = () => {
                     </NaviBottom>
                     <NaviBottom to="/friends" activeClassName="selected" onClick={() => setClick(!clicked)}>
                         <BsPeopleFill />
+                    </NaviBottom>
+                    <NaviBottom to="/add" activeClassName="selected" onClick={() => setClick(!clicked)}>
+                        <CgAddR />
                     </NaviBottom>
                     <NaviBottom to="/group" activeClassName="selected" onClick={() => setClick(!clicked)}>
                         <TiGroup />

@@ -8,14 +8,16 @@ const Wrapper = styled.div`
     max-width: 1024px;
     width: 100%;
     margin: 0px auto;
-    padding-top: 1rem;
     .post_posting {
         display: flex;
         height: 100%;
         flex-direction: column;
         background-color: #fff;
         border-radius: $post_radius;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    :not(:first-child) {
+        padding-top: 2rem;
     }
 `;
 

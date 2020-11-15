@@ -1,19 +1,10 @@
 import { useMutation } from "@apollo/client";
-import React, { useEffect, useRef } from "react";
-import { useState } from "react";
-import { DecodeToken } from "../../libs/decodeToken";
+import React, { useRef } from "react";
 import { ADD_CHILD_COMMENT, ADD_COMMENT, TOGGLE_LIKE } from "../../pages/Feed/post";
 import PostPresenter from "./PostPresenter";
 
-const Posts = ({ postData, refetch, setOpenDepartMenu }) => {
-    const [visible, setVisible] = useState(false);
-    const [text, setText] = useState("");
-    const [user, setUser] = useState({});
+const Posts = ({ postData, refetch }) => {
     const inputRef = useRef(null);
-    useEffect(() => {
-        const { user: data } = DecodeToken(localStorage.getItem("token"));
-        setUser({ ...data });
-    }, []);
 
     //좋아요
     const [toggleLikeMutation] = useMutation(TOGGLE_LIKE);
@@ -45,7 +36,6 @@ const Posts = ({ postData, refetch, setOpenDepartMenu }) => {
             });
             //댓글 업데이트
             const { data } = await refetch();
-            console.log(data);
             return data;
         } catch {
             alert("잠시 후 다시 시도해주세요.");
@@ -56,7 +46,6 @@ const Posts = ({ postData, refetch, setOpenDepartMenu }) => {
     const [addChildCommentMutation] = useMutation(ADD_CHILD_COMMENT, {});
 
     const addChildComment = async ({ e, targetCommentId, targetUserId, text }) => {
-        console.log(targetCommentId, targetUserId, text);
         try {
             await addChildCommentMutation({
                 variables: {
@@ -75,17 +64,11 @@ const Posts = ({ postData, refetch, setOpenDepartMenu }) => {
 
     return (
         <PostPresenter
-            visible={visible}
-            setVisible={setVisible}
-            text={text}
-            setText={setText}
             toggleLike={toggleLike}
             addComment={addComment}
             addChildComment={addChildComment}
             postData={postData}
-            user={user}
             refetch={refetch}
-            setOpenDepartMenu={setOpenDepartMenu}
             inputRef={inputRef}
         />
     );
