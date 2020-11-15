@@ -126,7 +126,6 @@ const Comment = ({ comment, addChildComment }) => {
         text: "",
         visible: false
     });
-    console.log(childName);
     const onClick = ({ target, visible, rootTarget }) => {
         setChildInput({
             targetCommentId: target.commentId ? target.commentId : rootTarget.commentId,

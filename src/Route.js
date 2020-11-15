@@ -15,10 +15,10 @@ const LoggedInRoutes = () => {
                         <Route exact path="/add" component={Add} />
                         <Route exact path="/messages" component={Rooms} />
                         <Route exact path="/chat/:roomId/:toId" component={Chat} />
+                        <Redirect from="*" to="/" />
                     </Switch>
                 </div>
                 <Nav />
-                <Redirect froms to="/" />
             </BrowserRouter>
         </Fragment>
     );

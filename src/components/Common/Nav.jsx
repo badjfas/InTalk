@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillHome, AiFillMessage } from "react-icons/ai";
 import { BsPeopleFill, BsPeopleCircle } from "react-icons/bs";
 import { TiGroup } from "react-icons/ti";
 import { CgAddR } from "react-icons/cg";
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 const Container = styled.div`
     width: 100%;
@@ -62,7 +62,7 @@ const NavBoxTop = styled.div`
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.01), 0 1px 1px rgba(0, 0, 0, 0.1);
 `;
 
-const NaviTop = styled(NavLink)`
+const NaviTop = styled.a`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -80,7 +80,7 @@ const NaviTop = styled(NavLink)`
         height: 1.8rem;
     }
 `;
-const NaviBottom = styled(NavLink)`
+const NaviBottom = styled.a`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,63 +103,117 @@ const Title = styled.span`
     font-weight: 600;
     width: 100%;
 `;
-let tt = "Intalk";
+let currentPathname = null;
+let currentSearch = null;
 
 const Nav = () => {
-    let titleRef = useRef(null);
-    const [clicked, setClick] = useState(false);
     const history = useHistory();
     const {
         location: { pathname }
     } = history;
+    const [title, setTitle] = useState("Intalk");
+    history.listen((newLocation, action) => {
+        if (action === "PUSH") {
+            if (newLocation.pathname !== currentPathname || newLocation.search !== currentSearch) {
+                // Save new location
+                currentPathname = newLocation.pathname;
+                currentSearch = newLocation.search;
+
+                // Clone location object and push it to history
+                history.push({
+                    pathname: newLocation.pathname,
+                    search: newLocation.search
+                });
+            }
+        } else {
+            // Send user back if they try to navigate back
+            history.go(1);
+        }
+    });
 
     useEffect(() => {
         if (pathname === "/") {
-            titleRef.current.innerText = "Intalk";
+            setTitle("Intalk");
         } else if (pathname === "/messages") {
-            titleRef.current.innerText = "메시지";
+            setTitle("메시지");
         } else if (pathname === "/friends") {
-            titleRef.current.innerText = "친구";
-        } else if (pathname === "/group") {
-            titleRef.current.innerText = "학부";
-        } else if (pathname === "/mypage") {
-            titleRef.current.innerText = "내 정보";
+            setTitle("친구");
         } else if (pathname === "/add") {
-            titleRef.current.innerText = "게시물 추가";
-        } else {
-            titleRef.current.innerText = "Intalk";
+            setTitle("게시물 추가");
+        } else if (pathname === "/group") {
+            setTitle("학과");
+        } else if (pathname === "/myapge") {
+            setTitle("내 정보");
         }
-        return () => {
-            setClick(false);
-        };
-    }, [clicked, pathname]);
+    }, [title, pathname]);
+
     return (
         <Container>
             <Top>
                 <NavBoxTop>
-                    <NaviTop to="/" exact activeClassName="selected" onClick={() => setClick(!clicked)}>
-                        <Title ref={titleRef}>{tt}</Title>
+                    <NaviTop
+                        onClick={() => {
+                            setTitle("Intalk");
+                            history.push("/");
+                        }}
+                    >
+                        <Title>{title}</Title>
                     </NaviTop>
-                    <NaviTop to="/messages" activeClassName="selected" onClick={() => setClick(!clicked)}>
+                    <NaviTop
+                        onClick={() => {
+                            setTitle("메세지");
+                            history.push("/messages");
+                        }}
+                    >
                         <AiFillMessage />
                     </NaviTop>
                 </NavBoxTop>
             </Top>
             <Bottom>
                 <NavBox>
-                    <NaviBottom to="/" exact activeClassName="selected" onClick={() => setClick(!clicked)}>
+                    <NaviBottom
+                        className={pathname === "/" ? "selected" : null}
+                        onClick={() => {
+                            setTitle("Intalk");
+                            history.push("/");
+                        }}
+                    >
                         <AiFillHome />
                     </NaviBottom>
-                    <NaviBottom to="/friends" activeClassName="selected" onClick={() => setClick(!clicked)}>
+                    <NaviBottom
+                        className={pathname === "/friends" ? "selected" : null}
+                        onClick={() => {
+                            setTitle("친구");
+                            history.push("/friends");
+                        }}
+                    >
                         <BsPeopleFill />
                     </NaviBottom>
-                    <NaviBottom to="/add" activeClassName="selected" onClick={() => setClick(!clicked)}>
+                    <NaviBottom
+                        className={pathname === "/add" ? "selected" : null}
+                        onClick={() => {
+                            setTitle("게시물 추가 ");
+                            history.push("/add");
+                        }}
+                    >
                         <CgAddR />
                     </NaviBottom>
-                    <NaviBottom to="/group" activeClassName="selected" onClick={() => setClick(!clicked)}>
+                    <NaviBottom
+                        className={pathname === "/group" ? "selected" : null}
+                        onClick={() => {
+                            setTitle("학과");
+                            history.push("/group");
+                        }}
+                    >
                         <TiGroup />
                     </NaviBottom>
-                    <NaviBottom to="/mypage" activeClassName="selected" onClick={() => setClick(!clicked)}>
+                    <NaviBottom
+                        className={pathname === "/mypage" ? "selected" : null}
+                        onClick={() => {
+                            setTitle("내 정보");
+                            history.push("/mypage");
+                        }}
+                    >
                         <BsPeopleCircle />
                     </NaviBottom>
                 </NavBox>
