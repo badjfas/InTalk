@@ -17,6 +17,9 @@ const Posts = ({ postData, refetch }) => {
                     postId: parseInt(postId)
                 }
             });
+            //좋아요 업데이트
+            const { data } = await refetch();
+            return data;
         } catch {
             alert("잠시 후 다시 시도해주세요.");
         }

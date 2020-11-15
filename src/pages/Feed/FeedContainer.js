@@ -26,7 +26,7 @@ const FeedContainer = props => {
         const scrollHeight = document.documentElement.scrollHeight;
         const scrollTop = document.documentElement.scrollTop;
         const clientHeight = document.documentElement.clientHeight;
-        if (scrollTop + clientHeight >= scrollHeight) {
+        if (scrollTop + clientHeight >= scrollHeight - 100) {
             fetchMore({
                 variables: {
                     itemNum: posts?.seePosts?.rows?.length + 3,
