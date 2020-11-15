@@ -1,17 +1,14 @@
 import React, { Fragment } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
-import Nav from "./components/Common/BottomNav";
-import TopNav from "./components/Common/TopNav";
+import Nav from "./components/Common/Nav";
 
-// import Header from "./components/common/Header";
 import { Auth, Chat, Feed, Friends, Rooms } from "./pages";
 
 const LoggedInRoutes = () => {
     return (
         <Fragment>
             <BrowserRouter>
-                <TopNav />
-                <div style={{ padding: "3rem 0 3rem 0" }}>
+                <div style={{}}>
                     <Switch>
                         <Route exact path="/" component={Feed} />
                         <Route exact path="/friends" component={Friends} />
@@ -20,7 +17,7 @@ const LoggedInRoutes = () => {
                     </Switch>
                 </div>
                 <Nav />
-                <Redirect from="*" to="/" />
+                <Redirect froms to="/" />
             </BrowserRouter>
         </Fragment>
     );
