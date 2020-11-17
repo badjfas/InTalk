@@ -12,6 +12,9 @@ const wsLink = new WebSocketLink({
     uri: `ws://localhost:4000`,
     options: {
         reconnect: true
+    },
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
     }
 });
 
@@ -22,8 +25,13 @@ export default new ApolloClient({
                 fields: {
                     isLogin: {
                         read: (_, { variables }) => {
-                            console.log(_, variables);
                             return localStorage.getItem("token") !== null ? true : false;
+                        }
+                    },
+                    me: {
+                        merge(existing, incoming) {
+                            return { ...incoming };
+                            // this part of code is depends what you actually need to do, in my
                         }
                     }
                 }
@@ -73,5 +81,8 @@ export default new ApolloClient({
             wsLink,
             httpLink
         )
-    ])
+    ]),
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
 });

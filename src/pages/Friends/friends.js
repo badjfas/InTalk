@@ -16,7 +16,7 @@ export const SEE_USERS = gql`
 export const SEE_PROFILE = gql`
     query seeProfile($userId: Int) {
         seeProfile(userId: $userId) {
-            id
+            userId: id
             fullName
             isMe
             isFollow

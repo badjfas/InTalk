@@ -142,7 +142,7 @@ const Nav = () => {
             setTitle("게시물 추가");
         } else if (pathname === "/group") {
             setTitle("학과");
-        } else if (pathname === "/myapge") {
+        } else if (pathname === "/mypage") {
             setTitle("내 정보");
         }
     }, [title, pathname]);

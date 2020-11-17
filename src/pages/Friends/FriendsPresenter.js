@@ -22,7 +22,8 @@ const FriendsPresenter = ({
     userProfileData,
     onClickAddFriend,
     createChatRoom,
-    roomsData
+    roomsData,
+    loading
 }) => {
     return (
         <Container className="friends">
@@ -32,8 +33,8 @@ const FriendsPresenter = ({
                     userProfileData={userProfileData}
                     onClickAddFriend={onClickAddFriend}
                     setVisible={setVisible}
-                    visible={visible}
                     roomsData={roomsData}
+                    loading={loading}
                 />
             ) : null}
 

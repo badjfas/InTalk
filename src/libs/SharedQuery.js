@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 export const ME = gql`
     {
         me {
+            meId: id
             fullName
             avatar
             departmentName

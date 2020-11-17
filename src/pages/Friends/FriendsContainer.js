@@ -1,4 +1,4 @@
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { ME, MY_CHAT_ROOMS } from "../../libs/SharedQuery";
 import { CREATE_ROOM, FOLLOW, SEE_PROFILE, SEE_USERS } from "./friends";
@@ -9,18 +9,23 @@ const FriendsContainer = props => {
         id: 0,
         open: false
     });
+    const [usersData, setUserData] = useState({});
 
     //모든 유저
-    const { data: usersData } = useQuery(SEE_USERS);
+    const { data: userData } = useQuery(SEE_USERS, {
+        onCompleted: () => setUserData(userData)
+    });
 
     //나의 챗룸
     const [getRooms, { data: roomsData }] = useLazyQuery(MY_CHAT_ROOMS);
 
     //상대방 프로필
-    const { data: userProfile } = useQuery(SEE_PROFILE, {
+    const [userProfile, setUserProfile] = useState({});
+    const [getProfile, { data: userProfileData, refetch, loading }] = useLazyQuery(SEE_PROFILE, {
         variables: {
             userId: parseInt(visible.id)
-        }
+        },
+        onCompleted: () => setUserProfile({ ...userProfileData })
     });
 
     //프로필 클릭시 챗룸 생성
@@ -36,36 +41,25 @@ const FriendsContainer = props => {
     });
 
     const [followMutation] = useMutation(FOLLOW);
-
     const onClickAddFriend = async friendId => {
         try {
             await followMutation({
                 variables: {
                     followId: parseInt(friendId)
-                },
-                refetchQueries: [
-                    {
-                        query: SEE_PROFILE,
-                        variables: {
-                            userId: parseInt(visible.id)
-                        }
-                    }
-                ]
+                }
             });
+            const { data } = await refetch();
+            setUserProfile({ ...data });
         } catch {
             alert("잠시 후 다시 시도해주세요.");
         }
     };
-
     useEffect(() => {
         getRooms();
-        return () => {
-            setVisible({
-                id: 0,
-                open: false
-            });
-        };
-    }, []);
+        if (visible.id !== 0) {
+            getProfile();
+        }
+    }, [visible]);
     return (
         <FriendsPresenter
             {...props}
@@ -76,6 +70,7 @@ const FriendsContainer = props => {
             setVisible={setVisible}
             createChatRoom={createChatRoom}
             roomsData={roomsData}
+            loading={loading}
         />
     );
 };

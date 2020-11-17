@@ -3,7 +3,7 @@ import React, { useRef } from "react";
 import { ADD_CHILD_COMMENT, ADD_COMMENT, TOGGLE_LIKE } from "../../pages/Feed/post";
 import PostPresenter from "./PostPresenter";
 
-const Posts = ({ postData, refetch }) => {
+const Posts = ({ postData, refetch, setPosts }) => {
     const inputRef = useRef(null);
 
     //좋아요
@@ -19,6 +19,7 @@ const Posts = ({ postData, refetch }) => {
             });
             //좋아요 업데이트
             const { data } = await refetch();
+            setPosts({ ...data });
             return data;
         } catch {
             alert("잠시 후 다시 시도해주세요.");
@@ -39,6 +40,7 @@ const Posts = ({ postData, refetch }) => {
             });
             //댓글 업데이트
             const { data } = await refetch();
+            setPosts({ ...data });
             return data;
         } catch {
             alert("잠시 후 다시 시도해주세요.");
@@ -59,6 +61,7 @@ const Posts = ({ postData, refetch }) => {
             });
             //댓글 업데이트
             const { data } = await refetch();
+            setPosts({ ...data });
             return data;
         } catch {
             alert("잠시 후 다시 시도해주세요.");
