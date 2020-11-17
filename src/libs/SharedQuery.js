@@ -25,7 +25,45 @@ export const ME = gql`
         }
     }
 `;
+export const NEW_MESSAGE = gql`
+    subscription newMessageForNotification($id: Int!) {
+        newMessageForNotification(id: $id) {
+            id
+            toUser {
+                id
+                fullName
+                avatar
+            }
+            fromUser {
+                id
+                fullName
+                avatar
+            }
+            text
+        }
+    }
+`;
 
+export const GET_MESSEGES = gql`
+    query getMessagesForNotification($id: Int!) {
+        getMessagesForNotification(id: $id) {
+            room {
+                id
+            }
+            toUser {
+                id
+                avatar
+                fullName
+            }
+            fromUser {
+                id
+                avatar
+                fullName
+            }
+            text
+        }
+    }
+`;
 export const MY_CHAT_ROOMS = gql`
     {
         me {
