@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { gql, useQuery, useSubscription } from "@apollo/client";
 import { ThemeProvider } from "styled-components";
 import Theme from "./styles/Theme";
@@ -8,7 +8,6 @@ import { ToastContainer, toast } from "react-toastify";
 
 import Routes from "./Route";
 import { NEW_MESSAGE } from "./libs/SharedQuery";
-import { GET_MESSEGES } from "./libs/SharedQuery";
 import { DecodeToken } from "./libs/decodeToken";
 const IS_LOGIN = gql`
     {
@@ -17,14 +16,17 @@ const IS_LOGIN = gql`
 `;
 
 function App() {
-    const { user: userData } = DecodeToken(localStorage.getItem("token"));
-
+    const {
+        data: { isLogin }
+    } = useQuery(IS_LOGIN);
+    const [userData, setUser] = useState({});
     const { data } = useSubscription(NEW_MESSAGE, {
         variables: {
             id: parseInt(userData.id)
         }
     });
-    const handleNewMessage = () => {
+
+    const handleNewMessage = useCallback(() => {
         if (data !== undefined) {
             const { newMessageForNotification } = data;
             toast.dark(`${newMessageForNotification.fromUser.fullName} : ${newMessageForNotification.text}`, {
@@ -37,14 +39,17 @@ function App() {
                 progress: undefined
             });
         }
-    };
-    useEffect(() => {
-        handleNewMessage();
     }, [data]);
 
-    const {
-        data: { isLogin }
-    } = useQuery(IS_LOGIN);
+    useEffect(() => {
+        if (isLogin) {
+            const { user } = DecodeToken(localStorage.getItem("token"));
+            setUser({ ...user });
+        } else {
+            return;
+        }
+        handleNewMessage();
+    }, [data, isLogin, handleNewMessage]);
 
     return (
         <ThemeProvider theme={Theme}>
