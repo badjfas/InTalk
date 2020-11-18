@@ -34,6 +34,19 @@ const Major = styled.span`
     font-size: 0.65rem;
     line-height: 2rem;
 `;
+
+const NotReadCount = styled.span`
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ff5733;
+    font-size: 0.8rem;
+    color: #fff;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 70%;
+`;
 export default ({ room }) => {
     return (
         <Wrapper>
@@ -41,6 +54,7 @@ export default ({ room }) => {
                 <Avatar size={2} radius={70} src={room.participants?.avatar} />
                 <UserName> {room.participants?.fullName} </UserName>
                 <Major>{room.participants?.departmentName}</Major>
+                {room.notReadMessagesCount !== 0 ? <NotReadCount>{room.notReadMessagesCount}</NotReadCount> : null}
                 <CgEnter />
             </Box>
         </Wrapper>

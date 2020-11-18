@@ -9,6 +9,7 @@ export const ME = gql`
             departmentName
             rooms {
                 id
+                notReadMessagesCount
                 participantId
                 myId
             }
@@ -71,6 +72,7 @@ export const MY_CHAT_ROOMS = gql`
             rooms {
                 id
                 existMessage
+                notReadMessagesCount
                 participants {
                     id
                     avatar
