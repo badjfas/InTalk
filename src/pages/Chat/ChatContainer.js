@@ -15,7 +15,6 @@ export default props => {
             params: { roomId, toId }
         }
     } = props;
-
     //상대방 정보 불러오기
     const [getUser, { data: to }] = useLazyQuery(SEE_PROFILE, {
         variables: {
@@ -35,8 +34,9 @@ export default props => {
     const [messages, setMessages] = useState([]);
     const { data: oldMessages, error } = useQuery(GET_MESSEGES, {
         variables: {
-            userId: parseInt(toId),
-            _userId: parseInt(userData.id)
+            // receiver: parseInt(toId),
+            sender: parseInt(toId),
+            roomId: parseInt(roomId)
         },
         onCompleted: () => setMessages(oldMessages.getMessages)
     });

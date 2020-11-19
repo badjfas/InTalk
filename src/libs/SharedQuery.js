@@ -45,6 +45,12 @@ export const NEW_MESSAGE = gql`
     }
 `;
 
+export const SUB_ME = gql`
+    subscription meForNotification($id: Int!) {
+        meForNotification(id: $id)
+    }
+`;
+
 export const GET_MESSEGES = gql`
     query getMessagesForNotification($id: Int!) {
         getMessagesForNotification(id: $id) {

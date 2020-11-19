@@ -37,24 +37,10 @@ export const NEW_MESSAGE = gql`
         }
     }
 `;
-// export const NEW_MESSAGE = gql`
-//     subscription {
-//         newMessage(roomId: 2) {
-//             messageId: id
-//             toUser {
-//                 fullName
-//             }
-//             fromUser {
-//                 fullName
-//             }
-//             text
-//         }
-//     }
-// `;
 
 export const GET_MESSEGES = gql`
-    query getMessages($userId: Int!, $_userId: Int!) {
-        getMessages(userId: $userId, _userId: $_userId) {
+    query getMessages($sender: Int, $receiver: Int, $roomId: Int) {
+        getMessages(sender: $sender, receiver: $receiver, roomId: $roomId) {
             room {
                 id
             }

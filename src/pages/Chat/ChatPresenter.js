@@ -107,7 +107,7 @@ export default ({ userData, setText, sendMessageMutation, messages, to, text, in
     return (
         <Fragment>
             <Header>
-                <span className="left" onClick={() => history.push("/messages")}>
+                <span className="left" onClick={() => (window.location.href = "/messages")}>
                     <IoMdArrowRoundBack />
                 </span>
                 <span className="center">{to?.seeProfile?.fullName}</span>
