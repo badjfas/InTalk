@@ -1,5 +1,5 @@
 import { useLazyQuery, useQuery } from "@apollo/client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SEE_POSTS } from "./post";
 import FeedPresenter from "./FeedPresenter";
 import { DecodeToken } from "../../libs/decodeToken";
@@ -18,7 +18,7 @@ const FeedContainer = props => {
     });
 
     //스크롤 데이터 패칭
-    const handleScroll = async () => {
+    const handleScroll = useCallback(async () => {
         const scrollHeight = document.documentElement.scrollHeight;
         const scrollTop = document.documentElement.scrollTop;
         const clientHeight = document.documentElement.clientHeight;
@@ -37,7 +37,7 @@ const FeedContainer = props => {
                 console.warn(e);
             }
         }
-    };
+    }, [posts?.seePosts?.rows?.length]);
 
     //스크롤 랜더링
     useEffect(() => {
@@ -46,6 +46,13 @@ const FeedContainer = props => {
             window.removeEventListener("scroll", handleScroll);
         };
     });
+
+    useEffect(() => {
+        return () => {
+            console.log("feedsclean up");
+            setPosts({});
+        };
+    }, []);
 
     return <FeedPresenter postData={posts} refetch={refetch} userData={userData} setPosts={setPosts} />;
 };

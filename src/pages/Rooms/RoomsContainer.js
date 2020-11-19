@@ -5,7 +5,9 @@ import { MY_CHAT_ROOMS, SUB_ME } from "../../libs/SharedQuery";
 import RoomsPresenter from "./RoomsPresenter";
 
 const RoomsContainer = () => {
-    const { data: roomsData, refetch } = useQuery(MY_CHAT_ROOMS);
+    const { data: roomsData, refetch } = useQuery(MY_CHAT_ROOMS, {
+        fetchPolicy: "network-only"
+    });
 
     const { user } = DecodeToken(localStorage.getItem("token"));
 
