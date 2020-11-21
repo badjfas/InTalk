@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import React, { useRef } from "react";
-import { ADD_CHILD_COMMENT, ADD_COMMENT, TOGGLE_LIKE } from "../../pages/Feed/post";
+import { ADD_CHILD_COMMENT, ADD_COMMENT, SEE_ALL_COMMENTS, TOGGLE_LIKE } from "../../pages/Feed/post";
 import PostPresenter from "./PostPresenter";
 
 const Posts = ({ postData, refetch, setPosts }) => {
@@ -36,7 +36,15 @@ const Posts = ({ postData, refetch, setPosts }) => {
                 variables: {
                     postId: parseInt(postId),
                     text: text
-                }
+                },
+                refetchQueries: [
+                    {
+                        query: SEE_ALL_COMMENTS,
+                        variables: {
+                            postId: parseInt(postId)
+                        }
+                    }
+                ]
             });
             //댓글 업데이트
             const { data } = await refetch();
@@ -50,14 +58,22 @@ const Posts = ({ postData, refetch, setPosts }) => {
     //게시물 대댓글
     const [addChildCommentMutation] = useMutation(ADD_CHILD_COMMENT, {});
 
-    const addChildComment = async ({ e, targetCommentId, targetUserId, text }) => {
+    const addChildComment = async ({ e, targetCommentId, targetUserId, text, postId }) => {
         try {
             await addChildCommentMutation({
                 variables: {
                     targetCommentId: parseInt(targetCommentId),
                     targetUserId: parseInt(targetUserId),
                     text: text
-                }
+                },
+                refetchQueries: [
+                    {
+                        query: SEE_ALL_COMMENTS,
+                        variables: {
+                            postId: parseInt(postId)
+                        }
+                    }
+                ]
             });
             //댓글 업데이트
             const { data } = await refetch();

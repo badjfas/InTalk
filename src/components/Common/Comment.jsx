@@ -2,9 +2,9 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { BsArrowReturnRight } from "react-icons/bs";
 import styled from "styled-components";
 import Avatar from "../Common/Avatar";
+import ChildComment from "./ChildComment";
 
-const Comment = ({ comment, addChildComment }) => {
-    console.log(comment);
+const Comment = ({ comment, addChildComment, postId }) => {
     const inputRef = useRef(null);
     const [commentVisible, setCommentVisible] = useState(false);
     const [childName, setChildName] = useState("");
@@ -30,100 +30,45 @@ const Comment = ({ comment, addChildComment }) => {
             inputRef.current.focus();
         }
     }, [childInput]);
-    return (
-        <Fragment>
-            <Fragment key={comment?.commentId}>
-                <ParentComment className="comment">
-                    <Avatar src={comment?.user?.avatar} size={2} radius={70} />
-                    <div className="user_box_container">
-                        <div className="user_box">
-                            <span className="name">{comment?.user?.fullName}</span>
-                            <span className="text">{comment?.text}</span>
-                        </div>
-                    </div>
-                </ParentComment>
-                <AddChildBtn className="reply">
-                    <span
-                        onClick={() => {
-                            onClick({ target: comment, visible: !childInput.visible });
-                            // handleFocus();
-                        }}
-                    >
-                        답글달기
-                    </span>
-                    {childInput.visible ? (
-                        <form
-                            onSubmit={e => {
-                                e.preventDefault();
-                                addChildComment({
-                                    ...childInput
-                                });
-                                setChildInput({
-                                    targetCommentId: "",
-                                    targetUserId: "",
-                                    text: "",
-                                    visible: childInput.visible
-                                });
-                            }}
-                        >
-                            <span>@{childName}</span>
-                            <input
-                                value={childInput.text}
-                                ref={inputRef}
-                                onChange={e => setChildInput({ ...childInput, text: e.target.value })}
-                            />
-                        </form>
-                    ) : (
-                        ""
-                    )}
-                </AddChildBtn>
-            </Fragment>
-            <ChildComment className="child" key={comment?.commentId * 5}>
-                {comment?.childComments?.length !== 0 ? (
-                    <button
-                        className={`${`open_child ${commentVisible === true ? "clicked" : null}`}`}
-                        onClick={() => setCommentVisible(!commentVisible)}
-                    >
-                        <BsArrowReturnRight /> {comment?.childComments?.length + "개 댓글 더 보기"}
-                    </button>
-                ) : null}
 
-                {comment?.childComments?.map(childComment => {
-                    return (
-                        <Fragment key={childComment?.childId}>
-                            {commentVisible ? (
-                                <div
-                                    key={childComment?.childId}
-                                    className="child_comments"
-                                    onClick={() => {
-                                        onClick({
-                                            target: childComment,
-                                            rootTarget: comment,
-                                            visible: !childInput.visible
-                                        });
-                                        setChildName(childComment.user.fullName);
-                                    }}
-                                >
-                                    <img className="child_comment_avatar" src={childComment?.user?.avatar} alt="" />
-                                    <div className="child_comment">
-                                        <span className="name">{childComment?.user.fullName}</span>
-                                        <div>
-                                            <span className="target_name">
-                                                {"@" + childComment.targetUser.fullName}
-                                            </span>
-                                            <span className="text">{childComment.text}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </Fragment>
-                    );
+    return (
+        <Fragment key={comment?.commentId}>
+            <ParentComment className="comment">
+                <Avatar src={comment?.user?.avatar} size={2} radius={70} />
+                <div className="user_box_container">
+                    <div className="user_box">
+                        <span className="name">{comment?.user?.fullName}</span>
+                        <span className="text">{comment?.text}</span>
+                    </div>
+                </div>
+            </ParentComment>
+            <AddChildBtn className="reply">
+                <span
+                    style={{ paddingLeft: "0.5rem" }}
+                    onClick={() => {
+                        setChildName(comment?.user?.fullName);
+                        onClick({ target: comment, visible: !childInput.visible });
+                    }}
+                >
+                    답글달기
+                </span>
+            </AddChildBtn>
+            {comment?.childComments?.length !== 0 ? (
+                <button
+                    style={{ backgroundColor: "transparent", paddingLeft: "3.5rem" }}
+                    className={`${`open_child ${commentVisible === true ? "clicked" : null}`}`}
+                    onClick={() => setCommentVisible(!commentVisible)}
+                >
+                    <BsArrowReturnRight /> {comment?.childComments?.length + "개 댓글 더 보기"}
+                </button>
+            ) : null}
+            {commentVisible &&
+                comment?.childComments?.map((child) => {
+                    return <ChildComment {...child} />;
                 })}
-            </ChildComment>
         </Fragment>
     );
 };
-
 export default Comment;
 const ParentComment = styled.div`
     display: flex;
@@ -164,6 +109,7 @@ const AddChildBtn = styled.div`
             position: absolute;
             top: 12px;
             left: 6px;
+            width: 4rem;
         }
         input {
             display: flex;
@@ -173,7 +119,7 @@ const AddChildBtn = styled.div`
             border: none;
             border-radius: 10px;
             background-color: #eee;
-            padding-left: 3rem;
+            padding-left: 4rem;
             overflow: hidden;
             cursor: pointer;
         }
@@ -183,57 +129,57 @@ const AddChildBtn = styled.div`
     }
 `;
 
-const ChildComment = styled.div`
-    //답글
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    .open_child {
-        //답글달기
-        border: none;
-        width: 10rem;
-        margin-left: 1rem;
-        background-color: transparent;
-    }
+// const ChildComment = styled.div`
+//     //답글
+//     display: flex;
+//     flex-direction: column;
+//     height: 100%;
+//     .open_child {
+//         //답글달기
+//         border: none;
+//         width: 10rem;
+//         margin-left: 1rem;
+//         background-color: transparent;
+//     }
 
-    .clicked {
-        display: none;
-    }
+//     .clicked {
+//         display: none;
+//     }
 
-    .child_comments {
-        margin-left: 1rem;
-        display: flex;
-        padding-left: 1rem;
-        margin-bottom: 1rem;
-        .child_comment_avatar {
-            border-radius: 70%;
-            width: 2rem;
-            height: 2rem;
-            margin-right: 1rem;
-        }
-        .child_comment {
-            display: flex;
-            flex-direction: column;
-            background-color: #eee;
-            border-radius: 15px;
-            padding: 0.7rem;
-            .name {
-                font-size: 0.9rem;
-                width: 100%;
-            }
-            > div {
-                padding-top: 0.2rem;
-                .target_name {
-                    font-weight: 600;
-                    font-size: 0.8rem;
-                    width: 100%;
-                }
-                .text {
-                    padding-left: 0.4rem;
-                    font-size: 0.9rem;
-                    width: 100%;
-                }
-            }
-        }
-    }
-`;
+//     .child_comments {
+//         margin-left: 1rem;
+//         display: flex;
+//         padding-left: 1rem;
+//         margin-bottom: 1rem;
+//         .child_comment_avatar {
+//             border-radius: 70%;
+//             width: 2rem;
+//             height: 2rem;
+//             margin-right: 1rem;
+//         }
+//         .child_comment {
+//             display: flex;
+//             flex-direction: column;
+//             background-color: #eee;
+//             border-radius: 15px;
+//             padding: 0.7rem;
+//             .name {
+//                 font-size: 0.9rem;
+//                 width: 100%;
+//             }
+//             > div {
+//                 padding-top: 0.2rem;
+//                 .target_name {
+//                     font-weight: 600;
+//                     font-size: 0.8rem;
+//                     width: 100%;
+//                 }
+//                 .text {
+//                     padding-left: 0.4rem;
+//                     font-size: 0.9rem;
+//                     width: 100%;
+//                 }
+//             }
+//         }
+//     }
+// `;

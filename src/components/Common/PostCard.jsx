@@ -26,7 +26,7 @@ const PostCard = ({
     const [open, setOpen] = useState(false);
     const splitFile = files?.split(",");
     const inputRef = useRef(null);
-    const onClickDot = index => {
+    const onClickDot = (index) => {
         if (splitFile.length <= index) {
             return setActived(0);
         } else {
@@ -79,7 +79,7 @@ const PostCard = ({
                 <OptionBox className="opt_box">
                     <ul>
                         <li
-                            onClick={e => {
+                            onClick={(e) => {
                                 setIsLikeds(!isLikdes);
                                 toggleLike({ e, postId });
                             }}
@@ -118,7 +118,7 @@ const PostCard = ({
                                 });
                             }}
                         >
-                            {comments?.length}댓글 더 보기
+                            {comments?.length}개 댓글 더 보기
                         </button>
                     )}
                 </OptionBox>
@@ -133,7 +133,7 @@ const PostCard = ({
                         />
                         <form
                             style={{ width: "100%", margin: "0 1rem 0 1rem" }}
-                            onSubmit={e => {
+                            onSubmit={(e) => {
                                 addComment({ event: e, postId: postId, text: comment });
                                 setComment("");
                             }}
@@ -143,7 +143,7 @@ const PostCard = ({
                                 value={comment}
                                 ref={inputRef}
                                 height={2}
-                                onChange={e => {
+                                onChange={(e) => {
                                     setComment(e.target.value);
                                 }}
                             />
@@ -171,6 +171,7 @@ const PostCard = ({
                                     <Comment
                                         key={comment.commentId}
                                         comment={comment}
+                                        postId={postId}
                                         addChildComment={addChildComment}
                                     />
                                 );
@@ -345,7 +346,7 @@ const Input = styled.input`
     display: flex;
     align-items: center;
     width: 100%;
-    height: ${props => props.height}rem;
+    height: ${(props) => props.height}rem;
     border: none;
     border-radius: 10px;
     background-color: #eee;
