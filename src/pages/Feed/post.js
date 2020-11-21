@@ -23,6 +23,27 @@ export const SEE_POSTS = gql`
                 }
                 avatar
                 files
+                firstComment {
+                    commentId: id
+                    userId
+                    fullName
+                    avatar
+                    text
+                    childComments {
+                        childId: id
+                        text
+                        user {
+                            myId: id
+                            avatar
+                            fullName
+                        }
+                        targetUser {
+                            targetId: id
+                            avatar
+                            fullName
+                        }
+                    }
+                }
                 comments {
                     commentId: id
                     text
@@ -89,6 +110,37 @@ export const ADD_CHILD_COMMENT = gql`
     mutation addChildComment($targetUserId: Int, $targetCommentId: Int, $text: String) {
         addChildComment(targetUserId: $targetUserId, targetCommentId: $targetCommentId, text: $text) {
             text
+        }
+    }
+`;
+
+export const SEE_ALL_COMMENTS = gql`
+    query seeComments($postId: Int!) {
+        seeComments(postId: $postId) {
+            post {
+                id
+            }
+            commentId: id
+            text
+            user {
+                id
+                avatar
+                fullName
+            }
+            childComments {
+                childId: id
+                text
+                user {
+                    myId: id
+                    avatar
+                    fullName
+                }
+                targetUser {
+                    targetId: id
+                    avatar
+                    fullName
+                }
+            }
         }
     }
 `;

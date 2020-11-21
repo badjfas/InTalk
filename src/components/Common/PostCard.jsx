@@ -1,9 +1,189 @@
+import { useLazyQuery } from "@apollo/client";
 import React, { useRef, useState } from "react";
 import { AiOutlineLike, AiTwotoneLike, AiOutlineShareAlt } from "react-icons/ai";
 import { VscComment } from "react-icons/vsc";
 import styled from "styled-components";
+import { SEE_ALL_COMMENTS } from "../../pages/Feed/post";
 import Avatar from "../Common/Avatar";
 import Comment from "./Comment";
+
+const PostCard = ({
+    isLiked,
+    postId,
+    likesCount,
+    user,
+    contents,
+    comments,
+    firstComment,
+    toggleLike,
+    addComment,
+    addChildComment,
+    files
+}) => {
+    const [isLikdes, setIsLikeds] = useState(isLiked);
+    const [comment, setComment] = useState("");
+    const [actived, setActived] = useState(0);
+    const [open, setOpen] = useState(false);
+    const splitFile = files?.split(",");
+    const inputRef = useRef(null);
+    const onClickDot = index => {
+        if (splitFile.length <= index) {
+            return setActived(0);
+        } else {
+            return setActived(index);
+        }
+    };
+
+    const handleFocus = () => {
+        inputRef.current.focus();
+    };
+    const [getComment, { data, loading }] = useLazyQuery(SEE_ALL_COMMENTS);
+    return (
+        <Wrapper className="post" id={postId} key={postId}>
+            <div className="post_posting">
+                <UserBox className="title">
+                    <Avatar src={user.avatar} size={2} radius={70} />
+                    <div className="department_box">
+                        <span>{user.fullName}</span>
+                        <span className="department_name">{user.departmentName}</span>
+                    </div>
+                </UserBox>
+                <ContentBox className="content">
+                    <p>{contents}</p>
+                    <div className="preview_dot">
+                        {files !== "" &&
+                            splitFile?.map((photo, index) => {
+                                return (
+                                    <span
+                                        key={index}
+                                        onClick={() => onClickDot(index)}
+                                        className={`${actived === index ? "actived" : ""}`}
+                                    >
+                                        ●
+                                    </span>
+                                );
+                            })}
+                    </div>
+                    <div className="photo">
+                        {files !== "" && splitFile ? (
+                            <img
+                                onClick={() => onClickDot(actived + 1)}
+                                src={`http://1.229.102.77:4000/file/${splitFile[actived]}`}
+                                alt=""
+                            />
+                        ) : (
+                            ""
+                        )}
+                    </div>
+                </ContentBox>
+                <OptionBox className="opt_box">
+                    <ul>
+                        <li
+                            onClick={e => {
+                                setIsLikeds(!isLikdes);
+                                toggleLike({ e, postId });
+                            }}
+                        >
+                            {isLikdes ? <AiTwotoneLike fill="#1877f2" /> : <AiOutlineLike />}
+                        </li>
+                        <li onClick={handleFocus}>
+                            <VscComment />
+                        </li>
+                        <li>
+                            <AiOutlineShareAlt />
+                        </li>
+                    </ul>
+                    <span>{likesCount}명이 좋아합니다.</span>
+                    {open ? (
+                        <button
+                            onClick={() => {
+                                setOpen(!open);
+                                getComment({
+                                    variables: {
+                                        postId: parseInt(0)
+                                    }
+                                });
+                            }}
+                        >
+                            댓글 접기
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => {
+                                setOpen(!open);
+                                getComment({
+                                    variables: {
+                                        postId: parseInt(postId)
+                                    }
+                                });
+                            }}
+                        >
+                            {comments?.length}댓글 더 보기
+                        </button>
+                    )}
+                </OptionBox>
+                <CommentBox className="add_comment_box">
+                    <div className="add_comment">
+                        <Avatar
+                            size={2}
+                            radius={70}
+                            src={
+                                "https://instagram.famd3-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.famd3-1.fna.fbcdn.net&_nc_ohc=qr8CH9GVPs4AX_VHirk&oh=93ebddd76b9104d6126c4215eb50094d&oe=5FC5A70F&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2"
+                            }
+                        />
+                        <form
+                            style={{ width: "100%", margin: "0 1rem 0 1rem" }}
+                            onSubmit={e => {
+                                addComment({ event: e, postId: postId, text: comment });
+                                setComment("");
+                            }}
+                        >
+                            <Input
+                                type="text"
+                                value={comment}
+                                ref={inputRef}
+                                height={2}
+                                onChange={e => {
+                                    setComment(e.target.value);
+                                }}
+                            />
+                        </form>
+                    </div>
+                    {open ? null : !firstComment ? null : (
+                        <FirstComment className="comments">
+                            <div>
+                                <Avatar src={firstComment?.avatar} size={2} radius={70} />
+                                <div className="user_box_container">
+                                    <div className="user_box">
+                                        <span className="name">{firstComment?.fullName}</span>
+                                        <span className="text">{firstComment?.text}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </FirstComment>
+                    )}
+                    {loading ? (
+                        "is loading"
+                    ) : (
+                        <Comments className="comments">
+                            {data?.seeComments?.map((comment, index) => {
+                                return (
+                                    <Comment
+                                        key={comment.commentId}
+                                        comment={comment}
+                                        addChildComment={addChildComment}
+                                    />
+                                );
+                            })}
+                        </Comments>
+                    )}
+                </CommentBox>
+            </div>
+        </Wrapper>
+    );
+};
+export default PostCard;
+
 const Wrapper = styled.div`
     max-width: 1024px;
     width: 100%;
@@ -75,6 +255,14 @@ const ContentBox = styled.div`
 `;
 
 const OptionBox = styled.div`
+    position: relative;
+    button {
+        position: absolute;
+        bottom: 0;
+        background: transparent;
+        border: none;
+        right: 10px;
+    }
     span {
         font-size: 0.8rem;
         padding-left: 0.5rem;
@@ -125,16 +313,43 @@ const Comments = styled.div`
     margin-top: 1rem;
     width: 100%;
 `;
+const FirstComment = styled.div`
+    margin-top: 1rem;
+    width: 100%;
+    div {
+        display: flex;
+        justify-content: flex-start;
+        .user_box_container {
+            background-color: #eee;
+            border-radius: 15px;
+            padding: 0.7rem;
+            line-height: 1.2rem;
+            margin-left: 0.5rem;
+            .user_box {
+                display: flex;
+                flex-direction: column;
+                .name {
+                    font-weight: 600;
+                    font-size: 0.8rem;
+                }
+                .text {
+                    font-size: 0.9rem;
+                    position: relative;
+                }
+            }
+        }
+    }
+`;
 
 const Input = styled.input`
     display: flex;
     align-items: center;
-    width: ${props => props.width};
+    width: 100%;
     height: ${props => props.height}rem;
     border: none;
     border-radius: 10px;
     background-color: #eee;
-    padding-left: 1rem;
+    padding-left: 2rem;
     overflow: hidden;
     cursor: pointer;
     &:hover {
@@ -142,130 +357,3 @@ const Input = styled.input`
         opacity: 0.8;
     }
 `;
-
-const PostCard = ({
-    isLiked,
-    postId,
-    likesCount,
-    user,
-    contents,
-    comments,
-    toggleLike,
-    addComment,
-    addChildComment,
-    files
-}) => {
-    const [isLikdes, setIsLikeds] = useState(isLiked);
-    const [comment, setComment] = useState("");
-    const [actived, setActived] = useState(0);
-    const splitFile = files?.split(",");
-    const inputRef = useRef(null);
-    const onClickDot = index => {
-        if (splitFile.length <= index) {
-            return setActived(0);
-        } else {
-            return setActived(index);
-        }
-    };
-
-    const handleFocus = () => {
-        inputRef.current.focus();
-    };
-
-    return (
-        <Wrapper className="post" id={postId} key={postId}>
-            <div className="post_posting">
-                <UserBox className="title">
-                    <Avatar src={user.avatar} size={2} radius={70} />
-                    <div className="department_box">
-                        <span>{user.fullName}</span>
-                        <span className="department_name">{user.departmentName}</span>
-                    </div>
-                </UserBox>
-                <ContentBox className="content">
-                    <p>{contents}</p>
-                    <div className="preview_dot">
-                        {files !== "" &&
-                            splitFile?.map((photo, index) => {
-                                return (
-                                    <span
-                                        key={index}
-                                        onClick={() => onClickDot(index)}
-                                        className={`${actived === index ? "actived" : ""}`}
-                                    >
-                                        ●
-                                    </span>
-                                );
-                            })}
-                    </div>
-                    <div className="photo">
-                        {files !== "" && splitFile ? (
-                            <img
-                                onClick={() => onClickDot(actived + 1)}
-                                src={`http://1.229.102.77:4000/file/${splitFile[actived]}`}
-                                alt=""
-                            />
-                        ) : (
-                            ""
-                        )}
-                    </div>
-                </ContentBox>
-                <OptionBox className="opt_box">
-                    <ul>
-                        <li
-                            onClick={e => {
-                                setIsLikeds(!isLikdes);
-                                toggleLike({ e, postId });
-                            }}
-                        >
-                            {isLikdes ? <AiTwotoneLike fill="#1877f2" /> : <AiOutlineLike />}
-                        </li>
-                        <li onClick={handleFocus}>
-                            <VscComment />
-                        </li>
-                        <li>
-                            <AiOutlineShareAlt />
-                        </li>
-                    </ul>
-                    <span>{likesCount}명이 좋아합니다.</span>
-                </OptionBox>
-                <CommentBox className="add_comment_box">
-                    <div className="add_comment">
-                        <Avatar
-                            size={2}
-                            radius={70}
-                            src={
-                                "https://instagram.famd3-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.famd3-1.fna.fbcdn.net&_nc_ohc=qr8CH9GVPs4AX_VHirk&oh=93ebddd76b9104d6126c4215eb50094d&oe=5FC5A70F&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2"
-                            }
-                        />
-                        <form
-                            onSubmit={e => {
-                                addComment({ event: e, postId: postId, text: comment });
-                                setComment("");
-                            }}
-                        >
-                            <Input
-                                type="text"
-                                value={comment}
-                                width={"100%"}
-                                ref={inputRef}
-                                height={2}
-                                onChange={e => {
-                                    setComment(e.target.value);
-                                }}
-                            />
-                        </form>
-                    </div>
-                    <Comments className="comments">
-                        {comments?.map(comment => {
-                            return (
-                                <Comment key={comment.commentId} comment={comment} addChildComment={addChildComment} />
-                            );
-                        })}
-                    </Comments>
-                </CommentBox>
-            </div>
-        </Wrapper>
-    );
-};
-export default PostCard;

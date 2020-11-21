@@ -3,6 +3,128 @@ import { BsArrowReturnRight } from "react-icons/bs";
 import styled from "styled-components";
 import Avatar from "../Common/Avatar";
 
+const Comment = ({ comment, addChildComment }) => {
+    console.log(comment);
+    const inputRef = useRef(null);
+    const [commentVisible, setCommentVisible] = useState(false);
+    const [childName, setChildName] = useState("");
+    const [childInput, setChildInput] = useState({
+        targetCommentId: "",
+        targetUserId: "",
+        text: "",
+        visible: false
+    });
+    const onClick = ({ target, visible, rootTarget }) => {
+        setChildInput({
+            targetCommentId: target.commentId ? target.commentId : rootTarget.commentId,
+            targetUserId: target.user.id ? target.user.id : target.user.myId,
+            text: "",
+            visible: visible
+        });
+    };
+
+    useEffect(() => {
+        if (inputRef.current === null) {
+            return;
+        } else {
+            inputRef.current.focus();
+        }
+    }, [childInput]);
+    return (
+        <Fragment>
+            <Fragment key={comment?.commentId}>
+                <ParentComment className="comment">
+                    <Avatar src={comment?.user?.avatar} size={2} radius={70} />
+                    <div className="user_box_container">
+                        <div className="user_box">
+                            <span className="name">{comment?.user?.fullName}</span>
+                            <span className="text">{comment?.text}</span>
+                        </div>
+                    </div>
+                </ParentComment>
+                <AddChildBtn className="reply">
+                    <span
+                        onClick={() => {
+                            onClick({ target: comment, visible: !childInput.visible });
+                            // handleFocus();
+                        }}
+                    >
+                        답글달기
+                    </span>
+                    {childInput.visible ? (
+                        <form
+                            onSubmit={e => {
+                                e.preventDefault();
+                                addChildComment({
+                                    ...childInput
+                                });
+                                setChildInput({
+                                    targetCommentId: "",
+                                    targetUserId: "",
+                                    text: "",
+                                    visible: childInput.visible
+                                });
+                            }}
+                        >
+                            <span>@{childName}</span>
+                            <input
+                                value={childInput.text}
+                                ref={inputRef}
+                                onChange={e => setChildInput({ ...childInput, text: e.target.value })}
+                            />
+                        </form>
+                    ) : (
+                        ""
+                    )}
+                </AddChildBtn>
+            </Fragment>
+            <ChildComment className="child" key={comment?.commentId * 5}>
+                {comment?.childComments?.length !== 0 ? (
+                    <button
+                        className={`${`open_child ${commentVisible === true ? "clicked" : null}`}`}
+                        onClick={() => setCommentVisible(!commentVisible)}
+                    >
+                        <BsArrowReturnRight /> {comment?.childComments?.length + "개 댓글 더 보기"}
+                    </button>
+                ) : null}
+
+                {comment?.childComments?.map(childComment => {
+                    return (
+                        <Fragment key={childComment?.childId}>
+                            {commentVisible ? (
+                                <div
+                                    key={childComment?.childId}
+                                    className="child_comments"
+                                    onClick={() => {
+                                        onClick({
+                                            target: childComment,
+                                            rootTarget: comment,
+                                            visible: !childInput.visible
+                                        });
+                                        setChildName(childComment.user.fullName);
+                                    }}
+                                >
+                                    <img className="child_comment_avatar" src={childComment?.user?.avatar} alt="" />
+                                    <div className="child_comment">
+                                        <span className="name">{childComment?.user.fullName}</span>
+                                        <div>
+                                            <span className="target_name">
+                                                {"@" + childComment.targetUser.fullName}
+                                            </span>
+                                            <span className="text">{childComment.text}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : null}
+                        </Fragment>
+                    );
+                })}
+            </ChildComment>
+        </Fragment>
+    );
+};
+
+export default Comment;
 const ParentComment = styled.div`
     display: flex;
     justify-content: flex-start;
@@ -115,125 +237,3 @@ const ChildComment = styled.div`
         }
     }
 `;
-
-const Comment = ({ comment, addChildComment }) => {
-    const inputRef = useRef(null);
-    const [commentVisible, setCommentVisible] = useState(false);
-    const [childName, setChildName] = useState("");
-    const [childInput, setChildInput] = useState({
-        targetCommentId: "",
-        targetUserId: "",
-        text: "",
-        visible: false
-    });
-    const onClick = ({ target, visible, rootTarget }) => {
-        setChildInput({
-            targetCommentId: target.commentId ? target.commentId : rootTarget.commentId,
-            targetUserId: target.user.id ? target.user.id : target.user.myId,
-            text: "",
-            visible: visible
-        });
-    };
-
-    useEffect(() => {
-        if (inputRef.current === null) {
-            return;
-        } else {
-            inputRef.current.focus();
-        }
-    }, [childInput]);
-    return (
-        <Fragment>
-            <Fragment key={comment.commentId}>
-                <ParentComment className="comment">
-                    <Avatar src={comment?.user?.avatar} size={2} radius={70} />
-                    <div className="user_box_container">
-                        <div className="user_box">
-                            <span className="name">{comment?.user?.fullName}</span>
-                            <span className="text">{comment?.text}</span>
-                        </div>
-                    </div>
-                </ParentComment>
-                <AddChildBtn className="reply">
-                    <span
-                        onClick={() => {
-                            onClick({ target: comment, visible: !childInput.visible });
-                            // handleFocus();
-                        }}
-                    >
-                        답글달기
-                    </span>
-                    {childInput.visible ? (
-                        <form
-                            onSubmit={e => {
-                                e.preventDefault();
-                                addChildComment({
-                                    ...childInput
-                                });
-                                setChildInput({
-                                    targetCommentId: "",
-                                    targetUserId: "",
-                                    text: "",
-                                    visible: childInput.visible
-                                });
-                            }}
-                        >
-                            <span>@{childName}</span>
-                            <input
-                                value={childInput.text}
-                                ref={inputRef}
-                                onChange={e => setChildInput({ ...childInput, text: e.target.value })}
-                            />
-                        </form>
-                    ) : (
-                        ""
-                    )}
-                </AddChildBtn>
-            </Fragment>
-            <ChildComment className="child" key={comment.commentId * 5}>
-                {comment.childComments.length !== 0 ? (
-                    <button
-                        className={`${`open_child ${commentVisible === true ? "clicked" : null}`}`}
-                        onClick={() => setCommentVisible(!commentVisible)}
-                    >
-                        <BsArrowReturnRight /> {comment.childComments.length + "개 댓글 더 보기"}
-                    </button>
-                ) : null}
-
-                {comment.childComments.map(childComment => {
-                    return (
-                        <Fragment key={childComment.childId}>
-                            {commentVisible ? (
-                                <div
-                                    key={childComment.childId}
-                                    className="child_comments"
-                                    onClick={() => {
-                                        onClick({
-                                            target: childComment,
-                                            rootTarget: comment,
-                                            visible: !childInput.visible
-                                        });
-                                        setChildName(childComment.user.fullName);
-                                    }}
-                                >
-                                    <img className="child_comment_avatar" src={childComment.user.avatar} alt="" />
-                                    <div className="child_comment">
-                                        <span className="name">{childComment.user.fullName}</span>
-                                        <div>
-                                            <span className="target_name">
-                                                {"@" + childComment.targetUser.fullName}
-                                            </span>
-                                            <span className="text">{childComment.text}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </Fragment>
-                    );
-                })}
-            </ChildComment>
-        </Fragment>
-    );
-};
-
-export default Comment;

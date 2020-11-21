@@ -9,7 +9,9 @@ const Container = styled.div`
     justify-content: center;
     flex-direction: column;
 `;
-const PostBox = styled.div``;
+const PostBox = styled.div`
+    height: 100%;
+`;
 export default ({ postData, toggleLike, addComment, addChildComment, inputRef }) => {
     return (
         <Container>
