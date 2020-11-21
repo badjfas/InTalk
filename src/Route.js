@@ -2,13 +2,13 @@ import React, { Fragment } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
 import Nav from "./components/Common/Nav";
 
-import { Add, Auth, Chat, Feed, Friends, Mypage, Rooms } from "./pages";
+import { Add, Auth, Chat, Feed, Friends, Mypage, Rooms, Major } from "./pages";
 
 const LoggedInRoutes = () => {
     return (
         <Fragment>
             <BrowserRouter>
-                <div style={{}}>
+                <div>
                     <Switch>
                         <Route exact path="/" component={Feed} />
                         <Route exact path="/friends" component={Friends} />
@@ -16,6 +16,7 @@ const LoggedInRoutes = () => {
                         <Route exact path="/messages" component={Rooms} />
                         <Route exact path="/chat/:roomId/:toId" component={Chat} />
                         <Route exact path="/mypage" component={Mypage} />
+                        <Route exact path="/group" component={Major} />
                         <Redirect from="*" to="/" />
                     </Switch>
                 </div>
