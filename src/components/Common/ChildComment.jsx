@@ -7,6 +7,7 @@ const Wrapper = styled.div`
     align-items: center;
     padding: 0.5rem 0rem 0.5rem 3rem;
     flex-direction: column;
+    cursor: pointer;
 `;
 const ChildBox = styled.div`
     width: 100%;
@@ -34,15 +35,15 @@ const InputBox = styled.div`
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 0 0 0 2.7rem;
+    padding: 0 0 0 3rem;
 `;
 
 const Nomination = styled.span`
     position: absolute;
     font-size: 0.9rem;
     font-weight: bold;
-    top: 46%;
-    left: 3rem;
+    top: 42%;
+    left: 3.4rem;
 `;
 const CommentInput = styled.input`
     border: none;
@@ -50,25 +51,41 @@ const CommentInput = styled.input`
     margin-top: 0.3rem;
     padding: 0.8rem;
     width: 100%;
-    padding-left: 4.3rem;
+    padding-left: 4.2rem;
     border-radius: 10px;
 `;
-const ChildComment = ({ childId, text, user, targetUser }) => {
+const ChildComment = ({ child, addChildComment, postId, commentId }) => {
     const [visible, setVisible] = useState(false);
-    console.log(targetUser);
+    const [text, setText] = useState("");
     return (
         <Wrapper>
             <ChildBox className="child_box" onClick={() => setVisible(!visible)}>
-                <Avatar src={user.avatar} size={2} />
+                <Avatar src={child.user.avatar} size={2} />
                 <TextBox>
-                    <UserName>{user.fullName}</UserName>
-                    <Text>{text}</Text>
+                    <UserName>{child.user.fullName}</UserName>
+                    <Text>{"@" + child.targetUser.fullName + " " + child.text}</Text>
                 </TextBox>
             </ChildBox>
             {visible ? (
                 <InputBox>
-                    <Nomination>@{targetUser.fullName}</Nomination>
-                    <CommentInput />
+                    <Nomination>@{child.user.fullName}</Nomination>
+                    <CommentInput
+                        value={text}
+                        onChange={e => setText(e.target.value)}
+                        onKeyPress={e => {
+                            if (e.key === "Enter") {
+                                addChildComment({
+                                    e: e,
+                                    text: text,
+                                    postId: postId,
+                                    targetCommentId: commentId,
+                                    targetUserId: child.user.myId
+                                });
+                                setVisible(false);
+                                setText("");
+                            }
+                        }}
+                    />
                 </InputBox>
             ) : null}
         </Wrapper>

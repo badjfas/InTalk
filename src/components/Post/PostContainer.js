@@ -59,6 +59,7 @@ const Posts = ({ postData, refetch, setPosts }) => {
     const [addChildCommentMutation] = useMutation(ADD_CHILD_COMMENT, {});
 
     const addChildComment = async ({ e, targetCommentId, targetUserId, text, postId }) => {
+        e.preventDefault();
         try {
             await addChildCommentMutation({
                 variables: {
