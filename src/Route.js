@@ -2,9 +2,9 @@ import React, { Fragment } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
 import Nav from "./components/Common/Nav";
 
-import { Add, Auth, Chat, Feed, Friends, Mypage, Rooms, Major } from "./pages";
+import { Add, Auth, Chat, Feed, Friends, Mypage, Rooms, Major, Notifications } from "./pages";
 
-const LoggedInRoutes = () => {
+const LoggedInRoutes = ({ getNotifications }) => {
     return (
         <Fragment>
             <BrowserRouter>
@@ -17,10 +17,12 @@ const LoggedInRoutes = () => {
                         <Route exact path="/chat/:roomId/:toId" component={Chat} />
                         <Route exact path="/mypage" component={Mypage} />
                         <Route exact path="/group" component={Major} />
+                        <Route exact path="/notifications" component={Notifications} />
+
                         <Redirect from="*" to="/" />
                     </Switch>
                 </div>
-                <Nav />
+                <Nav getNotifications={getNotifications} />
             </BrowserRouter>
         </Fragment>
     );
@@ -37,8 +39,8 @@ const LoggedOutRoutes = () => {
     );
 };
 
-const AppRoutes = ({ isLogin }) => {
-    return isLogin ? <LoggedInRoutes /> : <LoggedOutRoutes />;
+const AppRoutes = ({ isLogin, getNotifications }) => {
+    return isLogin ? <LoggedInRoutes getNotifications={getNotifications} /> : <LoggedOutRoutes />;
 };
 
 export default AppRoutes;

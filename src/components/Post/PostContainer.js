@@ -65,7 +65,8 @@ const Posts = ({ postData, refetch, setPosts }) => {
                 variables: {
                     targetCommentId: parseInt(targetCommentId),
                     targetUserId: parseInt(targetUserId),
-                    text: text
+                    text: text,
+                    postId: parseInt(postId)
                 },
                 refetchQueries: [
                     {

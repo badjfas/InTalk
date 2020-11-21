@@ -51,6 +51,17 @@ export const SUB_ME = gql`
     }
 `;
 
+export const SUBSCRIBTION_COMMENT = gql`
+    subscription commentNotification($id: Int!) {
+        commentNotification(id: $id)
+    }
+`;
+
+export const SUBSCRIBTION_COMMENT_CHILD = gql`
+    subscription childCommentNotification($id: Int!) {
+        childCommentNotification(id: $id)
+    }
+`;
 export const GET_MESSEGES = gql`
     query getMessagesForNotification($id: Int!) {
         getMessagesForNotification(id: $id) {
@@ -85,6 +96,21 @@ export const MY_CHAT_ROOMS = gql`
                     departmentName
                     fullName
                 }
+            }
+        }
+    }
+`;
+export const GET_NOTIFICATIONS = gql`
+    {
+        getNotifications {
+            id
+            message
+            isRead
+            postId
+            roomId
+            createdAt
+            sender {
+                fullName
             }
         }
     }

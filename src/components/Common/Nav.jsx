@@ -3,6 +3,7 @@ import { AiFillHome, AiFillMessage } from "react-icons/ai";
 import { BsPeopleFill, BsPeopleCircle } from "react-icons/bs";
 import { TiGroup } from "react-icons/ti";
 import { CgAddR } from "react-icons/cg";
+import { RiNotification3Fill } from "react-icons/ri";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 const Container = styled.div`
@@ -68,9 +69,28 @@ const NaviTop = styled.a`
     align-items: center;
     color: white;
     width: 2rem;
+    position: relative;
+    cursor: pointer;
+    .noti_count {
+        top: 0;
+        left: 15px;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #ff5733;
+        font-size: 0.65rem;
+        color: #fff;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 70%;
+    }
     &:first-child {
         width: 100%;
         margin-left: 1rem;
+    }
+    &:nth-child(2) {
+        margin-right: 0.6rem;
     }
     &:last-child {
         margin-right: 1rem;
@@ -106,7 +126,7 @@ const Title = styled.span`
 let currentPathname = null;
 let currentSearch = null;
 
-const Nav = () => {
+const Nav = ({ getNotifications }) => {
     const history = useHistory();
     const {
         location: { pathname }
@@ -144,6 +164,8 @@ const Nav = () => {
             setTitle("학과");
         } else if (pathname === "/mypage") {
             setTitle("내 정보");
+        } else {
+            setTitle("알림");
         }
     }, [title, pathname]);
 
@@ -158,6 +180,15 @@ const Nav = () => {
                         }}
                     >
                         <Title>{title}</Title>
+                    </NaviTop>
+                    <NaviTop
+                        onClick={() => {
+                            setTitle("알림");
+                            history.push("/notifications");
+                        }}
+                    >
+                        <span className="noti_count">{getNotifications?.getNotifications.length}</span>
+                        <RiNotification3Fill />
                     </NaviTop>
                     <NaviTop
                         onClick={() => {

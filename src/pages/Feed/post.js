@@ -107,8 +107,8 @@ export const ADD_COMMENT = gql`
 `;
 
 export const ADD_CHILD_COMMENT = gql`
-    mutation addChildComment($targetUserId: Int, $targetCommentId: Int, $text: String) {
-        addChildComment(targetUserId: $targetUserId, targetCommentId: $targetCommentId, text: $text) {
+    mutation addChildComment($targetUserId: Int, $targetCommentId: Int, $text: String, $postId: Int!) {
+        addChildComment(targetUserId: $targetUserId, targetCommentId: $targetCommentId, text: $text, postId: $postId) {
             text
         }
     }
