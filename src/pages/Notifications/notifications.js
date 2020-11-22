@@ -8,3 +8,9 @@ export const SEE_MAJORS = gql`
         }
     }
 `;
+
+export const TOGGLE_NOTIFICATION = gql`
+    mutation toggleNotification($id: Int!) {
+        toggleNotification(id: $id)
+    }
+`;

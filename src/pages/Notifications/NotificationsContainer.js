@@ -1,14 +1,29 @@
-import { useQuery } from "@apollo/client";
-import React from "react";
+import { useMutation, useQuery } from "@apollo/client";
+import React, { useCallback, useEffect } from "react";
 import { GET_NOTIFICATIONS } from "../../libs/SharedQuery";
+import { TOGGLE_NOTIFICATION } from "./notifications";
 import NotificationsPresenter from "./NotificationsPresenter";
 
 const NotificationsContainer = () => {
     const { data, loading } = useQuery(GET_NOTIFICATIONS);
+
+    const [read] = useMutation(TOGGLE_NOTIFICATION, {});
+
+    const toggleActive = useCallback(
+        id => {
+            console.log(id);
+            read({
+                variables: {
+                    id: parseInt(id)
+                },
+                refetchQueries: [{ query: GET_NOTIFICATIONS }]
+            });
+        },
+        [read]
+    );
+
     var date = new Date();
     var year = date.getFullYear();
-    var month = date.getMonth();
-    var day = date.getDate();
     var hour = date.getHours();
     var minute = date.getMinutes();
     var second = date.getSeconds();
@@ -16,6 +31,7 @@ const NotificationsContainer = () => {
     month = month >= 10 ? month : "0" + month; // month 두자리로 저장
     var day = new String(date.getDate());
     day = day >= 10 ? day : "0" + day;
+
     var korFormat = {
         year: year,
         month: parseInt(month),
@@ -24,8 +40,8 @@ const NotificationsContainer = () => {
         minute: minute,
         second: second
     };
-    console.log(second);
-    return <NotificationsPresenter data={data} loading={loading} korFormat={korFormat} />;
+
+    return <NotificationsPresenter data={data} loading={loading} korFormat={korFormat} toggleActive={toggleActive} />;
 };
 
 export default NotificationsContainer;

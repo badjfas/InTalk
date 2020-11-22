@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import NotificationList from "../../components/Notifications/NotificationList";
 
 const Container = styled.div`
     max-width: 1024px;
@@ -14,22 +15,7 @@ const NotiBox = styled.div`
     flex-direction: column;
 `;
 
-const Items = styled.div`
-    display: flex;
-    &:hover {
-        background-color: #eee;
-    }
-    font-size: 0.9rem;
-`;
-const Item = styled.div`
-    width: 100%;
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    padding-left: 1rem;
-`;
-const NotificationsPresenter = ({ data, loading, korFormat }) => {
+const NotificationsPresenter = ({ data, loading, korFormat, toggleActive }) => {
     const { year, month, day, hour, minute, second } = korFormat;
     const startDate = new Date(year, month, day, hour, minute, second);
 
@@ -54,10 +40,12 @@ const NotificationsPresenter = ({ data, loading, korFormat }) => {
                         const x = (startDate - endDate) / (1000 * 60 * 60);
 
                         return (
-                            <Items key={notification.id}>
-                                <Item>{notification.message}</Item>
-                                <Item>{x.toFixed(0) + "시간전"}</Item>
-                            </Items>
+                            <NotificationList
+                                data={notification}
+                                key={notification.id}
+                                date={x}
+                                toggleActive={toggleActive}
+                            />
                         );
                     })}
                 </NotiBox>

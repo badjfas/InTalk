@@ -168,7 +168,6 @@ const Nav = ({ getNotifications }) => {
             setTitle("알림");
         }
     }, [title, pathname]);
-
     return (
         <Container>
             <Top>
@@ -187,7 +186,9 @@ const Nav = ({ getNotifications }) => {
                             history.push("/notifications");
                         }}
                     >
-                        <span className="noti_count">{getNotifications?.getNotifications.length}</span>
+                        <span className="noti_count">
+                            {getNotifications?.getNotifications.filter(e => !e.isRead).length}
+                        </span>
                         <RiNotification3Fill />
                     </NaviTop>
                     <NaviTop
