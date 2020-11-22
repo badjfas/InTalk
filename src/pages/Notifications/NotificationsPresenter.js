@@ -15,7 +15,7 @@ const NotiBox = styled.div`
     flex-direction: column;
 `;
 
-const NotificationsPresenter = ({ data, loading, korFormat, toggleActive }) => {
+const NotificationsPresenter = ({ data, loading, korFormat, toggleActive, deleteMutation }) => {
     const { year, month, day, hour, minute, second } = korFormat;
     const startDate = new Date(year, month, day, hour, minute, second);
 
@@ -25,7 +25,7 @@ const NotificationsPresenter = ({ data, loading, korFormat, toggleActive }) => {
                 "is Loading...."
             ) : (
                 <NotiBox>
-                    {data.getNotifications.map(notification => {
+                    {data?.getNotifications?.map(notification => {
                         const date = notification.createdAt.split("T")[0].split("-");
                         const time = notification.createdAt.split(" ")[1].split(":");
 
@@ -44,6 +44,7 @@ const NotificationsPresenter = ({ data, loading, korFormat, toggleActive }) => {
                                 data={notification}
                                 key={notification.id}
                                 date={x}
+                                deleteMutation={deleteMutation}
                                 toggleActive={toggleActive}
                             />
                         );

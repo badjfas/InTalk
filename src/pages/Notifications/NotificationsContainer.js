@@ -1,13 +1,15 @@
-import { useMutation, useQuery } from "@apollo/client";
-import React, { useCallback, useEffect } from "react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import React, { useCallback, useEffect, useState } from "react";
 import { GET_NOTIFICATIONS } from "../../libs/SharedQuery";
-import { TOGGLE_NOTIFICATION } from "./notifications";
+import { DELETE_NOTIFICATION, TOGGLE_NOTIFICATION } from "./notifications";
 import NotificationsPresenter from "./NotificationsPresenter";
 
 const NotificationsContainer = () => {
-    const { data, loading } = useQuery(GET_NOTIFICATIONS);
+    const [get, { data, loading }] = useLazyQuery(GET_NOTIFICATIONS);
 
     const [read] = useMutation(TOGGLE_NOTIFICATION, {});
+
+    const [deleteMutation] = useMutation(DELETE_NOTIFICATION);
 
     const toggleActive = useCallback(
         id => {
@@ -40,8 +42,22 @@ const NotificationsContainer = () => {
         minute: minute,
         second: second
     };
-
-    return <NotificationsPresenter data={data} loading={loading} korFormat={korFormat} toggleActive={toggleActive} />;
+    useEffect(() => {
+        if (loading && data === undefined) {
+            return;
+        } else {
+            get();
+        }
+    }, [data, loading]);
+    return (
+        <NotificationsPresenter
+            data={data}
+            loading={loading}
+            korFormat={korFormat}
+            toggleActive={toggleActive}
+            deleteMutation={deleteMutation}
+        />
+    );
 };
 
 export default NotificationsContainer;

@@ -14,3 +14,9 @@ export const TOGGLE_NOTIFICATION = gql`
         toggleNotification(id: $id)
     }
 `;
+
+export const DELETE_NOTIFICATION = gql`
+    mutation deleteNotification($id: Int!) {
+        deleteNotification(id: $id)
+    }
+`;
