@@ -19,22 +19,26 @@ const FriendsPresenter = ({
     usersData,
     visible,
     setVisible,
-    userProfileData,
     onClickAddFriend,
     createChatRoom,
     roomsData,
-    loading
+    userProfileData,
+    getRooms,
+    getProfile,
+    history
 }) => {
     return (
         <Container className="friends">
             {visible.open ? (
                 <ProfilePopup
-                    visible={visible.open}
-                    userProfileData={userProfileData}
+                    visible={visible}
                     onClickAddFriend={onClickAddFriend}
                     setVisible={setVisible}
+                    getRooms={getRooms}
                     roomsData={roomsData}
-                    loading={loading}
+                    getProfile={getProfile}
+                    userProfileData={userProfileData}
+                    history={history}
                 />
             ) : null}
 

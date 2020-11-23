@@ -21,12 +21,7 @@ const FriendsContainer = props => {
 
     //상대방 프로필
     const [userProfile, setUserProfile] = useState({});
-    const [getProfile, { data: userProfileData, refetch, loading }] = useLazyQuery(SEE_PROFILE, {
-        variables: {
-            userId: parseInt(visible.id)
-        },
-        onCompleted: () => setUserProfile({ ...userProfileData })
-    });
+    const [getProfile, { data: userProfileData, refetch }] = useLazyQuery(SEE_PROFILE, {});
 
     //프로필 클릭시 챗룸 생성
     const [createChatRoom] = useMutation(CREATE_ROOM, {
@@ -56,21 +51,19 @@ const FriendsContainer = props => {
     };
     useEffect(() => {
         getRooms();
-        if (visible.id !== 0) {
-            getProfile();
-        }
-    }, [visible]);
+    }, [visible.id]);
     return (
         <FriendsPresenter
             {...props}
             usersData={usersData}
-            userProfileData={userProfile}
             onClickAddFriend={onClickAddFriend}
             visible={visible}
             setVisible={setVisible}
             createChatRoom={createChatRoom}
+            getRooms={getRooms}
             roomsData={roomsData}
-            loading={loading}
+            getProfile={getProfile}
+            userProfileData={userProfileData}
         />
     );
 };

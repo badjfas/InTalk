@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 import Avatar from "../Avatar";
 import { AiFillMessage } from "react-icons/ai";
@@ -70,14 +70,28 @@ const Button = styled.div`
     }
 `;
 
-const ProfilePopup = ({ userProfileData, onClickAddFriend, setVisible, visible, roomsData, loading }) => {
-    if (loading) return <div>is Loading</div>;
+const ProfilePopup = ({ onClickAddFriend, setVisible, visible, roomsData, userProfileData, getRooms, getProfile }) => {
+    const [roomId, setRoomId] = useState([]);
 
-    const roomId = roomsData?.me?.rooms?.filter(room => {
-        if (room?.participants?.id === userProfileData?.seeProfile?.id) {
-            return parseInt(room?.id);
+    useEffect(() => {
+        getRooms();
+        if (visible.id) {
+            getProfile({
+                variables: {
+                    userId: parseInt(visible.id)
+                }
+            });
         }
-    });
+    }, [visible.id, getProfile, getRooms]);
+
+    useEffect(() => {
+        if (roomsData !== undefined && userProfileData !== undefined) {
+            const roomId = roomsData?.me?.rooms?.filter(
+                room => room?.participants?.id === userProfileData?.seeProfile?.userId
+            );
+            setRoomId(roomId[0]?.id);
+        }
+    }, [roomsData, userProfileData]);
 
     return (
         <Fragment>
@@ -90,34 +104,35 @@ const ProfilePopup = ({ userProfileData, onClickAddFriend, setVisible, visible, 
                     })
                 }
             />
-            {loading ? (
-                "is Loading"
-            ) : (
-                <Wrapper>
-                    <UserBox>
-                        <Avatar size={5} radius={70} src={userProfileData?.seeProfile?.avatar} />
-                        <span>{userProfileData?.seeProfile?.fullName}</span>
-                        <span>{userProfileData?.seeProfile?.departmentName}</span>
-                    </UserBox>
 
-                    <OptBox>
-                        <Message to={`/chat/${parseInt(roomId[0]?.id)}/${userProfileData?.seeProfile?.userId}`}>
-                            <AiFillMessage />
-                        </Message>
-                        <Button>
-                            {userProfileData?.seeProfile?.isFollow ? (
-                                <button onClick={() => onClickAddFriend(parseInt(userProfileData?.seeProfile?.userId))}>
-                                    <HiUserRemove />
-                                </button>
-                            ) : (
-                                <button onClick={() => onClickAddFriend(parseInt(userProfileData?.seeProfile?.userId))}>
-                                    <HiUserAdd />
-                                </button>
-                            )}
-                        </Button>
-                    </OptBox>
-                </Wrapper>
-            )}
+            <Wrapper>
+                <UserBox>
+                    <Avatar size={5} radius={70} src={userProfileData?.seeProfile?.avatar} />
+                    <span>{userProfileData?.seeProfile?.fullName}</span>
+                    <span>{userProfileData?.seeProfile?.departmentName}</span>
+                </UserBox>
+
+                <OptBox>
+                    <Message
+                        to={`/chat/${parseInt(roomId !== undefined ? roomId : null)}/${
+                            userProfileData?.seeProfile?.userId
+                        }`}
+                    >
+                        <AiFillMessage />
+                    </Message>
+                    <Button>
+                        {userProfileData?.seeProfile?.isFollow ? (
+                            <button onClick={() => onClickAddFriend(parseInt(userProfileData?.seeProfile?.userId))}>
+                                <HiUserRemove />
+                            </button>
+                        ) : (
+                            <button onClick={() => onClickAddFriend(parseInt(userProfileData?.seeProfile?.userId))}>
+                                <HiUserAdd />
+                            </button>
+                        )}
+                    </Button>
+                </OptBox>
+            </Wrapper>
         </Fragment>
     );
 };
