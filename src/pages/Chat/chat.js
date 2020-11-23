@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const SEND_MESSAGE = gql`
-    mutation sendMessage($toId: Int!, $message: String!) {
-        sendMessage(toId: $toId, message: $message) {
+    mutation sendMessage($toId: Int!, $message: String!, $timestamp: String!) {
+        sendMessage(toId: $toId, message: $message, timestamp: $timestamp) {
             messageId: id
             room {
                 id
@@ -34,6 +34,7 @@ export const NEW_MESSAGE = gql`
                 avatar
             }
             text
+            createdAt
         }
     }
 `;
@@ -41,6 +42,7 @@ export const NEW_MESSAGE = gql`
 export const GET_MESSEGES = gql`
     query getMessages($sender: Int, $receiver: Int, $roomId: Int) {
         getMessages(sender: $sender, receiver: $receiver, roomId: $roomId) {
+            id
             room {
                 id
             }
@@ -55,6 +57,7 @@ export const GET_MESSEGES = gql`
                 fullName
             }
             text
+            createdAt
         }
     }
 `;

@@ -5,9 +5,18 @@ import { useLazyQuery, useMutation, useQuery, useSubscription } from "@apollo/cl
 import { DecodeToken } from "../../libs/decodeToken";
 import { ME } from "../../libs/SharedQuery";
 import { SEE_PROFILE } from "../Friends/friends";
+const today = new Date();
 export default props => {
-    const inputMessageRef = useRef(null);
+    let year = today.getFullYear(); // 년도
+    let month = today.getMonth() + 1; // 월
+    let date = today.getDate(); // 날짜
+    let hours = today.getHours(); // 시
+    let minutes = today.getMinutes(); // 분
+    let seconds = today.getSeconds(); // 초
 
+    const timeStamp = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
+    const inputMessageRef = useRef(null);
+    const messageBoxRef = useRef(null);
     const { user: userData } = DecodeToken(localStorage.getItem("token"));
 
     const {
@@ -26,7 +35,8 @@ export default props => {
     const [sendMessageMutation] = useMutation(SEND_MESSAGE, {
         variables: {
             toId: parseInt(toId),
-            message: text
+            message: text,
+            timestamp: timeStamp
         }
     });
 
@@ -38,7 +48,9 @@ export default props => {
             sender: parseInt(toId),
             roomId: parseInt(roomId)
         },
-        onCompleted: () => setMessages(oldMessages.getMessages)
+        onCompleted: () => {
+            setMessages(oldMessages.getMessages);
+        }
     });
 
     //Subscription
@@ -58,6 +70,15 @@ export default props => {
         inputMessageRef.current.focus();
         handleNewMessage();
     }, [data]);
+
+    useEffect(() => {
+        if (messageBoxRef) {
+            messageBoxRef.current.addEventListener("DOMNodeInserted", event => {
+                const { currentTarget: target } = event;
+                target.scroll({ top: target.scrollHeight, behavior: "smooth" });
+            });
+        }
+    }, []);
     return (
         <ChatPresenter
             {...props}
@@ -68,6 +89,7 @@ export default props => {
             userData={userData}
             inputMessageRef={inputMessageRef}
             to={to}
+            messageBoxRef={messageBoxRef}
         />
     );
 };

@@ -52,7 +52,7 @@ const NotificationList = ({ data, date, toggleActive, deleteMutation }) => {
             touchState.touchoffsetX = touchState.touchendX - touchState.touchstartX;
             touchState.touchoffsetY = touchState.touchendY - touchState.touchstartY;
 
-            if (Math.abs(touchState.touchoffsetX) >= 80 && Math.abs(touchState.touchoffsetY) <= 10) {
+            if (Math.abs(touchState.touchoffsetX) >= 80 && Math.abs(touchState.touchoffsetY) <= 50) {
                 if (touchState.touchoffsetX < 0) {
                     deleteMutation({
                         variables: {

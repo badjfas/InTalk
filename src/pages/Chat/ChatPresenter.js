@@ -1,6 +1,8 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import TextBar from "../../components/Chat/TextBar";
+import { FaPaperPlane } from "react-icons/fa";
 const Header = styled.div`
     position: fixed;
     height: 3rem;
@@ -39,71 +41,41 @@ const Wrapper = styled.div`
     background-color: #fff;
     z-index: 1000;
     max-width: 1024px;
-    ::-webkit-scrollbar {
-        display: none;
-    }
 `;
 
 const ChatListBox = styled.div`
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    height: 100%;
     width: 100%;
-    justify-content: flex-end;
-    .from {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1rem;
-        .from_chat_text {
-            background-color: #eee;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            padding: 0.5rem;
-            font-size: 0.8rem;
-            white-space: pre-wrap;
-        }
-        .to_chat_text {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            width: 100%;
-            font-size: 0.8rem;
-            > pre {
-                display: flex;
-                align-items: center;
-                border-radius: 10px;
-                padding: 0.5rem;
-                background-color: #eee;
-                white-space: pre-wrap;
-            }
-        }
-        .from_user {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            > img {
-                border-radius: 70%;
-                width: 1.7rem;
-                height: 1.7rem;
-            }
-        }
+    ::-webkit-scrollbar {
+        display: none;
     }
+    /* justify-content: flex-end; */
 `;
 
 const InputBox = styled.div`
     width: 100%;
+    position: relative;
     > input {
-        border-radius: 10px;
         border: 1px solid #eee;
         background-color: #eee;
         height: 3rem;
         width: 100%;
         padding-left: 1rem;
     }
+    > button {
+        right: 2%;
+        top: 18%;
+        position: absolute;
+        svg {
+            font-size: 1.5rem;
+        }
+    }
 `;
-export default ({ userData, setText, sendMessageMutation, messages, to, text, inputMessageRef, history }) => {
+const SENDER = "sender";
+const ME = "me";
+export default ({ userData, setText, sendMessageMutation, messages, to, text, inputMessageRef, messageBoxRef }) => {
     return (
         <Fragment>
             <Header>
@@ -113,25 +85,19 @@ export default ({ userData, setText, sendMessageMutation, messages, to, text, in
                 <span className="center">{to?.seeProfile?.fullName}</span>
             </Header>
             <Wrapper className="chat_room">
-                <ChatListBox className="chat_list_box" id="chat_list_box">
-                    {messages?.map(m => (
-                        <div className="from" id="from">
-                            {userData.id !== parseInt(m.fromUser.id) ? (
-                                <div className="from_user">
-                                    <img src={m.fromUser.avatar} />
-                                </div>
-                            ) : null}
-                            {userData.id !== parseInt(m.fromUser.id) ? (
-                                <pre className="from_chat_text">{m.text}</pre>
-                            ) : (
-                                <div className="to_chat_text">{<pre>{m.text}</pre>}</div>
-                            )}
-                        </div>
-                    ))}
+                <ChatListBox ref={messageBoxRef}>
+                    {messages?.map(message => {
+                        return userData.id !== parseInt(message.fromUser.id) ? (
+                            <TextBar key={message.id} type={SENDER} message={message} />
+                        ) : (
+                            <TextBar key={message.id} type={ME} message={message} />
+                        );
+                    })}
                 </ChatListBox>
 
                 <InputBox className="submit_box">
                     <input
+                        placeholder="메시지를 입력해주세요."
                         value={text}
                         ref={inputMessageRef}
                         onChange={e => setText(e.target.value)}
@@ -142,6 +108,14 @@ export default ({ userData, setText, sendMessageMutation, messages, to, text, in
                             }
                         }}
                     />
+                    <button
+                        onClick={() => {
+                            setText("");
+                            sendMessageMutation();
+                        }}
+                    >
+                        <FaPaperPlane />
+                    </button>
                 </InputBox>
             </Wrapper>
         </Fragment>
