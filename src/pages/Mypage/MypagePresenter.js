@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Avatar from "../../components/Common/Avatar";
 import { RiSettings3Line } from "react-icons/ri";
 import Drawer from "../../components/Mypage/Drawer";
+import EditProfile from "../../components/Mypage/EditProfile";
+
 const Container = styled.div`
     padding-top: 3rem;
     min-height: 100vh;
@@ -54,15 +56,21 @@ const UserDetailBox = styled.div`
     }
 `;
 
-export default ({ data, loading }) => {
+export default ({ data, loading, queryData, setQueryData, visible, setVisible }) => {
     if (loading) return <Container>is Loading</Container>;
-    const [visible, setVisible] = useState(false);
+
     return (
         <Container>
-            <Drawer visible={visible} setVisible={setVisible} />
+            <Drawer
+                visible={visible}
+                setVisible={setVisible}
+                fullName={data?.me?.fullName}
+                setQueryData={setQueryData}
+                queryData={queryData}
+            />
             <UserBox>
                 <AvatarBox>
-                    <Avatar size={10} src={data?.me?.avatar} />
+                    <Avatar size={10} src={data?.me?.avatar} radius={70} />
                     <button onClick={() => setVisible(!visible)}>
                         <RiSettings3Line />
                     </button>

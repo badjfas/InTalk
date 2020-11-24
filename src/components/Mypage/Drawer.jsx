@@ -51,11 +51,12 @@ const MenuBox = styled.div`
         border-bottom: 1px solid #ddd;
     }
 `;
-const Drawer = ({ visible, setVisible }) => {
+const Drawer = ({ visible, setVisible, fullName, queryData, setQueryData }) => {
     const handleLogout = () => {
         localStorage.removeItem("token");
         window.location = "/";
     };
+    console.log(fullName);
     return (
         <Container visible={visible}>
             <Header onClick={() => setVisible(!visible)}>
@@ -64,7 +65,16 @@ const Drawer = ({ visible, setVisible }) => {
             </Header>
             <MenuBox>
                 <div className="title1">계정</div>
-                <button>프로필 편집</button>
+                <button
+                    onClick={() =>
+                        setQueryData({
+                            ...queryData,
+                            edit: fullName
+                        })
+                    }
+                >
+                    프로필 편집
+                </button>
                 <button onClick={handleLogout}>로그아웃</button>
             </MenuBox>
         </Container>
