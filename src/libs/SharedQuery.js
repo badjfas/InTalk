@@ -53,13 +53,29 @@ export const SUB_ME = gql`
 
 export const SUBSCRIBTION_COMMENT = gql`
     subscription commentNotification($id: Int!) {
-        commentNotification(id: $id)
+        commentNotification(id: $id) {
+            message
+            isRead
+            postId
+            roomId
+            sender {
+                id
+            }
+        }
     }
 `;
 
 export const SUBSCRIBTION_COMMENT_CHILD = gql`
     subscription childCommentNotification($id: Int!) {
-        childCommentNotification(id: $id)
+        childCommentNotification(id: $id) {
+            message
+            isRead
+            postId
+            roomId
+            sender {
+                id
+            }
+        }
     }
 `;
 export const GET_MESSEGES = gql`

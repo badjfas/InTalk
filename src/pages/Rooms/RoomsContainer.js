@@ -5,7 +5,7 @@ import { MY_CHAT_ROOMS, SUB_ME } from "../../libs/SharedQuery";
 import RoomsPresenter from "./RoomsPresenter";
 
 const RoomsContainer = () => {
-    const { data: roomsData, refetch } = useQuery(MY_CHAT_ROOMS, {});
+    const { data: roomsData, refetch, loading } = useQuery(MY_CHAT_ROOMS, {});
 
     const { user } = DecodeToken(localStorage.getItem("token"));
 
@@ -14,7 +14,6 @@ const RoomsContainer = () => {
             id: parseInt(user.id)
         }
     });
-
     const refetchData = async () => {
         return await refetch();
     };
@@ -25,6 +24,7 @@ const RoomsContainer = () => {
             refetchData();
         }
     }, [data]);
+    if (loading) return <div>is loading</div>;
 
     return <RoomsPresenter roomsData={roomsData} />;
 };

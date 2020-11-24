@@ -1,6 +1,7 @@
 import { useLazyQuery } from "@apollo/client";
 import React, { useRef, useState } from "react";
 import { AiOutlineLike, AiTwotoneLike, AiOutlineShareAlt } from "react-icons/ai";
+import { BiDotsHorizontal } from "react-icons/bi";
 import { VscComment } from "react-icons/vsc";
 import styled from "styled-components";
 import { SEE_ALL_COMMENTS } from "../../pages/Feed/post";
@@ -38,6 +39,46 @@ const PostCard = ({
         inputRef.current.focus();
     };
     const [getComment, { data, loading }] = useLazyQuery(SEE_ALL_COMMENTS);
+
+    const [touchState, setTouch] = useState({
+        touchstartX: 0,
+        touchstartY: 0,
+        touchendX: 0,
+        touchendY: 0,
+        touchoffsetX: 0,
+        touchoffsetY: 0
+    });
+
+    const onTouchStart = e => {
+        var touch = e.touches[0];
+        touchState.touchstartX = touch.clientX;
+        touchState.touchstartY = touch.clientY;
+    };
+
+    const onTouchEnd = e => {
+        if (e.touches.length === 0) {
+            var touch = e.changedTouches[e.changedTouches.length - 1];
+            touchState.touchendX = touch.clientX;
+            touchState.touchendY = touch.clientY;
+
+            touchState.touchoffsetX = touchState.touchendX - touchState.touchstartX;
+            touchState.touchoffsetY = touchState.touchendY - touchState.touchstartY;
+
+            if (Math.abs(touchState.touchoffsetX) >= 80 && Math.abs(touchState.touchoffsetY) <= 50) {
+                if (touchState.touchoffsetX < 0) {
+                    if (actived >= splitFile.length - 1) {
+                        setActived(0);
+                    } else {
+                        setActived(actived + 1);
+                    }
+                } else if (actived !== 0) {
+                    setActived(actived - 1);
+                } else {
+                    setActived(0);
+                }
+            }
+        }
+    };
     return (
         <Wrapper className="post" id={postId} key={postId}>
             <div className="post_posting">
@@ -47,24 +88,13 @@ const PostCard = ({
                         <span>{user.fullName}</span>
                         <span className="department_name">{user.departmentName}</span>
                     </div>
+                    <button>
+                        <BiDotsHorizontal />
+                    </button>
                 </UserBox>
                 <ContentBox className="content">
                     <p>{contents}</p>
-                    <div className="preview_dot">
-                        {files !== "" &&
-                            splitFile?.map((photo, index) => {
-                                return (
-                                    <span
-                                        key={index}
-                                        onClick={() => onClickDot(index)}
-                                        className={`${actived === index ? "actived" : ""}`}
-                                    >
-                                        ●
-                                    </span>
-                                );
-                            })}
-                    </div>
-                    <div className="photo">
+                    <div className="photo" onTouchStart={e => onTouchStart(e)} onTouchEnd={onTouchEnd}>
                         {files !== "" && splitFile ? (
                             <img
                                 onClick={() => onClickDot(actived + 1)}
@@ -84,7 +114,7 @@ const PostCard = ({
                                 toggleLike({ e, postId });
                             }}
                         >
-                            {isLikdes ? <AiTwotoneLike fill="#1877f2" /> : <AiOutlineLike />}
+                            {isLikdes ? <AiTwotoneLike fill="#004680" /> : <AiOutlineLike />}
                         </li>
                         <li onClick={handleFocus}>
                             <VscComment />
@@ -94,6 +124,20 @@ const PostCard = ({
                         </li>
                     </ul>
                     <span>{likesCount}명이 좋아합니다.</span>
+                    <div className="preview_dot">
+                        {files !== "" &&
+                            splitFile?.map((photo, index) => {
+                                return (
+                                    <span
+                                        key={index}
+                                        onClick={() => onClickDot(index)}
+                                        className={`${actived === index ? "actived" : ""}`}
+                                    >
+                                        ●
+                                    </span>
+                                );
+                            })}
+                    </div>
                     {open ? (
                         <button
                             onClick={() => {
@@ -103,6 +147,7 @@ const PostCard = ({
                                         postId: parseInt(0)
                                     }
                                 });
+                                setComment("");
                             }}
                         >
                             댓글 접기
@@ -116,6 +161,7 @@ const PostCard = ({
                                         postId: parseInt(postId)
                                     }
                                 });
+                                setComment("");
                             }}
                         >
                             {comments?.length}개 댓글 더 보기
@@ -141,6 +187,7 @@ const PostCard = ({
                             <Input
                                 type="text"
                                 value={comment}
+                                style={{ padding: 15 }}
                                 ref={inputRef}
                                 height={2}
                                 onChange={e => {
@@ -195,10 +242,8 @@ const Wrapper = styled.div`
         flex-direction: column;
         background-color: #fff;
         border-radius: $post_radius;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
-    }
-    :not(:first-child) {
-        padding-top: 2rem;
+        margin-bottom: 48px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 4px rgba(0, 0, 0, 0.1);
     }
 `;
 
@@ -207,7 +252,16 @@ const UserBox = styled.div`
     align-items: center;
     width: 100%;
     padding: 1rem;
+    position: relative;
     border-bottom: 1px solid #eee;
+    button {
+        width: 2rem;
+        height: 2rem;
+        background-color: transparent;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
     .department_box {
         display: flex;
         font-size: 0.9rem;
@@ -224,24 +278,19 @@ const ContentBox = styled.div`
     margin-top: 1rem;
     width: 100%;
     min-height: 3rem;
-    .preview_dot {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 0.7rem;
-    }
+    position: relative;
     span {
         cursor: pointer;
         &:not(:last-child) {
             margin-right: 0.5rem;
         }
     }
-    .actived {
-        color: #1877f2;
-    }
     > p {
-        padding: 0 1rem 1rem 1rem;
-
+        padding: 0 0.5rem 0.5rem 0.5rem;
+        font-size: 0.9rem;
+        line-height: 1.3rem;
+        font-weight: 500;
+        color: #000;
         word-break: break-all;
     }
     .photo {
@@ -263,6 +312,18 @@ const OptionBox = styled.div`
         background: transparent;
         border: none;
         right: 10px;
+    }
+    .preview_dot {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: -10px;
+        color: #999;
+        width: 100%;
+    }
+    .actived {
+        color: #004680;
     }
     span {
         font-size: 0.8rem;

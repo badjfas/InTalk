@@ -67,16 +67,26 @@ const InputBox = styled.div`
         border: 1px solid #eee;
         background-color: #eee;
         height: 3rem;
-        width: 100%;
+        width: calc(100% - 3rem);
         padding-left: 1rem;
+        color: #393939;
+        ::placeholder {
+            color: #292929;
+        }
     }
     > button {
-        right: 2%;
-        top: 18%;
+        right: 0;
+        width: 3rem;
+        height: 100%;
         position: absolute;
+        background-color: #eee;
         svg {
             font-size: 1.5rem;
         }
+    }
+    .fill {
+        background-color: #000;
+        color: #fff;
     }
 `;
 const SENDER = "sender";
@@ -115,6 +125,7 @@ export default ({ userData, setText, sendMessageMutation, messages, to, text, in
                         }}
                     />
                     <button
+                        className={text !== "" ? "fill" : ""}
                         onClick={() => {
                             setText("");
                             sendMessageMutation();

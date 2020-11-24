@@ -126,12 +126,17 @@ const Title = styled.span`
 let currentPathname = null;
 let currentSearch = null;
 
-const Nav = ({ getNotifications }) => {
+const Nav = ({ getNotifications, messageCount }) => {
     const history = useHistory();
     const {
         location: { pathname }
     } = history;
     const [title, setTitle] = useState("Intalk");
+    const [count, setCount] = useState({
+        notification: 0,
+        message: 0
+    });
+
     history.listen((newLocation, action) => {
         if (action === "PUSH") {
             if (newLocation.pathname !== currentPathname || newLocation.search !== currentSearch) {
@@ -150,7 +155,18 @@ const Nav = ({ getNotifications }) => {
             history.go(1);
         }
     });
-
+    useEffect(() => {
+        if (getNotifications) {
+            const counts = getNotifications?.filter(e => !e?.isRead).length;
+            setCount({
+                ...count,
+                message: messageCount,
+                notification: counts
+            });
+        } else {
+            return;
+        }
+    }, [getNotifications, messageCount]);
     useEffect(() => {
         if (pathname === "/") {
             setTitle("Intalk");
@@ -186,9 +202,7 @@ const Nav = ({ getNotifications }) => {
                             history.push("/notifications");
                         }}
                     >
-                        <span className="noti_count">
-                            {getNotifications?.getNotifications.filter(e => !e.isRead).length}
-                        </span>
+                        {count.notification !== 0 ? <span className="noti_count">{count.notification}</span> : null}
                         <RiNotification3Fill />
                     </NaviTop>
                     <NaviTop
@@ -197,6 +211,7 @@ const Nav = ({ getNotifications }) => {
                             history.push("/messages");
                         }}
                     >
+                        {count.message !== 0 ? <span className="noti_count">{count.message}</span> : null}
                         <AiFillMessage />
                     </NaviTop>
                 </NavBoxTop>

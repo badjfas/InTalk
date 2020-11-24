@@ -4,7 +4,7 @@ import Nav from "./components/Common/Nav";
 
 import { Add, Auth, Chat, Feed, Friends, Mypage, Rooms, Major, Notifications } from "./pages";
 
-const LoggedInRoutes = ({ getNotifications }) => {
+const LoggedInRoutes = ({ getNotifications, messageCount }) => {
     return (
         <Fragment>
             <BrowserRouter>
@@ -22,7 +22,7 @@ const LoggedInRoutes = ({ getNotifications }) => {
                         <Redirect from="*" to="/" />
                     </Switch>
                 </div>
-                <Nav getNotifications={getNotifications} />
+                <Nav getNotifications={getNotifications} messageCount={messageCount} />
             </BrowserRouter>
         </Fragment>
     );
@@ -39,8 +39,12 @@ const LoggedOutRoutes = () => {
     );
 };
 
-const AppRoutes = ({ isLogin, getNotifications }) => {
-    return isLogin ? <LoggedInRoutes getNotifications={getNotifications} /> : <LoggedOutRoutes />;
+const AppRoutes = ({ isLogin, getNotifications, messageCount }) => {
+    return isLogin ? (
+        <LoggedInRoutes getNotifications={getNotifications} messageCount={messageCount} />
+    ) : (
+        <LoggedOutRoutes />
+    );
 };
 
 export default AppRoutes;

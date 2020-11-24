@@ -16,17 +16,7 @@ export default props => {
     const [text, setText] = useState("");
     const { user } = DecodeToken(localStorage.getItem("token"));
 
-    const [postUploadMutation] = useMutation(UPLOAD_POST, {
-        refetchQueries: [
-            {
-                query: SEE_POSTS,
-                variables: {
-                    itemNum: 3,
-                    departmentId: 0
-                }
-            }
-        ]
-    });
+    const [postUploadMutation] = useMutation(UPLOAD_POST);
 
     const deletePhoto = index => {
         let imgList = imageDetail.slice(0),
@@ -74,7 +64,7 @@ export default props => {
                     }
                 });
                 setText("");
-                props.history.push("/");
+                window.location.href = "/";
             }
         } catch (e) {
             console.log(e);

@@ -5,10 +5,10 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
+    margin-top: 3rem;
     min-height: 100vh;
     max-width: 1024px;
+    margin-bottom: 7rem; ;
 `;
 
 const Box = styled.div`
@@ -108,6 +108,7 @@ const Box = styled.div`
                 height: 100%;
                 border: none;
                 padding: 0.5rem;
+                min-height: 50vh;
             }
         }
     }
