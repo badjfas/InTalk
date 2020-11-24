@@ -6,14 +6,14 @@ import { DecodeToken } from "../../libs/decodeToken";
 import { ME } from "../../libs/SharedQuery";
 import { SEE_PROFILE } from "../Friends/friends";
 const today = new Date();
+
 export default props => {
     let year = today.getFullYear(); // 년도
     let month = today.getMonth() + 1; // 월
-    let date = today.getDate(); // 날짜
-    let hours = today.getHours(); // 시
-    let minutes = today.getMinutes(); // 분
+    let date = ("0" + today.getDate()).slice(-2); // 날짜
+    let hours = ("0" + today.getHours()).slice(-2); // 시(“0” + today.getDate()).slice(-2)
+    let minutes = ("0" + today.getMinutes()).slice(-2); // 분("0" + today.getMinutes()).slice(-2)
     let seconds = today.getSeconds(); // 초
-
     const timeStamp = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
     const inputMessageRef = useRef(null);
     const messageBoxRef = useRef(null);
@@ -62,7 +62,7 @@ export default props => {
     const handleNewMessage = () => {
         if (data !== undefined) {
             const { newMessage } = data;
-            setMessages(prev => [...prev, newMessage]);
+            setMessages(prev => [newMessage, ...prev]);
         }
     };
     useEffect(() => {

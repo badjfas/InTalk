@@ -5,16 +5,15 @@ import Avatar from "../Common/Avatar";
 const Sender = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
+    margin: 0 0 1rem 0.2rem;
     position: relative;
     h1 {
         color: #999;
-        position: absolute;
-        right: 0;
-        padding-right: 0.5rem;
-        font-size: 0.7rem;
-    }
-    pre {
+        padding-left: 0.5rem;
+        font-size: 0.3rem;
+        position: relative;
+        top: 0;
+        height: 100%;
     }
 `;
 
@@ -22,11 +21,6 @@ const Me = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
-    h1 {
-        color: #999;
-        padding-left: 0.5rem;
-        font-size: 0.7rem;
-    }
 `;
 
 const SenderTextBox = styled.pre`
@@ -54,11 +48,22 @@ const MeTextBox = styled.div`
 const MeText = styled.pre`
     border-radius: 5px;
     padding: 0.5rem;
-    background-color: #eee;
+    background-color: #b7c5d3;
     max-width: 250px;
     line-height: 1.3rem;
     overflow-wrap: anywhere;
     white-space: pre-wrap;
+    position: relative;
+    color: #3b3c47;
+    div {
+        color: #999;
+        padding-left: 0.5rem;
+        font-size: 0.3rem;
+        position: absolute;
+        height: 100%;
+        left: -39px;
+        top: 0;
+    }
 `;
 
 const TextBar = ({ type, message: m }) => {
@@ -75,9 +80,11 @@ const TextBar = ({ type, message: m }) => {
     } else {
         return (
             <Me id={m.id} key={m.id}>
-                <h1>{time}</h1>
                 <MeTextBox>
-                    <MeText>{m.text}</MeText>
+                    <MeText>
+                        <div>{time}</div>
+                        {m.text}
+                    </MeText>
                 </MeTextBox>
             </Me>
         );

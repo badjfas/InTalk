@@ -40,14 +40,19 @@ const Wrapper = styled.div`
     top: 0;
     background-color: #fff;
     z-index: 1000;
+    padding-top: 48px;
     max-width: 1024px;
 `;
 
 const ChatListBox = styled.div`
     display: flex;
     flex-direction: column;
+    position: relative;
     overflow-y: scroll;
     width: 100%;
+    height: 100%;
+    flex-flow: column-reverse;
+    margin-bottom: 48px;
     ::-webkit-scrollbar {
         display: none;
     }
@@ -56,7 +61,8 @@ const ChatListBox = styled.div`
 
 const InputBox = styled.div`
     width: 100%;
-    position: relative;
+    position: absolute;
+    bottom: 0;
     > input {
         border: 1px solid #eee;
         background-color: #eee;
