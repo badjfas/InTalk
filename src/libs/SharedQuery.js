@@ -20,6 +20,7 @@ export const ME = gql`
                 avatar
             }
             followers {
+                avatar
                 fullName
                 isFollow
             }

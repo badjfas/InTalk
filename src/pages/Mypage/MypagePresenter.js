@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Avatar from "../../components/Common/Avatar";
 import { RiSettings3Line } from "react-icons/ri";
 import Drawer from "../../components/Mypage/Drawer";
-import EditProfile from "../../components/Mypage/EditProfile";
+import { FollowPopup } from "../../components/Common/popup";
 
 const Container = styled.div`
     padding-top: 3rem;
@@ -56,11 +56,12 @@ const UserDetailBox = styled.div`
     }
 `;
 
-export default ({ data, loading, queryData, setQueryData, visible, setVisible }) => {
+export default ({ data, loading, queryData, setQueryData, visible, setVisible, popup, setPopup }) => {
     if (loading) return <Container>is Loading</Container>;
 
     return (
         <Container>
+            {popup.followPopup ? <FollowPopup setPopup={setPopup} popup={popup} data={data} /> : null}
             <Drawer
                 visible={visible}
                 setVisible={setVisible}
@@ -79,8 +80,12 @@ export default ({ data, loading, queryData, setQueryData, visible, setVisible })
                 <span className="username">{data?.me?.fullName}</span>
                 <span className="major">{data?.me?.departmentName}</span>
                 <UserDetailBox>
-                    <span>팔로잉 {data?.me?.followings.length}</span>
-                    <span>팔로워 {data?.me?.followers.length}</span>
+                    <span onClick={() => setPopup({ ...popup, followPopup: true })}>
+                        팔로잉 {data?.me?.followings.length}
+                    </span>
+                    <span onClick={() => setPopup({ ...popup, followPopup: true })}>
+                        팔로워 {data?.me?.followers.length}
+                    </span>
                     <span>내 게시물 {data?.me?.rooms.length}</span>
                 </UserDetailBox>
             </UserBox>
