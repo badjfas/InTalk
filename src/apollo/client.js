@@ -2,14 +2,14 @@ import { ApolloClient, gql, HttpLink, InMemoryCache, split, ApolloLink } from "@
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 const httpLink = new HttpLink({
-    uri: "http://localhost:4000/",
+    uri: "http://219.250.97.79:4000/",
     headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
     }
 });
 
 const wsLink = new WebSocketLink({
-    uri: `ws://localhost:4000`,
+    uri: `ws://219.250.97.79:4000`,
     options: {
         reconnect: true
     },
