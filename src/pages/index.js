@@ -7,7 +7,7 @@ import Add from "./AddPost/AddContainer";
 import Mypage from "./Mypage/MypageContainer";
 import Major from "./Majors/MajorContainer";
 import Notifications from "./Notifications/NotificationsContainer";
-
+import GroupChat from "./GroupChat/GroupChatContainer";
 // import Group from "./Group/GroupContainer";
 
-export { Auth, Feed, Friends, Rooms, Chat, Add, Mypage, Major, Notifications };
+export { Auth, Feed, Friends, Rooms, Chat, Add, Mypage, Major, Notifications, GroupChat };

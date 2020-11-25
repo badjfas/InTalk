@@ -9,7 +9,9 @@ const MypageContainer = props => {
 
     const [queryData, setQueryData] = useState(queryString.parse(props.location.search));
     const [visible, setVisible] = useState(false);
-
+    const [popup, setPopup] = useState({
+        followPorpup: false
+    });
     useEffect(() => {
         setVisible(false);
 
@@ -23,7 +25,7 @@ const MypageContainer = props => {
         }
         props.history.push(`/mypage?${query}`);
     }, [queryData]);
-    console.log(queryData);
+    console.log(data);
     useEffect(() => {
         getMe();
     }, [getMe]);
@@ -37,6 +39,8 @@ const MypageContainer = props => {
             setQueryData={setQueryData}
             visible={visible}
             setVisible={setVisible}
+            popup={popup}
+            setPopup={setPopup}
         />
     );
 };
