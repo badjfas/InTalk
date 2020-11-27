@@ -28,19 +28,10 @@ export const ME = gql`
     }
 `;
 export const NEW_MESSAGE = gql`
-    subscription newMessageForNotification($id: Int!) {
+    subscription newMessageForNotification($id: String!) {
         newMessageForNotification(id: $id) {
             id
-            toUser {
-                id
-                fullName
-                avatar
-            }
-            fromUser {
-                id
-                fullName
-                avatar
-            }
+            roomId
             text
         }
     }
@@ -103,16 +94,11 @@ export const MY_CHAT_ROOMS = gql`
     {
         me {
             id
-            rooms {
+            group_rooms {
                 id
-                existMessage
-                notReadMessagesCount
-                participants {
-                    id
-                    avatar
-                    departmentName
-                    fullName
-                }
+                title
+                roomImage
+                notReadMessage
             }
         }
     }
@@ -129,6 +115,14 @@ export const GET_NOTIFICATIONS = gql`
             sender {
                 fullName
             }
+        }
+    }
+`;
+
+export const CREATE_CHAT_ROOM = gql`
+    mutation createGroupChat($userId: String!, $title: String!, $src: String!) {
+        createGroupChat(userId: $userId, title: $title, src: $src) {
+            id
         }
     }
 `;

@@ -1,8 +1,10 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import styled from "styled-components";
-import { IoMdArrowRoundBack } from "react-icons/io";
+import { IoMdArrowRoundBack, IoMdPersonAdd, IoMdMenu } from "react-icons/io";
 import TextBar from "../../components/Chat/TextBar";
 import { FaPaperPlane } from "react-icons/fa";
+import MenuDrawer from "../../components/Chat/MenuDrawer";
+import InvitationTab from "../../components/Chat/InvitaionTab";
 const Header = styled.div`
     position: fixed;
     height: 3rem;
@@ -11,10 +13,22 @@ const Header = styled.div`
     z-index: 1200;
     max-width: 1024px;
     display: flex;
+    position: relative;
     align-items: center;
     background-color: #004680;
     .left {
-        position: fixed;
+        cursor: pointer;
+        position: absolute;
+        left: 10px;
+        svg {
+            fill: #fff;
+            font-size: 1.5rem;
+        }
+    }
+    .right {
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
         svg {
             fill: #fff;
             font-size: 1.5rem;
@@ -98,20 +112,55 @@ const GroupChatPresenter = ({
     setText,
     sendMessageMutation,
     inputMessageRef,
-    messageBoxRef
+    messageBoxRef,
+    inviteChatMutation,
+    participants,
+    invite,
+    setInvite,
+    toggleInvite,
+    roomId
 }) => {
+    const [visible, setVisible] = useState(false);
+    const [tab, setTab] = useState(false);
+    console.log(participants);
     return (
         <Fragment>
+            <MenuDrawer
+                visible={visible}
+                setVisible={setVisible}
+                inviteChatMutation={inviteChatMutation}
+                participants={participants}
+                userData={userData}
+                tab={tab}
+                setTab={setTab}
+                invite={invite}
+            />
+            {tab ? (
+                <InvitationTab
+                    userData={userData}
+                    setTab={setTab}
+                    setVisible={setVisible}
+                    invite={invite}
+                    setInvite={setInvite}
+                    toggleInvite={toggleInvite}
+                    roomId={roomId}
+                    inviteChatMutation={inviteChatMutation}
+                />
+            ) : null}
+
             <Header>
                 <span className="left" onClick={() => (window.location.href = "/messages")}>
                     <IoMdArrowRoundBack />
                 </span>
                 <span className="center">그룹채팅</span>
+                <span className="right" onClick={() => setVisible(!visible)}>
+                    <IoMdMenu />
+                </span>
             </Header>
             <Container>
                 <ChatListBox ref={messageBoxRef}>
                     {messages?.map(message => {
-                        return userData.id !== parseInt(message.sender.id) ? (
+                        return userData?.me?.meId !== message.sender.id ? (
                             <TextBar key={message.id} type={SENDER} message={message} />
                         ) : (
                             <TextBar key={message.id} type={ME} message={message} />

@@ -8,16 +8,13 @@ const Container = styled.div`
     min-height: 100vh;
     height: 100%;
     padding-top: 3rem;
+    background-color: #fff;
 `;
 export default ({ roomsData }) => {
     return (
         <Container>
-            {roomsData?.me?.rooms?.map((room, index) => {
-                if (room?.participants?.id !== roomsData?.me?.id) {
-                    if (room?.existMessage) {
-                        return <RoomCard key={index} room={room} />;
-                    }
-                }
+            {roomsData?.me?.group_rooms?.map((room, index) => {
+                return <RoomCard key={index} room={room} />;
             })}
         </Container>
     );

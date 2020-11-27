@@ -20,7 +20,7 @@ const FriendsPresenter = ({
     visible,
     setVisible,
     onClickAddFriend,
-    createChatRoom,
+    enterChatRoom,
     roomsData,
     userProfileData,
     getRooms,
@@ -39,6 +39,7 @@ const FriendsPresenter = ({
                     getProfile={getProfile}
                     userProfileData={userProfileData}
                     history={history}
+                    enterChatRoom={enterChatRoom}
                 />
             ) : null}
 
@@ -51,7 +52,6 @@ const FriendsPresenter = ({
                                 userInfoData={user}
                                 visible={visible}
                                 setVisible={setVisible}
-                                createChatRoom={createChatRoom}
                             />
                         );
                     }

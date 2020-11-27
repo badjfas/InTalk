@@ -26,6 +26,7 @@ const Box = styled(Link)`
 const UserName = styled.span`
     margin-left: 1rem;
     font-weight: 600;
+    font-size: 0.8rem;
 `;
 
 const Major = styled.span`
@@ -50,11 +51,13 @@ const NotReadCount = styled.span`
 export default ({ room }) => {
     return (
         <Wrapper>
-            <Box to={`/chat/${room.id}/${room.participants?.id}`}>
-                <Avatar size={2} radius={70} src={room.participants?.avatar} />
-                <UserName> {room.participants?.fullName} </UserName>
-                <Major>{room.participants?.departmentName}</Major>
-                {room.notReadMessagesCount !== 0 ? <NotReadCount>{room.notReadMessagesCount}</NotReadCount> : null}
+            <Box to={`/groupchat/${room.id}`}>
+                <Avatar size={2.5} radius={30} src={room.roomImage.split("@")[0]} />
+                <UserName>
+                    {" "}
+                    {room.title.split(",").length > 2 ? room.title.split(",").join(",") : room.title.split(",")[0]}
+                </UserName>
+                {room.notReadMessage !== 0 ? <NotReadCount>{room.notReadMessage}</NotReadCount> : null}
                 <CgEnter />
             </Box>
         </Wrapper>

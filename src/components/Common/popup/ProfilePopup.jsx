@@ -4,6 +4,7 @@ import Avatar from "../Avatar";
 import { AiFillMessage } from "react-icons/ai";
 import { HiUserAdd, HiUserRemove } from "react-icons/hi";
 import { Link } from "react-router-dom";
+import { DecodeToken } from "../../../libs/decodeToken";
 
 const Wrapper = styled.div`
     display: flex;
@@ -53,7 +54,8 @@ const OptBox = styled.div`
     align-items: center;
 `;
 
-const Message = styled(Link)`
+const Message = styled.button`
+    background-color: transparent;
     svg {
         font-size: 2rem;
         color: #fff;
@@ -70,28 +72,17 @@ const Button = styled.div`
     }
 `;
 
-const ProfilePopup = ({ onClickAddFriend, setVisible, visible, roomsData, userProfileData, getRooms, getProfile }) => {
-    const [roomId, setRoomId] = useState([]);
-
+const ProfilePopup = ({ onClickAddFriend, setVisible, visible, enterChatRoom, getProfile, userProfileData }) => {
+    const {
+        user: { id }
+    } = DecodeToken(localStorage.getItem("token"));
     useEffect(() => {
-        getRooms();
-        if (visible.id) {
-            getProfile({
-                variables: {
-                    userId: parseInt(visible.id)
-                }
-            });
-        }
-    }, [visible.id, getProfile, getRooms]);
-
-    useEffect(() => {
-        if (roomsData !== undefined && userProfileData !== undefined) {
-            const roomId = roomsData?.me?.rooms?.filter(
-                room => room?.participants?.id === userProfileData?.seeProfile?.userId
-            );
-            setRoomId(roomId[0]?.id);
-        }
-    }, [roomsData, userProfileData]);
+        getProfile({
+            variables: {
+                userId: parseInt(visible.id)
+            }
+        });
+    }, [getProfile, visible.id]);
 
     return (
         <Fragment>
@@ -114,9 +105,13 @@ const ProfilePopup = ({ onClickAddFriend, setVisible, visible, roomsData, userPr
 
                 <OptBox>
                     <Message
-                        to={`/chat/${parseInt(roomId !== undefined ? roomId : null)}/${
-                            userProfileData?.seeProfile?.userId
-                        }`}
+                        onClick={() =>
+                            enterChatRoom({
+                                userId: `${id},${visible.id}`,
+                                src: userProfileData.seeProfile.avatar,
+                                title: userProfileData.seeProfile.fullName
+                            })
+                        }
                     >
                         <AiFillMessage />
                     </Message>

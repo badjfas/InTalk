@@ -1,6 +1,7 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { ME, MY_CHAT_ROOMS } from "../../libs/SharedQuery";
+import { DecodeToken } from "../../libs/decodeToken";
+import { CREATE_CHAT_ROOM, ME, MY_CHAT_ROOMS } from "../../libs/SharedQuery";
 import { CREATE_ROOM, FOLLOW, SEE_PROFILE, SEE_USERS } from "./friends";
 import FriendsPresenter from "./FriendsPresenter";
 
@@ -10,6 +11,7 @@ const FriendsContainer = props => {
         open: false
     });
     const [usersData, setUserData] = useState({});
+    const { user: me } = DecodeToken(localStorage.getItem("token"));
 
     //모든 유저
     const { data: userData } = useQuery(SEE_USERS, {
@@ -20,20 +22,26 @@ const FriendsContainer = props => {
     const [getRooms, { data: roomsData }] = useLazyQuery(MY_CHAT_ROOMS);
 
     //상대방 프로필
-    const [userProfile, setUserProfile] = useState({});
     const [getProfile, { data: userProfileData, refetch }] = useLazyQuery(SEE_PROFILE, {});
 
     //프로필 클릭시 챗룸 생성
-    const [createChatRoom] = useMutation(CREATE_ROOM, {
-        variables: {
-            toId: parseInt(visible.id)
-        },
-        refetchQueries: [
-            {
-                query: ME
-            }
-        ]
+    const [createChatRoom] = useMutation(CREATE_CHAT_ROOM, {
+        ignoreResults: false
     });
+    console.log(me);
+    const enterChatRoom = async ({ userId, src, title }) => {
+        try {
+            await createChatRoom({
+                variables: {
+                    userId: userId,
+                    title: `${title},${me.fullName}`,
+                    src: `${src}@${me.avatar}`
+                }
+            }).then(({ data: { createGroupChat: { id } } }) => props.history.push(`/groupchat/${id}`));
+        } catch (e) {
+            console.warn(e);
+        }
+    };
 
     const [followMutation] = useMutation(FOLLOW);
     const onClickAddFriend = async friendId => {
@@ -44,7 +52,6 @@ const FriendsContainer = props => {
                 }
             });
             const { data } = await refetch();
-            setUserProfile({ ...data });
         } catch {
             alert("잠시 후 다시 시도해주세요.");
         }
@@ -52,6 +59,7 @@ const FriendsContainer = props => {
     useEffect(() => {
         getRooms();
     }, [visible.id]);
+
     return (
         <FriendsPresenter
             {...props}
@@ -59,7 +67,7 @@ const FriendsContainer = props => {
             onClickAddFriend={onClickAddFriend}
             visible={visible}
             setVisible={setVisible}
-            createChatRoom={createChatRoom}
+            enterChatRoom={enterChatRoom}
             getRooms={getRooms}
             roomsData={roomsData}
             getProfile={getProfile}

@@ -24,6 +24,19 @@ function App() {
     const {
         data: { isLogin }
     } = useQuery(IS_LOGIN);
+
+    const [messageCount, setMessageCount] = useState(0);
+
+    const { data: data4 } = useQuery(MY_CHAT_ROOMS, {
+        onCompleted: ({ me: { group_rooms } }) => {
+            let count = 0;
+            group_rooms.map(m => {
+                count = count + m.notReadMessage;
+            });
+            setMessageCount(count);
+        }
+    });
+
     const [notification, setNotification] = useState([]);
     const { data: getNotifications } = useQuery(GET_NOTIFICATIONS, {
         onCompleted: () => setNotification(getNotifications.getNotifications)
@@ -32,9 +45,10 @@ function App() {
 
     const { data } = useSubscription(NEW_MESSAGE, {
         variables: {
-            id: parseInt(userData.id)
+            id: `${userData.id}`
         }
     });
+    console.log(userData.id);
     const { data: data2 } = useSubscription(SUBSCRIBTION_COMMENT, {
         variables: {
             id: parseInt(userData.id)
@@ -45,33 +59,25 @@ function App() {
             id: parseInt(userData.id)
         }
     });
-    const [messageCount, setMessageCount] = useState(0);
-    const { data: data4 } = useQuery(MY_CHAT_ROOMS, {
-        onCompleted: ({ me: { rooms } }) => {
-            let count = 0;
-            rooms.map(m => {
-                count = count + m.notReadMessagesCount;
-            });
-            setMessageCount(count);
-        }
-    });
 
     const handleNewMessage = useCallback(() => {
         if (data !== undefined) {
             const { newMessageForNotification } = data;
+            console.log(newMessageForNotification);
             let arr = [];
             arr.push(newMessageForNotification);
             setMessageCount(prev => {
                 return prev + arr.length;
             });
-            toast.dark(`${newMessageForNotification.fromUser.fullName} : ${newMessageForNotification.text}`, {
+            toast.dark(`: ${newMessageForNotification.text}`, {
                 position: "top-center",
-                autoClose: 1000,
+                autoClose: 2000,
                 hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
-                progress: undefined
+                progress: undefined,
+                onClick: () => (window.location.href = `/groupchat/${newMessageForNotification.roomId}`)
             });
         }
     }, [data]);

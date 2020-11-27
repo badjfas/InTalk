@@ -14,6 +14,7 @@ const RoomsContainer = () => {
             id: parseInt(user.id)
         }
     });
+    console.log(roomsData);
     const refetchData = async () => {
         return await refetch();
     };

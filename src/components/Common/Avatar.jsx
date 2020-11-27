@@ -5,9 +5,12 @@ const Container = styled.div`
     position: relative;
     top: 0;
     height: 100%;
+    border: none;
 `;
 
 const Image = styled.img`
+    background-color: #999;
+    outline: none;
     border-radius: ${props => props.radius}%;
     width: ${props => props.size}rem;
     height: ${props => props.size}rem;
@@ -16,7 +19,7 @@ const Image = styled.img`
 const Avatar = ({ src, size, radius }) => {
     return (
         <Container>
-            <Image src={src} size={size} radius={radius} />
+            <Image src={src} size={size} radius={radius} alt={null} />
         </Container>
     );
 };

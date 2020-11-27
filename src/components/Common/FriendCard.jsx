@@ -31,11 +31,6 @@ export default ({ userInfoData, visible, setVisible, createChatRoom }) => {
         <Fragment>
             <Container
                 onClick={async () => {
-                    await createChatRoom({
-                        variables: {
-                            toId: parseInt(userInfoData.userId)
-                        }
-                    });
                     setVisible({
                         id: userInfoData.userId,
                         open: !visible.open
