@@ -54,7 +54,7 @@ const FeedContainer = props => {
         };
     }, []);
 
-    return <FeedPresenter postData={posts} refetch={refetch} userData={userData} setPosts={setPosts} />;
+    return <FeedPresenter postData={posts} refetch={refetch} userData={userData} setPosts={setPosts} {...props} />;
 };
 
 export default FeedContainer;

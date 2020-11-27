@@ -7,13 +7,17 @@ const Wrapper = styled.div`
     position: fixed;
     flex-direction: column;
     top: 7rem;
-    height: 50%;
     padding-bottom: 3rem;
+    width: 75%;
+    overflow-y: scroll;
+    height: 100%;
+    padding-bottom: 10rem;
 `;
 
 const Box = styled.div`
     align-items: center;
     display: flex;
+
     padding: 0.5rem 0 0.5rem 0.5rem;
 `;
 

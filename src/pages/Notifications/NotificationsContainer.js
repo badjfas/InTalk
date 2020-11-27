@@ -4,9 +4,8 @@ import { GET_NOTIFICATIONS } from "../../libs/SharedQuery";
 import { DELETE_NOTIFICATION, TOGGLE_NOTIFICATION } from "./notifications";
 import NotificationsPresenter from "./NotificationsPresenter";
 
-const NotificationsContainer = () => {
-    const [get, { data, loading }] = useLazyQuery(GET_NOTIFICATIONS);
-
+const NotificationsContainer = props => {
+    const [get, { data, loading, refetch }] = useLazyQuery(GET_NOTIFICATIONS);
     const [read] = useMutation(TOGGLE_NOTIFICATION, {});
 
     const [deleteMutation] = useMutation(DELETE_NOTIFICATION);
@@ -56,6 +55,7 @@ const NotificationsContainer = () => {
             korFormat={korFormat}
             toggleActive={toggleActive}
             deleteMutation={deleteMutation}
+            {...props}
         />
     );
 };

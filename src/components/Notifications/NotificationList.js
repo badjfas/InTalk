@@ -24,7 +24,7 @@ const Actived = styled.div`
     background-color: #ddd;
 `;
 
-const NotificationList = ({ data, date, toggleActive, deleteMutation }) => {
+const NotificationList = ({ data, date, toggleActive, deleteMutation, history, get }) => {
     const [touchState, setTouch] = useState({
         touchstartX: 0,
         touchstartY: 0,
@@ -65,12 +65,21 @@ const NotificationList = ({ data, date, toggleActive, deleteMutation }) => {
         }
     };
     return data.isRead ? (
-        <Actived onTouchStart={e => onTouchStart({ e: e, target: data.id })} onTouchEnd={onTouchEnd}>
+        <Actived
+            onClick={() => (window.location.href = `/post/${data.postId}`)}
+            onTouchStart={e => onTouchStart({ e: e, target: data.id })}
+            onTouchEnd={onTouchEnd}
+        >
             <Item>{data.message}</Item>
             <Item>{date.toFixed(0) + "시간전"}</Item>
         </Actived>
     ) : (
-        <Items onClick={() => toggleActive(data.id)}>
+        <Items
+            onClick={() => {
+                window.location.href = `/post/${data.postId}`;
+                toggleActive(data.id);
+            }}
+        >
             <Item>{data.message}</Item>
             <Item>{date.toFixed(0) + "시간전"}</Item>
         </Items>

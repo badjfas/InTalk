@@ -15,7 +15,7 @@ const NotiBox = styled.div`
     flex-direction: column;
 `;
 
-const NotificationsPresenter = ({ data, loading, korFormat, toggleActive, deleteMutation }) => {
+const NotificationsPresenter = ({ data, loading, korFormat, toggleActive, deleteMutation, history, get }) => {
     const { year, month, day, hour, minute, second } = korFormat;
     const startDate = new Date(year, month, day, hour, minute, second);
 
@@ -41,9 +41,11 @@ const NotificationsPresenter = ({ data, loading, korFormat, toggleActive, delete
 
                         return (
                             <NotificationList
+                                history={history}
                                 data={notification}
                                 key={notification.id}
                                 date={x}
+                                get={get}
                                 deleteMutation={deleteMutation}
                                 toggleActive={toggleActive}
                             />

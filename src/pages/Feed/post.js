@@ -72,6 +72,68 @@ export const SEE_POSTS = gql`
     }
 `;
 
+export const SEE_POST = gql`
+    query seePost($postId: Int!) {
+        seePost(postId: $postId) {
+            postId: id
+            contents
+            isLiked
+            likesCount
+            user {
+                fullName
+                departmentName
+                avatar
+            }
+            avatar
+            files
+            firstComment {
+                commentId: id
+                userId
+                fullName
+                avatar
+                text
+                childComments {
+                    childId: id
+                    text
+                    user {
+                        myId: id
+                        avatar
+                        fullName
+                    }
+                    targetUser {
+                        targetId: id
+                        avatar
+                        fullName
+                    }
+                }
+            }
+            comments {
+                commentId: id
+                text
+                user {
+                    id
+                    avatar
+                    fullName
+                }
+                childComments {
+                    childId: id
+                    text
+                    user {
+                        myId: id
+                        avatar
+                        fullName
+                    }
+                    targetUser {
+                        targetId: id
+                        avatar
+                        fullName
+                    }
+                }
+            }
+        }
+    }
+`;
+
 export const TOGGLE_LIKE = gql`
     mutation toggleLike($postId: Int!) {
         toggleLike(postId: $postId)

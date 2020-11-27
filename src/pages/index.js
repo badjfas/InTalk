@@ -1,5 +1,7 @@
 import Auth from "./Auth/AuthContainer";
 import Feed from "./Feed/FeedContainer";
+import PostDetail from "./PostDetail/PostDetailContainer";
+
 import Friends from "./Friends/FriendsContainer";
 import Rooms from "./Rooms/RoomsContainer";
 import Chat from "./Chat/ChatContainer";
@@ -10,4 +12,4 @@ import Notifications from "./Notifications/NotificationsContainer";
 import GroupChat from "./GroupChat/GroupChatContainer";
 // import Group from "./Group/GroupContainer";
 
-export { Auth, Feed, Friends, Rooms, Chat, Add, Mypage, Major, Notifications, GroupChat };
+export { Auth, Feed, Friends, Rooms, Chat, Add, Mypage, Major, Notifications, GroupChat, PostDetail };

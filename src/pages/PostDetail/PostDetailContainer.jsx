@@ -1,9 +1,20 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import React, { useRef } from "react";
-import { ADD_CHILD_COMMENT, ADD_COMMENT, SEE_ALL_COMMENTS, TOGGLE_LIKE } from "../../pages/Feed/post";
-import PostPresenter from "./PostPresenter";
+import { ADD_CHILD_COMMENT, ADD_COMMENT, SEE_ALL_COMMENTS, SEE_POST, TOGGLE_LIKE } from "../Feed/post";
+import PostDetailPresenter from "./PostDetailPresenter";
 
-const Posts = ({ postData, refetch, setPosts, history }) => {
+const PostDetailContainer = props => {
+    const {
+        match: {
+            params: { id: postId }
+        }
+    } = props;
+
+    const { data, loading, refetch } = useQuery(SEE_POST, {
+        variables: {
+            postId: parseInt(postId)
+        }
+    });
     const inputRef = useRef(null);
 
     //좋아요
@@ -19,7 +30,6 @@ const Posts = ({ postData, refetch, setPosts, history }) => {
             });
             //좋아요 업데이트
             const { data } = await refetch();
-            setPosts({ ...data });
             return data;
         } catch {
             alert("잠시 후 다시 시도해주세요.");
@@ -48,7 +58,6 @@ const Posts = ({ postData, refetch, setPosts, history }) => {
             });
             //댓글 업데이트
             const { data } = await refetch();
-            setPosts({ ...data });
             return data;
         } catch {
             alert("잠시 후 다시 시도해주세요.");
@@ -79,24 +88,21 @@ const Posts = ({ postData, refetch, setPosts, history }) => {
             });
             //댓글 업데이트
             const { data } = await refetch();
-            setPosts({ ...data });
             return data;
         } catch {
             alert("잠시 후 다시 시도해주세요.");
         }
     };
-
     return (
-        <PostPresenter
+        <PostDetailPresenter
+            {...props}
+            data={data}
+            loading={loading}
             toggleLike={toggleLike}
             addComment={addComment}
             addChildComment={addChildComment}
-            postData={postData}
-            refetch={refetch}
-            inputRef={inputRef}
-            history={history}
         />
     );
 };
 
-export default Posts;
+export default PostDetailContainer;

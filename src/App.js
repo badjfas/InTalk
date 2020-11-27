@@ -85,17 +85,19 @@ function App() {
     const handleNewComment = useCallback(() => {
         if (data2 !== undefined) {
             const { commentNotification } = data2;
+            console.log(commentNotification);
             setNotification(prev => {
                 return [...prev, commentNotification];
             });
             toast.warning(`게시글에 새로운 댓글이 달렸습니다.`, {
                 position: "top-center",
-                autoClose: 1000,
+                autoClose: 2000,
                 hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
-                progress: undefined
+                progress: undefined,
+                onClick: () => (window.location.href = `/post/${commentNotification.postId}`)
             });
         }
     }, [data2]);
@@ -112,7 +114,8 @@ function App() {
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
-                progress: undefined
+                progress: undefined,
+                onClick: () => (window.location.href = `/post/${childCommentNotification.postId}`)
             });
         }
     }, [data3]);

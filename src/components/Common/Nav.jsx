@@ -181,7 +181,7 @@ const Nav = ({ getNotifications, messageCount }) => {
         } else if (pathname === "/mypage") {
             setTitle("내 정보");
         } else {
-            setTitle("알림");
+            setTitle("feed");
         }
     }, [title, pathname]);
     return (

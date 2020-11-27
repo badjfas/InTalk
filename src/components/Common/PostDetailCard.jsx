@@ -9,7 +9,7 @@ import Avatar from "../Common/Avatar";
 import Comment from "./Comment";
 import { PostPopup } from "./popup";
 
-const PostCard = ({
+const PostDetailCard = ({
     isLiked,
     postId,
     likesCount,
@@ -232,7 +232,7 @@ const PostCard = ({
         </Wrapper>
     );
 };
-export default PostCard;
+export default PostDetailCard;
 
 const Wrapper = styled.div`
     max-width: 1024px;

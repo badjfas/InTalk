@@ -1,2 +1,3 @@
 import FollowPopup from "./FollowPopup";
-export { FollowPopup };
+import PostPopup from "./PostPopup";
+export { FollowPopup, PostPopup };
