@@ -120,6 +120,7 @@ const GroupChatPresenter = ({
     toggleInvite,
     roomId
 }) => {
+    console.log(messages);
     const [visible, setVisible] = useState(false);
     const [tab, setTab] = useState(false);
     console.log(participants);

@@ -20,6 +20,14 @@ const Sender = styled.div`
         height: 100%;
         /* justify-content: flex-end; */
     }
+    h2 {
+        color: #999;
+        position: absolute;
+        right: -10px;
+        top: 28px;
+        display: flex;
+        font-size: 0.2rem;
+    }
 `;
 
 const Me = styled.div`
@@ -48,6 +56,7 @@ const MeTextBox = styled.div`
     width: 100%;
     font-size: 0.8rem;
     margin-right: 0.4rem;
+    position: relative;
 `;
 
 const MeText = styled.pre`
@@ -70,6 +79,20 @@ const MeText = styled.pre`
         position: absolute;
         height: 100%;
         left: -39px;
+        div {
+            color: #999;
+            position: absolute;
+            display: flex;
+            top: 3px;
+            font-size: 0.2rem;
+            width: 100%;
+            left: 0.5rem;
+            > span {
+                position: absolute;
+                top: 0;
+                right: 0.5rem;
+            }
+        }
     }
 `;
 
@@ -97,6 +120,7 @@ const TextBar = ({ type, message: m }) => {
                     )}
                     <SenderTextBox>{m.text}</SenderTextBox>
                 </div>
+                <h2>{m.isRead.split(",").length}</h2>
                 <h1>{time}</h1>
             </Sender>
         );
@@ -105,7 +129,12 @@ const TextBar = ({ type, message: m }) => {
             <Me id={m.id} key={m.id}>
                 <MeTextBox>
                     <MeText>
-                        <div>{time}</div>
+                        <div>
+                            <div>
+                                <span>{m.isRead.split(",").length}</span>
+                            </div>
+                            {time}
+                        </div>
                         {m.text}
                     </MeText>
                 </MeTextBox>

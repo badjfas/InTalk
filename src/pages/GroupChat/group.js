@@ -45,6 +45,7 @@ export const GET_GROUP_MESSAGE = gql`
             id
             createdAt
             text
+            isRead
             sender {
                 id
                 fullName
