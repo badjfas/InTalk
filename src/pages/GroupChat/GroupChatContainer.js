@@ -3,7 +3,14 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import TimeStamp from "../../libs/DatePicker";
 import { DecodeToken } from "../../libs/decodeToken";
 import { ME } from "../../libs/SharedQuery";
-import { GET_GROUP_MESSAGE, INVITE_CHAT, NEW_GROUP_MESSAGE, SEE_ROOM_INFO, SEND_GROUP_MESSAGE } from "./group";
+import {
+    GET_GROUP_MESSAGE,
+    INVITE_CHAT,
+    ISONLINE,
+    NEW_GROUP_MESSAGE,
+    SEE_ROOM_INFO,
+    SEND_GROUP_MESSAGE
+} from "./group";
 import GroupChatPresenter from "./GroupChatPresenter";
 
 const GroupChatContainer = props => {
@@ -34,10 +41,9 @@ const GroupChatContainer = props => {
     };
     //내 정보
     const { data: userData } = useQuery(ME);
-
     //메시지 목록
     const [message, setMessages] = useState([]);
-    const { data: oldMessage, loading } = useQuery(GET_GROUP_MESSAGE, {
+    const { data: oldMessage, loading, refetch } = useQuery(GET_GROUP_MESSAGE, {
         variables: {
             roomId: parseInt(id)
         },
@@ -56,6 +62,22 @@ const GroupChatContainer = props => {
             setReceivers(arr.filter(e => parseInt(e) !== user.id).join(","));
         }
     });
+    const [online, setOnline] = useState([]);
+    const { data: isOnline } = useSubscription(ISONLINE, {
+        variables: {
+            roomId: parseInt(id),
+            userId: online.join(",")
+        }
+    });
+
+    const handleOnlineStatus = () => {
+        if (isOnline !== undefined) {
+            const {
+                chatIsOnline: { id }
+            } = isOnline;
+            setOnline(prev => Array.from(new Set([...prev, id])));
+        }
+    };
 
     //메시지 입력
     const [text, setText] = useState("");
@@ -90,15 +112,28 @@ const GroupChatContainer = props => {
     //메시지 업데이트
     const handleNewMessage = () => {
         if (data !== undefined) {
-            console.log(data);
             const { newGroupMessage } = data;
-            setMessages(prev => [newGroupMessage, ...prev]);
+            setMessages(prev => [
+                {
+                    ...newGroupMessage,
+                    isRead:
+                        newGroupMessage.isRead
+                            ?.split(",")
+                            ?.filter(e => parseInt(e) !== user.id)
+                            ?.join(",") ?? newGroupMessage.isRead
+                },
+                ...prev
+            ]);
         }
     };
+
     useEffect(() => {
         inputMessageRef.current.focus();
         handleNewMessage();
+        handleOnlineStatus();
     }, [data]);
+
+    useEffect(() => {}, [isOnline]);
 
     useEffect(() => {
         if (messageBoxRef) {

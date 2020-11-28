@@ -39,6 +39,14 @@ export const INVITE_CHAT = gql`
     }
 `;
 
+export const ISONLINE = gql`
+    subscription chatIsOnline($roomId: Int!, $userId: String) {
+        chatIsOnline(roomId: $roomId, userId: $userId) {
+            id
+        }
+    }
+`;
+
 export const GET_GROUP_MESSAGE = gql`
     query getGroupMessage($roomId: Int!) {
         getGroupMessage(roomId: $roomId) {

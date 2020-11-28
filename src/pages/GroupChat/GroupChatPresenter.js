@@ -120,10 +120,8 @@ const GroupChatPresenter = ({
     toggleInvite,
     roomId
 }) => {
-    console.log(messages);
     const [visible, setVisible] = useState(false);
     const [tab, setTab] = useState(false);
-    console.log(participants);
     return (
         <Fragment>
             <MenuDrawer
@@ -164,7 +162,7 @@ const GroupChatPresenter = ({
                         return userData?.me?.meId !== message.sender.id ? (
                             <TextBar key={message.id} type={SENDER} message={message} />
                         ) : (
-                            <TextBar key={message.id} type={ME} message={message} />
+                            <TextBar key={message.id * 2} type={ME} message={message} />
                         );
                     })}
                 </ChatListBox>

@@ -48,7 +48,6 @@ function App() {
             id: `${userData.id}`
         }
     });
-    console.log(userData.id);
     const { data: data2 } = useSubscription(SUBSCRIBTION_COMMENT, {
         variables: {
             id: parseInt(userData.id)
