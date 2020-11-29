@@ -48,8 +48,8 @@ export const ISONLINE = gql`
 `;
 
 export const GET_GROUP_MESSAGE = gql`
-    query getGroupMessage($roomId: Int!) {
-        getGroupMessage(roomId: $roomId) {
+    query getGroupMessage($roomId: Int!, $limit: Int) {
+        getGroupMessage(roomId: $roomId, limit: $limit) {
             id
             createdAt
             text

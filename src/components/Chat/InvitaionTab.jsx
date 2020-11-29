@@ -14,6 +14,8 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
     display: flex;
+    max-width: 1024px;
+
     align-items: center;
     height: 3rem;
     width: 100%;
@@ -42,6 +44,8 @@ const Box = styled.div`
 const Button = styled.div`
     position: fixed;
     bottom: 0;
+    max-width: 1024px;
+
     height: 3rem;
     width: 100%;
     display: flex;
@@ -62,12 +66,15 @@ const InvitationTab = ({
     setVisible,
     roomId
 }) => {
-    console.log(roomId);
-
     return (
         <Wrapper>
             <Header>
-                <IoMdArrowRoundBack onClick={() => setTab(false)} />
+                <IoMdArrowRoundBack
+                    onClick={() => {
+                        setTab(false);
+                        setInvite([]);
+                    }}
+                />
             </Header>
             <Box>
                 {userData?.me?.followings?.map(follow => {

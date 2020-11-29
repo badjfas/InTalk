@@ -10,7 +10,7 @@ const Header = styled.div`
     height: 3rem;
     width: 100%;
     top: 0;
-    z-index: 1200;
+    z-index: 2100;
     max-width: 1024px;
     display: flex;
     position: relative;
@@ -53,8 +53,7 @@ const Container = styled.div`
     margin: 0px auto;
     top: 0;
     background-color: #fff;
-    z-index: 1000;
-    padding-top: 48px;
+    z-index: 2000;
     max-width: 1024px;
 `;
 
@@ -118,54 +117,61 @@ const GroupChatPresenter = ({
     invite,
     setInvite,
     toggleInvite,
-    roomId
+    roomId,
+    loading,
+    setMoreMessages
 }) => {
     const [visible, setVisible] = useState(false);
     const [tab, setTab] = useState(false);
     return (
         <Fragment>
-            <MenuDrawer
-                visible={visible}
-                setVisible={setVisible}
-                inviteChatMutation={inviteChatMutation}
-                participants={participants}
-                userData={userData}
-                tab={tab}
-                setTab={setTab}
-                invite={invite}
-            />
-            {tab ? (
-                <InvitationTab
-                    userData={userData}
-                    setTab={setTab}
-                    setVisible={setVisible}
-                    invite={invite}
-                    setInvite={setInvite}
-                    toggleInvite={toggleInvite}
-                    roomId={roomId}
-                    inviteChatMutation={inviteChatMutation}
-                />
-            ) : null}
-
-            <Header>
-                <span className="left" onClick={() => (window.location.href = "/messages")}>
-                    <IoMdArrowRoundBack />
-                </span>
-                <span className="center">그룹채팅</span>
-                <span className="right" onClick={() => setVisible(!visible)}>
-                    <IoMdMenu />
-                </span>
-            </Header>
             <Container>
-                <ChatListBox ref={messageBoxRef}>
-                    {messages?.map(message => {
-                        return userData?.me?.meId !== message.sender.id ? (
-                            <TextBar key={message.id} type={SENDER} message={message} />
-                        ) : (
-                            <TextBar key={message.id * 2} type={ME} message={message} />
-                        );
-                    })}
+                <Header>
+                    <span className="left" onClick={() => (window.location.href = "/messages")}>
+                        <IoMdArrowRoundBack />
+                    </span>
+                    <span className="center">그룹채팅</span>
+                    <span className="right" onClick={() => setVisible(!visible)}>
+                        <IoMdMenu />
+                    </span>
+                </Header>
+                <MenuDrawer
+                    visible={visible}
+                    setVisible={setVisible}
+                    inviteChatMutation={inviteChatMutation}
+                    participants={participants}
+                    userData={userData}
+                    tab={tab}
+                    setTab={setTab}
+                    invite={invite}
+                />
+                {tab ? (
+                    <InvitationTab
+                        userData={userData}
+                        setTab={setTab}
+                        setVisible={setVisible}
+                        invite={invite}
+                        setInvite={setInvite}
+                        toggleInvite={toggleInvite}
+                        roomId={roomId}
+                        inviteChatMutation={inviteChatMutation}
+                    />
+                ) : null}
+                <ChatListBox ref={messageBoxRef} id="chatlistbox">
+                    {loading ? null : (
+                        <Fragment>
+                            {" "}
+                            {messages?.map(message => {
+                                return userData?.me?.meId !== message.sender.id ? (
+                                    <TextBar key={message.id} type={SENDER} message={message} />
+                                ) : (
+                                    <TextBar key={message.id * 2} type={ME} message={message} />
+                                );
+                            })}
+                        </Fragment>
+                    )}
                 </ChatListBox>
+
                 <InputBox className="submit_box">
                     <input
                         placeholder="메시지를 입력해주세요."
@@ -176,6 +182,7 @@ const GroupChatPresenter = ({
                             if (e.key === "Enter") {
                                 setText("");
                                 sendMessageMutation();
+                                setMoreMessages(0);
                             }
                         }}
                     />
@@ -184,6 +191,7 @@ const GroupChatPresenter = ({
                         onClick={() => {
                             setText("");
                             sendMessageMutation();
+                            setMoreMessages(0);
                         }}
                     >
                         <FaPaperPlane />

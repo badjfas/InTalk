@@ -15,7 +15,7 @@ import GroupChatPresenter from "./GroupChatPresenter";
 
 const GroupChatContainer = props => {
     let arr = [];
-
+    const [moreMessages, setMoreMessages] = useState(false);
     const inputMessageRef = useRef(null);
     const messageBoxRef = useRef(null);
     const {
@@ -45,7 +45,8 @@ const GroupChatContainer = props => {
     const [message, setMessages] = useState([]);
     const { data: oldMessage, loading, refetch } = useQuery(GET_GROUP_MESSAGE, {
         variables: {
-            roomId: parseInt(id)
+            roomId: parseInt(id),
+            limit: 50
         },
         onCompleted: () => setMessages(oldMessage.getGroupMessage)
     });
@@ -62,22 +63,6 @@ const GroupChatContainer = props => {
             setReceivers(arr.filter(e => parseInt(e) !== user.id).join(","));
         }
     });
-    const [online, setOnline] = useState([]);
-    const { data: isOnline } = useSubscription(ISONLINE, {
-        variables: {
-            roomId: parseInt(id),
-            userId: online.join(",")
-        }
-    });
-
-    const handleOnlineStatus = () => {
-        if (isOnline !== undefined) {
-            const {
-                chatIsOnline: { id }
-            } = isOnline;
-            setOnline(prev => Array.from(new Set([...prev, id])));
-        }
-    };
 
     //메시지 입력
     const [text, setText] = useState("");
@@ -110,19 +95,20 @@ const GroupChatContainer = props => {
         ]
     });
     //메시지 업데이트
-    const handleNewMessage = () => {
+    const handleNewMessage = async () => {
         if (data !== undefined) {
             const { newGroupMessage } = data;
+            const { data: d } = await refetch();
             setMessages(prev => [
-                {
-                    ...newGroupMessage,
-                    isRead:
-                        newGroupMessage.isRead
-                            ?.split(",")
-                            ?.filter(e => parseInt(e) !== user.id)
-                            ?.join(",") ?? newGroupMessage.isRead
-                },
-                ...prev
+                // {
+                //     ...newGroupMessage,
+                //     isRead:
+                //         newGroupMessage.isRead
+                //             ?.split(",")
+                //             ?.filter(e => parseInt(e) !== user.id)
+                //             ?.join(",") ?? newGroupMessage.isRead
+                // },
+                ...d.getGroupMessage
             ]);
         }
     };
@@ -130,20 +116,53 @@ const GroupChatContainer = props => {
     useEffect(() => {
         inputMessageRef.current.focus();
         handleNewMessage();
-        handleOnlineStatus();
     }, [data]);
+    const config = { attributes: true, childList: true, subtree: true };
 
-    useEffect(() => {}, [isOnline]);
-
-    useEffect(() => {
-        if (messageBoxRef) {
-            messageBoxRef.current.addEventListener("DOMNodeInserted", event => {
-                const { currentTarget: target } = event;
-                target.scroll({ top: target.scrollHeight, behavior: "smooth" });
-            });
+    const scrollToBottom = useCallback((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === "childList") {
+                mutation.target.scroll({ top: mutation.target.scrollHeight, behavior: "smooth" });
+            }
         }
     }, []);
 
+    useEffect(() => {
+        if (messageBoxRef) {
+            const observer = new MutationObserver(scrollToBottom);
+            const targetNode = messageBoxRef.current;
+            observer.observe(targetNode, config);
+            return () => {
+                observer.disconnect();
+            };
+        }
+    });
+
+    const fetchMore = async () => {
+        const scrollHeight = document.getElementById("chatlistbox").scrollHeight;
+        const scrollTop = document.getElementById("chatlistbox").scrollTop;
+        const clientHeight = document.getElementById("chatlistbox").clientHeight;
+
+        if (scrollTop - clientHeight - 50 <= -scrollHeight) {
+            try {
+                const { data } = await refetch({
+                    roomId: parseInt(id),
+                    limit: message?.length + 25
+                });
+                setMessages([...data.getGroupMessage]);
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+    };
+    console.log(moreMessages);
+    //스크롤 랜더링
+    useEffect(() => {
+        document.getElementById("chatlistbox").addEventListener("scroll", fetchMore);
+        return () => {
+            document.getElementById("chatlistbox").removeEventListener("scroll", fetchMore);
+        };
+    });
     return (
         <GroupChatPresenter
             userData={userData}
@@ -161,6 +180,8 @@ const GroupChatContainer = props => {
             setInvite={setInvite}
             toggleInvite={toggleInvite}
             roomId={id}
+            loading={loading}
+            setMoreMessages={setMoreMessages}
         />
     );
 };
