@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AiOutlineHome, AiOutlineMessage, AiOutlineMenu, AiOutlineSearch, AiOutlineBell } from "react-icons/ai";
 import { BsPeople } from "react-icons/bs";
 import { TiGroupOutline } from "react-icons/ti";
@@ -7,6 +7,10 @@ import { CgAddR } from "react-icons/cg";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import NavDrawer from "./NavDrawer";
+import NotiDrawer from "./NotiDrawer";
+import { useLazyQuery } from "@apollo/client";
+import { GET_NOTIFICATIONS } from "../../libs/SharedQuery";
+
 const Container = styled.div`
     width: 100%;
     height: 100%;
@@ -118,11 +122,6 @@ const Nav = ({ getNotifications, messageCount }) => {
     const {
         location: { pathname }
     } = history;
-    const [title, setTitle] = useState("Intalk");
-    const [count, setCount] = useState({
-        notification: 0,
-        message: 0
-    });
 
     history.listen((newLocation, action) => {
         if (action === "PUSH") {
@@ -142,6 +141,12 @@ const Nav = ({ getNotifications, messageCount }) => {
             history.go(1);
         }
     });
+    //알림 갯수
+    const [count, setCount] = useState({
+        notification: 0,
+        message: 0
+    });
+
     useEffect(() => {
         if (getNotifications) {
             const counts = getNotifications?.filter(e => !e?.isRead).length;
@@ -154,13 +159,25 @@ const Nav = ({ getNotifications, messageCount }) => {
             return;
         }
     }, [getNotifications, messageCount]);
+
     const [visible, setVisible] = useState({
         menu: false,
         notifications: false
     });
+    //알림 메뉴
+    const [get, { data, loading, refetch }] = useLazyQuery(GET_NOTIFICATIONS);
+    const handelNotificationFetch = useCallback(() => {
+        if (data === undefined) {
+            get();
+        } else {
+            refetch();
+        }
+    }, [data, get, refetch]);
+
     return (
         <Container>
             <NavDrawer visible={visible.menu} setVisible={setVisible} />
+            <NotiDrawer data={data} loading={loading} visible={visible.notifications} setVisible={setVisible} />
             <Top>
                 <NavBoxTop>
                     <NaviTop
@@ -182,8 +199,8 @@ const Nav = ({ getNotifications, messageCount }) => {
                     </NaviTop>
                     <NaviTop
                         onClick={() => {
-                            setTitle("알림");
-                            history.push("/notifications");
+                            handelNotificationFetch();
+                            setVisible({ ...visible, notifications: !visible.notifications });
                         }}
                     >
                         {count.notification !== 0 ? <span className="noti_count">{count.notification}</span> : null}
@@ -191,7 +208,6 @@ const Nav = ({ getNotifications, messageCount }) => {
                     </NaviTop>
                     <NaviTop
                         onClick={() => {
-                            setTitle("메세지");
                             history.push("/messages");
                         }}
                     >
@@ -205,7 +221,6 @@ const Nav = ({ getNotifications, messageCount }) => {
                     <NaviBottom
                         className={pathname === "/" ? "selected" : null}
                         onClick={() => {
-                            setTitle("Intalk");
                             history.push("/");
                         }}
                     >
@@ -214,7 +229,6 @@ const Nav = ({ getNotifications, messageCount }) => {
                     <NaviBottom
                         className={pathname === "/friends" ? "selected" : null}
                         onClick={() => {
-                            setTitle("친구");
                             history.push("/friends");
                         }}
                     >
@@ -223,7 +237,6 @@ const Nav = ({ getNotifications, messageCount }) => {
                     <NaviBottom
                         className={pathname === "/add" ? "selected" : null}
                         onClick={() => {
-                            setTitle("게시물 추가 ");
                             history.push("/add");
                         }}
                     >
@@ -232,7 +245,6 @@ const Nav = ({ getNotifications, messageCount }) => {
                     <NaviBottom
                         className={pathname === "/group" ? "selected" : null}
                         onClick={() => {
-                            setTitle("학과");
                             history.push("/group");
                         }}
                     >
@@ -241,7 +253,6 @@ const Nav = ({ getNotifications, messageCount }) => {
                     <NaviBottom
                         className={pathname === "/mypage" ? "selected" : null}
                         onClick={() => {
-                            setTitle("내 정보");
                             history.push("/mypage");
                         }}
                     >
