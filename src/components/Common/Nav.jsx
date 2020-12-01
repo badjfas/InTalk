@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { AiFillHome, AiFillMessage } from "react-icons/ai";
-import { BsPeopleFill, BsPeopleCircle } from "react-icons/bs";
-import { TiGroup } from "react-icons/ti";
+import { AiOutlineHome, AiOutlineMessage, AiOutlineMenu, AiOutlineSearch, AiOutlineBell } from "react-icons/ai";
+import { BsPeople } from "react-icons/bs";
+import { TiGroupOutline } from "react-icons/ti";
+import { BiUserCircle } from "react-icons/bi";
 import { CgAddR } from "react-icons/cg";
-import { RiNotification3Fill } from "react-icons/ri";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import NavDrawer from "./NavDrawer";
 const Container = styled.div`
     width: 100%;
     height: 100%;
     max-width: 1024px;
+    svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        fill: #004680;
+        font-weight: 300;
+    }
 `;
 
 const Top = styled.div`
@@ -30,7 +37,7 @@ const Bottom = styled.div`
     z-index: 102;
     .selected {
         border-radius: 0;
-        border-top: 3px solid #ffc548;
+        border-top: 2px solid #ffc548;
         transition: 0.1s ease;
     }
 `;
@@ -42,11 +49,11 @@ const NavBox = styled.div`
     height: 3rem;
     justify-content: center;
     align-items: center;
-    background-color: #004680;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.01), 0 1px 1px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-top: 2px solid #e9e9e9;
     .selected {
         border-radius: 0;
-        border-top: 3px solid #ffc548;
+        border-top: 2px solid #ffc548;
         transition: 0.1s ease;
     }
 `;
@@ -59,8 +66,8 @@ const NavBoxTop = styled.div`
     max-width: 1024px;
     justify-content: space-between;
     align-items: center;
-    background-color: #004680;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.01), 0 1px 1px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    box-shadow: 0 1px 2px 0 rgba(40, 50, 60, 0.15);
 `;
 
 const NaviTop = styled.a`
@@ -69,6 +76,8 @@ const NaviTop = styled.a`
     align-items: center;
     color: white;
     width: 2rem;
+    margin: 0 0.5rem 0 0.5rem;
+    font-size: 1.5rem;
     position: relative;
     cursor: pointer;
     .noti_count {
@@ -85,20 +94,6 @@ const NaviTop = styled.a`
         height: 1rem;
         border-radius: 70%;
     }
-    &:first-child {
-        width: 100%;
-        margin-left: 1rem;
-    }
-    &:nth-child(2) {
-        margin-right: 0.6rem;
-    }
-    &:last-child {
-        margin-right: 1rem;
-    }
-    svg {
-        width: 1.8rem;
-        height: 1.8rem;
-    }
 `;
 const NaviBottom = styled.a`
     display: flex;
@@ -107,20 +102,12 @@ const NaviBottom = styled.a`
     width: 9.7rem;
     height: 56px;
     color: white;
-
-    svg {
-        width: 1.8rem;
-        height: 1.8rem;
-    }
-    :nth-child(3) {
-        > svg {
-            width: 1.8rem;
-            height: 1.8rem;
-        }
+    &:nth-child(3) {
+        color: #000;
     }
 `;
 const Title = styled.span`
-    font-weight: 600;
+    font-weight: 700;
     width: 100%;
 `;
 let currentPathname = null;
@@ -167,34 +154,31 @@ const Nav = ({ getNotifications, messageCount }) => {
             return;
         }
     }, [getNotifications, messageCount]);
-    useEffect(() => {
-        if (pathname === "/") {
-            setTitle("Intalk");
-        } else if (pathname === "/messages") {
-            setTitle("메시지");
-        } else if (pathname === "/friends") {
-            setTitle("친구");
-        } else if (pathname === "/add") {
-            setTitle("게시물 추가");
-        } else if (pathname === "/group") {
-            setTitle("학과");
-        } else if (pathname === "/mypage") {
-            setTitle("내 정보");
-        } else {
-            setTitle("feed");
-        }
-    }, [title, pathname]);
+    const [visible, setVisible] = useState({
+        menu: false,
+        notifications: false
+    });
     return (
         <Container>
+            <NavDrawer visible={visible.menu} setVisible={setVisible} />
             <Top>
                 <NavBoxTop>
                     <NaviTop
-                        onClick={() => {
-                            setTitle("Intalk");
-                            history.push("/");
-                        }}
+                        onClick={() =>
+                            setVisible({
+                                ...visible,
+                                menu: true
+                            })
+                        }
                     >
-                        <Title>{title}</Title>
+                        <Title>
+                            <AiOutlineMenu />
+                        </Title>
+                    </NaviTop>
+                    <NaviTop onClick={() => setVisible({ ...visible, menu: true })}>
+                        <Title>
+                            <AiOutlineSearch />
+                        </Title>
                     </NaviTop>
                     <NaviTop
                         onClick={() => {
@@ -203,7 +187,7 @@ const Nav = ({ getNotifications, messageCount }) => {
                         }}
                     >
                         {count.notification !== 0 ? <span className="noti_count">{count.notification}</span> : null}
-                        <RiNotification3Fill />
+                        <AiOutlineBell />
                     </NaviTop>
                     <NaviTop
                         onClick={() => {
@@ -212,7 +196,7 @@ const Nav = ({ getNotifications, messageCount }) => {
                         }}
                     >
                         {count.message !== 0 ? <span className="noti_count">{count.message}</span> : null}
-                        <AiFillMessage />
+                        <AiOutlineMessage />
                     </NaviTop>
                 </NavBoxTop>
             </Top>
@@ -225,7 +209,7 @@ const Nav = ({ getNotifications, messageCount }) => {
                             history.push("/");
                         }}
                     >
-                        <AiFillHome />
+                        <AiOutlineHome />
                     </NaviBottom>
                     <NaviBottom
                         className={pathname === "/friends" ? "selected" : null}
@@ -234,7 +218,7 @@ const Nav = ({ getNotifications, messageCount }) => {
                             history.push("/friends");
                         }}
                     >
-                        <BsPeopleFill />
+                        <BsPeople />
                     </NaviBottom>
                     <NaviBottom
                         className={pathname === "/add" ? "selected" : null}
@@ -252,7 +236,7 @@ const Nav = ({ getNotifications, messageCount }) => {
                             history.push("/group");
                         }}
                     >
-                        <TiGroup />
+                        <TiGroupOutline />
                     </NaviBottom>
                     <NaviBottom
                         className={pathname === "/mypage" ? "selected" : null}
@@ -261,7 +245,7 @@ const Nav = ({ getNotifications, messageCount }) => {
                             history.push("/mypage");
                         }}
                     >
-                        <BsPeopleCircle />
+                        <BiUserCircle />
                     </NaviBottom>
                 </NavBox>
             </Bottom>
