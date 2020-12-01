@@ -20,6 +20,7 @@ const PostCard = ({
     toggleLike,
     addComment,
     addChildComment,
+    createdAt,
     files
 }) => {
     const [isLikdes, setIsLikeds] = useState(isLiked);
@@ -88,7 +89,8 @@ const PostCard = ({
                     <Avatar src={user?.avatar} size={2} radius={70} />
                     <div className="department_box">
                         <span>{user?.fullName}</span>
-                        <span className="department_name">{user?.departmentName}</span>
+                        <span className="department_name">{user?.departmentName}</span>{" "}
+                        <span className="createdAt">{createdAt.split(" ")[0]}</span>
                     </div>
                     <button>
                         <BiDotsHorizontal />
@@ -244,8 +246,10 @@ const Wrapper = styled.div`
         flex-direction: column;
         background-color: #fff;
         border-radius: $post_radius;
-        margin-bottom: 48px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 4px rgba(0, 0, 0, 0.1);
+        border-top: 1px solid #d9d9d9;
+        border-bottom: 1px solid #d9d9d9;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
     }
 `;
 
@@ -270,8 +274,16 @@ const UserBox = styled.div`
         line-height: 1.3rem;
         flex-direction: column;
         margin-left: 0.5rem;
+        position: relative;
+        width: 100%;
         .department_name {
             font-size: 0.75rem;
+        }
+        .createdAt {
+            font-size: 0.5rem;
+            position: absolute;
+            right: 0;
+            bottom: 0;
         }
     }
 `;

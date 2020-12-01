@@ -17,9 +17,9 @@ const Header = styled.div`
     z-index: 2000;
     display: flex;
     align-items: center;
-    background-color: #004680;
+    background-color: #fff;
     svg {
-        color: #eee;
+        color: #004680;
         font-size: 1.5rem;
         margin-left: 0.5rem;
     }

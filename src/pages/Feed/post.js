@@ -16,6 +16,7 @@ export const SEE_POSTS = gql`
                 contents
                 isLiked
                 likesCount
+                createdAt
                 user {
                     fullName
                     departmentName
@@ -79,6 +80,7 @@ export const SEE_POST = gql`
             contents
             isLiked
             likesCount
+            createdAt
             user {
                 fullName
                 departmentName
