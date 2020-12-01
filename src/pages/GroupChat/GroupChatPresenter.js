@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import styled from "styled-components";
-import { IoMdArrowRoundBack, IoMdPersonAdd, IoMdMenu } from "react-icons/io";
+import { IoMdArrowRoundBack, IoMdMenu } from "react-icons/io";
 import TextBar from "../../components/Chat/TextBar";
 import { FaPaperPlane } from "react-icons/fa";
 import MenuDrawer from "../../components/Chat/MenuDrawer";
@@ -69,7 +69,6 @@ const ChatListBox = styled.div`
     ::-webkit-scrollbar {
         display: none;
     }
-    /* justify-content: flex-end; */
 `;
 
 const InputBox = styled.div`
@@ -119,7 +118,8 @@ const GroupChatPresenter = ({
     toggleInvite,
     roomId,
     loading,
-    setMoreMessages
+    type,
+    setType
 }) => {
     const [visible, setVisible] = useState(false);
     const [tab, setTab] = useState(false);
@@ -157,15 +157,19 @@ const GroupChatPresenter = ({
                         inviteChatMutation={inviteChatMutation}
                     />
                 ) : null}
-                <ChatListBox ref={messageBoxRef} id="chatlistbox">
+                <ChatListBox
+                    ref={messageBoxRef}
+                    id="chatlistbox"
+                    onMouseEnter={() => setType({ readOnly: true })}
+                    onTouchStart={() => setType({ readOnly: true })}
+                >
                     {loading ? null : (
                         <Fragment>
-                            {" "}
-                            {messages?.map(message => {
+                            {messages?.map((message) => {
                                 return userData?.me?.meId !== message.sender.id ? (
                                     <TextBar key={message.id} type={SENDER} message={message} />
                                 ) : (
-                                    <TextBar key={message.id * 2} type={ME} message={message} />
+                                    <TextBar key={message.id} type={ME} message={message} />
                                 );
                             })}
                         </Fragment>
@@ -177,12 +181,21 @@ const GroupChatPresenter = ({
                         placeholder="메시지를 입력해주세요."
                         value={text}
                         ref={inputMessageRef}
-                        onChange={e => setText(e.target.value)}
-                        onKeyPress={e => {
+                        onFocus={() =>
+                            setType({
+                                readOnly: false
+                            })
+                        }
+                        onChange={(e) => {
+                            setText(e.target.value);
+                            setType({
+                                readOnly: false
+                            });
+                        }}
+                        onKeyPress={(e) => {
                             if (e.key === "Enter") {
                                 setText("");
                                 sendMessageMutation();
-                                setMoreMessages(0);
                             }
                         }}
                     />
@@ -191,7 +204,6 @@ const GroupChatPresenter = ({
                         onClick={() => {
                             setText("");
                             sendMessageMutation();
-                            setMoreMessages(0);
                         }}
                     >
                         <FaPaperPlane />
