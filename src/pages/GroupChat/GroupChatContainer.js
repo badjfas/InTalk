@@ -13,9 +13,12 @@ import {
 } from "./group";
 import GroupChatPresenter from "./GroupChatPresenter";
 
-const GroupChatContainer = props => {
+const GroupChatContainer = (props) => {
     let arr = [];
-    const [moreMessages, setMoreMessages] = useState(false);
+    const [type, setType] = useState({
+        readOnly: false
+    });
+
     const inputMessageRef = useRef(null);
     const messageBoxRef = useRef(null);
     const {
@@ -30,10 +33,10 @@ const GroupChatContainer = props => {
     const timestamp = TimeStamp();
     //친구 초대목록 핸들링
     const [invite, setInvite] = useState([]);
-    const toggleInvite = id => {
-        const isExist = invite.find(e => e === id);
+    const toggleInvite = (id) => {
+        const isExist = invite.find((e) => e === id);
         if (isExist) {
-            setInvite(invite.filter(e => e !== id));
+            setInvite(invite.filter((e) => e !== id));
             return;
         } else {
             setInvite([...invite, id]);
@@ -57,10 +60,10 @@ const GroupChatContainer = props => {
             roomId: parseInt(id)
         },
         onCompleted: () => {
-            participants.seeRoom.participants.map(e => {
+            participants.seeRoom.participants.map((e) => {
                 arr.push(e.id);
             });
-            setReceivers(arr.filter(e => parseInt(e) !== user.id).join(","));
+            setReceivers(arr.filter((e) => parseInt(e) !== user.id).join(","));
         }
     });
 
@@ -99,7 +102,7 @@ const GroupChatContainer = props => {
         if (data !== undefined) {
             const { newGroupMessage } = data;
             const { data: d } = await refetch();
-            setMessages(prev => [
+            setMessages((prev) => [
                 // {
                 //     ...newGroupMessage,
                 //     isRead:
@@ -126,15 +129,17 @@ const GroupChatContainer = props => {
             }
         }
     }, []);
-
+    console.log(type.readOnly);
     useEffect(() => {
-        if (messageBoxRef) {
-            const observer = new MutationObserver(scrollToBottom);
-            const targetNode = messageBoxRef.current;
-            observer.observe(targetNode, config);
-            return () => {
-                observer.disconnect();
-            };
+        if (type.readOnly === false) {
+            if (messageBoxRef) {
+                const observer = new MutationObserver(scrollToBottom);
+                const targetNode = messageBoxRef.current;
+                observer.observe(targetNode, config);
+                return () => {
+                    observer.disconnect();
+                };
+            }
         }
     });
 
@@ -155,7 +160,6 @@ const GroupChatContainer = props => {
             }
         }
     };
-    console.log(moreMessages);
     //스크롤 랜더링
     useEffect(() => {
         document.getElementById("chatlistbox").addEventListener("scroll", fetchMore);
@@ -181,7 +185,8 @@ const GroupChatContainer = props => {
             toggleInvite={toggleInvite}
             roomId={id}
             loading={loading}
-            setMoreMessages={setMoreMessages}
+            setType={setType}
+            type={type}
         />
     );
 };
