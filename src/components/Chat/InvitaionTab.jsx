@@ -15,9 +15,8 @@ const Wrapper = styled.div`
 const Header = styled.div`
     display: flex;
     max-width: 1024px;
-
     align-items: center;
-    height: 3rem;
+    padding: 1rem;
     width: 100%;
     background-color: #fff;
     border-bottom: 1px solid #e9e9e9;
@@ -32,9 +31,9 @@ const Header = styled.div`
 `;
 
 const Box = styled.div`
-    padding-top: 3rem;
+    padding-top: 5rem;
     height: 100%;
-    padding-bottom: 3rem;
+    padding-bottom: 2rem;
     overflow-y: scroll;
     ::-webkit-scrollbar {
         display: none;

@@ -13,12 +13,8 @@ import {
 } from "./group";
 import GroupChatPresenter from "./GroupChatPresenter";
 
-const GroupChatContainer = (props) => {
+const GroupChatContainer = props => {
     let arr = [];
-    const [type, setType] = useState({
-        readOnly: false
-    });
-
     const inputMessageRef = useRef(null);
     const messageBoxRef = useRef(null);
     const {
@@ -33,10 +29,10 @@ const GroupChatContainer = (props) => {
     const timestamp = TimeStamp();
     //친구 초대목록 핸들링
     const [invite, setInvite] = useState([]);
-    const toggleInvite = (id) => {
-        const isExist = invite.find((e) => e === id);
+    const toggleInvite = id => {
+        const isExist = invite.find(e => e === id);
         if (isExist) {
-            setInvite(invite.filter((e) => e !== id));
+            setInvite(invite.filter(e => e !== id));
             return;
         } else {
             setInvite([...invite, id]);
@@ -46,10 +42,10 @@ const GroupChatContainer = (props) => {
     const { data: userData } = useQuery(ME);
     //메시지 목록
     const [message, setMessages] = useState([]);
-    const { data: oldMessage, loading, refetch } = useQuery(GET_GROUP_MESSAGE, {
+    const { data: oldMessage, refetch } = useQuery(GET_GROUP_MESSAGE, {
         variables: {
             roomId: parseInt(id),
-            limit: 50
+            limit: 30
         },
         onCompleted: () => setMessages(oldMessage.getGroupMessage)
     });
@@ -60,23 +56,27 @@ const GroupChatContainer = (props) => {
             roomId: parseInt(id)
         },
         onCompleted: () => {
-            participants.seeRoom.participants.map((e) => {
+            participants.seeRoom.participants.map(e => {
                 arr.push(e.id);
             });
-            setReceivers(arr.filter((e) => parseInt(e) !== user.id).join(","));
+            setReceivers(arr.filter(e => parseInt(e) !== user.id).join(","));
         }
     });
 
     //메시지 입력
     const [text, setText] = useState("");
-    const [sendMessageMutation] = useMutation(SEND_GROUP_MESSAGE, {
-        variables: {
-            roomId: parseInt(id),
-            text: text,
-            timestamp: timestamp,
-            isRead: receivers
-        }
-    });
+    const [sendMessageMutation] = useMutation(SEND_GROUP_MESSAGE);
+
+    const onSubmitMessage = async () => {
+        await sendMessageMutation({
+            variables: {
+                roomId: parseInt(id),
+                text: text,
+                timestamp: timestamp,
+                isRead: receivers
+            }
+        });
+    };
 
     //Subscription
     const { data } = useSubscription(NEW_GROUP_MESSAGE, {
@@ -97,76 +97,46 @@ const GroupChatContainer = (props) => {
             }
         ]
     });
+
     //메시지 업데이트
     const handleNewMessage = async () => {
         if (data !== undefined) {
-            const { newGroupMessage } = data;
+            messageBoxRef.current.firstChild.scrollIntoView({ behavior: "smooth" });
             const { data: d } = await refetch();
-            setMessages((prev) => [
-                // {
-                //     ...newGroupMessage,
-                //     isRead:
-                //         newGroupMessage.isRead
-                //             ?.split(",")
-                //             ?.filter(e => parseInt(e) !== user.id)
-                //             ?.join(",") ?? newGroupMessage.isRead
-                // },
-                ...d.getGroupMessage
-            ]);
+            setMessages([...d.getGroupMessage]);
         }
     };
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         inputMessageRef.current.focus();
         handleNewMessage();
     }, [data]);
-    const config = { attributes: true, childList: true, subtree: true };
 
-    const scrollToBottom = useCallback((mutationsList, observer) => {
-        for (const mutation of mutationsList) {
-            if (mutation.type === "childList") {
-                mutation.target.scroll({ top: mutation.target.scrollHeight, behavior: "smooth" });
-            }
-        }
-    }, []);
-    console.log(type.readOnly);
-    useEffect(() => {
-        if (type.readOnly === false) {
-            if (messageBoxRef) {
-                const observer = new MutationObserver(scrollToBottom);
-                const targetNode = messageBoxRef.current;
-                observer.observe(targetNode, config);
-                return () => {
-                    observer.disconnect();
-                };
-            }
-        }
-    });
+    const fetchMore = useCallback(async () => {
+        const scrollHeight = messageBoxRef.current.scrollHeight;
+        const scrollTop = messageBoxRef.current.scrollTop;
+        const clientHeight = messageBoxRef.current.clientHeight;
 
-    const fetchMore = async () => {
-        const scrollHeight = document.getElementById("chatlistbox").scrollHeight;
-        const scrollTop = document.getElementById("chatlistbox").scrollTop;
-        const clientHeight = document.getElementById("chatlistbox").clientHeight;
-
-        if (scrollTop - clientHeight - 50 <= -scrollHeight) {
+        if (Math.abs(scrollTop - clientHeight - 48) >= scrollHeight) {
+            messageBoxRef.current.style.cssText = "overflow : hidden;";
+            setLoading(true);
             try {
                 const { data } = await refetch({
                     roomId: parseInt(id),
-                    limit: message?.length + 25
+                    limit: message?.length + 30
                 });
-                setMessages([...data.getGroupMessage]);
+                setTimeout(() => {
+                    setLoading(false);
+                    messageBoxRef.current.style.cssText = "overflow : scroll;";
+                    setMessages([...data.getGroupMessage]);
+                }, 1500);
             } catch (e) {
                 console.warn(e);
             }
         }
-    };
-    //스크롤 랜더링
-    useEffect(() => {
-        document.getElementById("chatlistbox").addEventListener("scroll", fetchMore);
-        return () => {
-            document.getElementById("chatlistbox").removeEventListener("scroll", fetchMore);
-        };
-    });
+    }, [message?.length, id, refetch, loading]);
+
     return (
         <GroupChatPresenter
             userData={userData}
@@ -176,7 +146,7 @@ const GroupChatContainer = (props) => {
             text={text}
             participants={participants}
             setText={setText}
-            sendMessageMutation={sendMessageMutation}
+            onSubmitMessage={onSubmitMessage}
             inputMessageRef={inputMessageRef}
             messageBoxRef={messageBoxRef}
             inviteChatMutation={inviteChatMutation}
@@ -185,8 +155,7 @@ const GroupChatContainer = (props) => {
             toggleInvite={toggleInvite}
             roomId={id}
             loading={loading}
-            setType={setType}
-            type={type}
+            fetchMore={fetchMore}
         />
     );
 };

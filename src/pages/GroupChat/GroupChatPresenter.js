@@ -7,13 +7,13 @@ import MenuDrawer from "../../components/Chat/MenuDrawer";
 import InvitationTab from "../../components/Chat/InvitaionTab";
 const Header = styled.div`
     position: fixed;
-    height: 3rem;
+    padding: 1rem;
     width: 100%;
     top: 0;
     z-index: 2100;
     max-width: 1024px;
     display: flex;
-    position: relative;
+    position: fixed;
     align-items: center;
     background-color: #004680;
     .left {
@@ -42,16 +42,15 @@ const Header = styled.div`
 `;
 
 const Container = styled.div`
-    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    position: absolute;
-    margin: 0px auto;
+    position: fixed;
     top: 0;
+    margin: 0px auto;
     background-color: #fff;
     z-index: 2000;
     max-width: 1024px;
@@ -59,13 +58,17 @@ const Container = styled.div`
 
 const ChatListBox = styled.div`
     display: flex;
-    flex-direction: column;
+    height: calc(100% - 6rem);
     position: relative;
-    overflow-y: scroll;
     width: 100%;
-    height: 100%;
-    flex-flow: column-reverse;
-    margin-bottom: 48px;
+
+    .inner_box {
+        display: flex;
+        flex-direction: column;
+        overflow-y: scroll;
+        flex-flow: column-reverse;
+        width: 100%;
+    }
     ::-webkit-scrollbar {
         display: none;
     }
@@ -108,7 +111,7 @@ const GroupChatPresenter = ({
     messages,
     text,
     setText,
-    sendMessageMutation,
+    onSubmitMessage,
     inputMessageRef,
     messageBoxRef,
     inviteChatMutation,
@@ -117,9 +120,8 @@ const GroupChatPresenter = ({
     setInvite,
     toggleInvite,
     roomId,
-    loading,
-    type,
-    setType
+    fetchMore,
+    loading
 }) => {
     const [visible, setVisible] = useState(false);
     const [tab, setTab] = useState(false);
@@ -157,45 +159,36 @@ const GroupChatPresenter = ({
                         inviteChatMutation={inviteChatMutation}
                     />
                 ) : null}
-                <ChatListBox
-                    ref={messageBoxRef}
-                    id="chatlistbox"
-                    onMouseEnter={() => setType({ readOnly: true })}
-                    onTouchStart={() => setType({ readOnly: true })}
-                >
-                    {loading ? null : (
-                        <Fragment>
-                            {messages?.map((message) => {
-                                return userData?.me?.meId !== message.sender.id ? (
-                                    <TextBar key={message.id} type={SENDER} message={message} />
-                                ) : (
-                                    <TextBar key={message.id} type={ME} message={message} />
-                                );
-                            })}
-                        </Fragment>
-                    )}
+                {loading ? <div> loading ...</div> : null}
+                <ChatListBox id="chatlistbox">
+                    <div
+                        className="inner_box"
+                        ref={messageBoxRef}
+                        onScroll={() => {
+                            fetchMore();
+                        }}
+                    >
+                        {messages?.map(message => {
+                            return userData?.me?.meId !== message.sender.id ? (
+                                <TextBar key={message.id} type={SENDER} message={message} />
+                            ) : (
+                                <TextBar key={message.id} type={ME} message={message} />
+                            );
+                        })}
+                    </div>
                 </ChatListBox>
-
                 <InputBox className="submit_box">
                     <input
                         placeholder="메시지를 입력해주세요."
                         value={text}
                         ref={inputMessageRef}
-                        onFocus={() =>
-                            setType({
-                                readOnly: false
-                            })
-                        }
-                        onChange={(e) => {
+                        onChange={e => {
                             setText(e.target.value);
-                            setType({
-                                readOnly: false
-                            });
                         }}
-                        onKeyPress={(e) => {
+                        onKeyPress={e => {
                             if (e.key === "Enter") {
                                 setText("");
-                                sendMessageMutation();
+                                onSubmitMessage();
                             }
                         }}
                     />
@@ -203,7 +196,7 @@ const GroupChatPresenter = ({
                         className={text !== "" ? "fill" : ""}
                         onClick={() => {
                             setText("");
-                            sendMessageMutation();
+                            onSubmitMessage();
                         }}
                     >
                         <FaPaperPlane />

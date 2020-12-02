@@ -26,13 +26,13 @@ const Major = styled.span`
     height: 100%;
 `;
 
-export default ({ userInfoData, visible, setVisible, createChatRoom }) => {
+export default ({ userInfoData, visible, setVisible }) => {
     return (
         <Fragment>
             <Container
                 onClick={async () => {
                     setVisible({
-                        id: userInfoData.userId,
+                        id: userInfoData.id,
                         open: !visible.open
                     });
                 }}

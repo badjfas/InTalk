@@ -10,16 +10,19 @@ const FriendsContainer = props => {
         id: 0,
         open: false
     });
+    const [loading, setLoading] = useState(true);
     const [usersData, setUserData] = useState({});
     const { user: me } = DecodeToken(localStorage.getItem("token"));
-
+    const { data: mes, loading: l } = useQuery(ME, {
+        onCompleted: () => setLoading(false)
+    });
     //모든 유저
     const { data: userData } = useQuery(SEE_USERS, {
         onCompleted: () => setUserData(userData)
     });
 
     //나의 챗룸
-    const [getRooms, { data: roomsData }] = useLazyQuery(MY_CHAT_ROOMS);
+    const [getRooms, { data: roomsData }] = useLazyQuery(MY_CHAT_ROOMS, {});
 
     //상대방 프로필
     const [getProfile, { data: userProfileData, refetch }] = useLazyQuery(SEE_PROFILE, {});
@@ -28,7 +31,7 @@ const FriendsContainer = props => {
     const [createChatRoom] = useMutation(CREATE_CHAT_ROOM, {
         ignoreResults: false
     });
-    console.log(me);
+
     const enterChatRoom = async ({ userId, src, title }) => {
         try {
             await createChatRoom({
@@ -57,8 +60,12 @@ const FriendsContainer = props => {
         }
     };
     useEffect(() => {
-        getRooms();
-    }, [visible.id]);
+        if (loading) {
+            return;
+        } else {
+            getRooms();
+        }
+    }, [visible.id, loading]);
 
     return (
         <FriendsPresenter
@@ -68,10 +75,11 @@ const FriendsContainer = props => {
             visible={visible}
             setVisible={setVisible}
             enterChatRoom={enterChatRoom}
-            getRooms={getRooms}
+            {...mes}
             roomsData={roomsData}
             getProfile={getProfile}
             userProfileData={userProfileData}
+            loading={loading}
         />
     );
 };

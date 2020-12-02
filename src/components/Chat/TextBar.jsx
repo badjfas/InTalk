@@ -13,7 +13,7 @@ const Sender = styled.div`
         flex-flow: column-reverse;
         color: #999;
         padding-left: 0.5rem;
-        font-size: 0.3rem;
+        font-size: 0.4em;
         display: flex;
         position: absolute;
         right: -2rem;
@@ -26,12 +26,14 @@ const Sender = styled.div`
         right: -10px;
         top: 28px;
         display: flex;
-        font-size: 0.2rem;
+        font-size: 0.4rem;
     }
 `;
 
 const Me = styled.div`
     display: flexbox;
+    position: relative;
+
     align-items: center;
     margin-bottom: 1rem;
 `;
@@ -84,7 +86,7 @@ const MeText = styled.pre`
             position: absolute;
             display: flex;
             top: 3px;
-            font-size: 0.2rem;
+            font-size: 0.4rem;
             width: 100%;
             left: 0.5rem;
             > span {

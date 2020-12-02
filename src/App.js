@@ -62,7 +62,6 @@ function App() {
     const handleNewMessage = useCallback(() => {
         if (data !== undefined) {
             const { newMessageForNotification } = data;
-            console.log(newMessageForNotification);
             let arr = [];
             arr.push(newMessageForNotification);
             setMessageCount(prev => {

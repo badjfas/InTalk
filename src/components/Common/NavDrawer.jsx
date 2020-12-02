@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
-import { IoIosAddCircleOutline, IoIosRemoveCircle, IoMdArrowRoundBack } from "react-icons/io";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const Overlay = styled.div`
     display: ${props => (props.visible ? "flex" : "none")};
@@ -72,7 +72,7 @@ const NavDrawer = ({ setVisible, visible, participants, setTab }) => {
         <Fragment>
             <Wrapper visible={visible}>
                 <div className="back_arrow">
-                    <IoMdArrowRoundBack onClick={() => setVisible({ ...visible, menu: false })} />
+                    <IoMdArrowRoundBack onClick={() => setVisible({ menu: false, participants: false })} />
                 </div>
                 {visible ? (
                     <Fragment>
@@ -87,7 +87,7 @@ const NavDrawer = ({ setVisible, visible, participants, setTab }) => {
                     </Fragment>
                 ) : null}
             </Wrapper>
-            <Overlay visible={visible} onClick={() => setVisible({ ...visible, menu: false })} />
+            <Overlay visible={visible} onClick={() => setVisible({ menu: false, participants: false })} />
         </Fragment>
     );
 };

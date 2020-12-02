@@ -34,7 +34,7 @@ const PostDetailPresenter = ({ data, loading, history, toggleLike, addComment, a
             </Header>
             <Container>
                 <PostDetailCard
-                    {...data.seePost}
+                    {...data?.seePost}
                     toggleLike={toggleLike}
                     addComment={addComment}
                     addChildComment={addChildComment}

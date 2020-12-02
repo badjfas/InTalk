@@ -86,7 +86,6 @@ export default ({ data, loading, queryData, setQueryData, visible, setVisible, p
                     <span onClick={() => setPopup({ ...popup, followPopup: true })}>
                         팔로워 {data?.me?.followers.length}
                     </span>
-                    <span>내 게시물 {data?.me?.rooms.length}</span>
                 </UserDetailBox>
             </UserBox>
         </Container>

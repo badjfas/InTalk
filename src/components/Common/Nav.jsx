@@ -164,6 +164,7 @@ const Nav = ({ getNotifications, messageCount }) => {
         menu: false,
         notifications: false
     });
+
     //알림 메뉴
     const [get, { data, loading, refetch }] = useLazyQuery(GET_NOTIFICATIONS);
     const handelNotificationFetch = useCallback(() => {
@@ -174,16 +175,27 @@ const Nav = ({ getNotifications, messageCount }) => {
         }
     }, [data, get, refetch]);
 
+    useEffect(() => {
+        if (visible.notifications || visible.menu) {
+            document.documentElement.style.overflow = "hidden";
+        } else {
+            document.documentElement.style.overflow = "unset";
+        }
+    }, [visible.menu, visible.notifications]);
+
     return (
         <Container>
+            {/* Drawer */}
             <NavDrawer visible={visible.menu} setVisible={setVisible} />
             <NotiDrawer data={data} loading={loading} visible={visible.notifications} setVisible={setVisible} />
+            {/* Drawer */}
+
             <Top>
                 <NavBoxTop>
                     <NaviTop
                         onClick={() =>
                             setVisible({
-                                ...visible,
+                                notifications: false,
                                 menu: true
                             })
                         }
@@ -192,7 +204,7 @@ const Nav = ({ getNotifications, messageCount }) => {
                             <AiOutlineMenu />
                         </Title>
                     </NaviTop>
-                    <NaviTop onClick={() => setVisible({ ...visible, menu: true })}>
+                    <NaviTop onClick={() => setVisible({ notifications: false, menu: true })}>
                         <Title>
                             <AiOutlineSearch />
                         </Title>
@@ -200,7 +212,7 @@ const Nav = ({ getNotifications, messageCount }) => {
                     <NaviTop
                         onClick={() => {
                             handelNotificationFetch();
-                            setVisible({ ...visible, notifications: !visible.notifications });
+                            setVisible({ menu: false, notifications: !visible.notifications });
                         }}
                     >
                         {count.notification !== 0 ? <span className="noti_count">{count.notification}</span> : null}

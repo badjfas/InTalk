@@ -7,11 +7,11 @@ export const ME = gql`
             fullName
             avatar
             departmentName
-            rooms {
+            group_rooms {
                 id
-                notReadMessagesCount
-                participantId
-                myId
+                title
+                roomImage
+                notReadMessage
             }
             followings {
                 id

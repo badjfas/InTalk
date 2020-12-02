@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import FriendCard from "../../components/Common/FriendCard";
 import ProfilePopup from "../../components/Common/popup/ProfilePopup";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 const Container = styled.div`
     max-width: 1024px;
@@ -16,16 +17,15 @@ const FreindsBox = styled.div`
     flex-direction: column;
 `;
 const FriendsPresenter = ({
-    usersData,
     visible,
     setVisible,
     onClickAddFriend,
     enterChatRoom,
-    roomsData,
     userProfileData,
-    getRooms,
     getProfile,
-    history
+    history,
+    loading,
+    me
 }) => {
     return (
         <Container className="friends">
@@ -34,8 +34,6 @@ const FriendsPresenter = ({
                     visible={visible}
                     onClickAddFriend={onClickAddFriend}
                     setVisible={setVisible}
-                    getRooms={getRooms}
-                    roomsData={roomsData}
                     getProfile={getProfile}
                     userProfileData={userProfileData}
                     history={history}
@@ -44,18 +42,26 @@ const FriendsPresenter = ({
             ) : null}
 
             <FreindsBox>
-                {usersData?.seeUsers?.map(user => {
-                    if (!user?.isMe) {
-                        return (
-                            <FriendCard
-                                key={user.userId}
-                                userInfoData={user}
-                                visible={visible}
-                                setVisible={setVisible}
-                            />
-                        );
-                    }
-                })}
+                {loading ? (
+                    <div style={{ lineHeight: 2 }}>
+                        <SkeletonTheme color="#F3F6FB" highlightColor="#fff">
+                            <Skeleton height={"3rem"} count={12} />
+                        </SkeletonTheme>
+                    </div>
+                ) : (
+                    me.followings.map(user => {
+                        if (!user?.isMe) {
+                            return (
+                                <FriendCard
+                                    key={user.id}
+                                    userInfoData={user}
+                                    visible={visible}
+                                    setVisible={setVisible}
+                                />
+                            );
+                        }
+                    })
+                )}
             </FreindsBox>
         </Container>
     );
