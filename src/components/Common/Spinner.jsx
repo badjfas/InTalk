@@ -10,17 +10,19 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
     z-index: 9999;
     position: absolute;
-    top: 3rem;
+    top: ${props => props.top};
+    bottom: ${props => props.bottom};
     svg {
         font-size: ${props => props.size}rem;
         animation: ${Indicatior} 2s linear infinite;
     }
 `;
-const Spinner = ({ size }) => {
+const Spinner = ({ size, top, bottom }) => {
     return (
-        <Wrapper>
+        <Wrapper top={top} bottom={bottom}>
             <AiOutlineLoading3Quarters size={size} />
         </Wrapper>
     );
