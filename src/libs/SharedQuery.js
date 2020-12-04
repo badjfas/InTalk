@@ -32,6 +32,10 @@ export const NEW_MESSAGE = gql`
         newMessageForNotification(id: $id) {
             id
             roomId
+            sender {
+                avatar
+                fullName
+            }
             text
         }
     }

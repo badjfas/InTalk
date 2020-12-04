@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { gql, useQuery, useSubscription } from "@apollo/client";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import Theme from "./styles/Theme";
 import GlobalStyles from "./styles/GlobalStyles";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,6 +14,23 @@ import {
     MY_CHAT_ROOMS
 } from "./libs/SharedQuery";
 import { DecodeToken } from "./libs/decodeToken";
+import Avatar from "./components/Common/Avatar";
+
+const MessageBox = styled.div`
+    display: flex;
+    align-items: center;
+    > span {
+        margin-left: 1rem;
+    }
+`;
+
+const User = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
 const IS_LOGIN = gql`
     {
         isLogin @client
@@ -62,21 +79,32 @@ function App() {
     const handleNewMessage = useCallback(() => {
         if (data !== undefined) {
             const { newMessageForNotification } = data;
+            console.log(newMessageForNotification);
             let arr = [];
             arr.push(newMessageForNotification);
             setMessageCount(prev => {
                 return prev + arr.length;
             });
-            toast.dark(`: ${newMessageForNotification.text}`, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                onClick: () => (window.location.href = `/groupchat/${newMessageForNotification.roomId}`)
-            });
+            toast.dark(
+                <MessageBox>
+                    <User>
+                        <Avatar src={newMessageForNotification.sender.avatar} radius={30} size={2.3} />
+                    </User>
+                    <span>
+                        {newMessageForNotification.sender.fullName} : {newMessageForNotification.text}
+                    </span>
+                </MessageBox>,
+                {
+                    position: "top-center",
+                    autoClose: 2000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    onClick: () => (window.location.href = `/groupchat/${newMessageForNotification.roomId}`)
+                }
+            );
         }
     }, [data]);
 
