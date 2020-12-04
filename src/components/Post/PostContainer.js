@@ -3,9 +3,7 @@ import React, { useRef } from "react";
 import { ADD_CHILD_COMMENT, ADD_COMMENT, SEE_ALL_COMMENTS, TOGGLE_LIKE } from "../../pages/Feed/post";
 import PostPresenter from "./PostPresenter";
 
-const Posts = ({ postData, refetch, setPosts, history }) => {
-    const inputRef = useRef(null);
-
+const Posts = ({ postData, refetch, setPosts, history, scrollEl, loading, handleScroll }) => {
     //좋아요
     const [toggleLikeMutation] = useMutation(TOGGLE_LIKE);
 
@@ -88,13 +86,15 @@ const Posts = ({ postData, refetch, setPosts, history }) => {
 
     return (
         <PostPresenter
+            handleScroll={handleScroll}
             toggleLike={toggleLike}
             addComment={addComment}
             addChildComment={addChildComment}
             postData={postData}
             refetch={refetch}
-            inputRef={inputRef}
             history={history}
+            scrollEl={scrollEl}
+            loading={loading}
         />
     );
 };

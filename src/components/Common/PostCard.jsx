@@ -21,7 +21,8 @@ const PostCard = ({
     addComment,
     addChildComment,
     createdAt,
-    files
+    files,
+    history
 }) => {
     const [isLikdes, setIsLikeds] = useState(isLiked);
     const [comment, setComment] = useState("");
@@ -83,7 +84,7 @@ const PostCard = ({
     };
 
     return (
-        <Wrapper className="post" id={postId} key={postId}>
+        <Wrapper className="post" id={postId} onClick={() => history.push(`/post/${postId}`)}>
             <div className="post_posting">
                 <UserBox className="title">
                     <Avatar src={user?.avatar} size={2} radius={70} />

@@ -11,6 +11,7 @@ export const UPLOAD_POST = gql`
 export const SEE_POSTS = gql`
     query seePosts($itemNum: Int, $departmentId: Int) {
         seePosts(itemNum: $itemNum, departmentId: $departmentId) {
+            count
             rows {
                 postId: id
                 contents

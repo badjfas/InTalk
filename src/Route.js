@@ -8,21 +8,19 @@ const LoggedInRoutes = ({ getNotifications, messageCount }) => {
     return (
         <Fragment>
             <BrowserRouter>
-                <div>
-                    <Switch>
-                        <Route exact path="/" component={Feed} />
-                        <Route exact path="/post/:id" component={PostDetail} />
-                        <Route exact path="/friends" component={Friends} />
-                        <Route exact path="/add" component={Add} />
-                        <Route exact path="/messages" component={Rooms} />
-                        <Route exact path="/chat/:roomId/:toId" component={Chat} />
-                        <Route exact path="/mypage" component={Mypage} />
-                        <Route exact path="/group" component={Major} />
-                        <Route exact path="/groupchat/:id" component={GroupChat} />
-                        <Route exact path="/notifications" component={Notifications} />
-                        <Redirect from="*" to="/" />
-                    </Switch>
-                </div>
+                <Switch>
+                    <Route exact path="/" component={Feed} />
+                    <Route exact path="/post/:id" component={PostDetail} />
+                    <Route exact path="/friends" component={Friends} />
+                    <Route exact path="/add" component={Add} />
+                    <Route exact path="/messages" component={Rooms} />
+                    <Route exact path="/chat/:roomId/:toId" component={Chat} />
+                    <Route exact path="/mypage" component={Mypage} />
+                    <Route exact path="/group" component={Major} />
+                    <Route exact path="/groupchat/:id" component={GroupChat} />
+                    <Route exact path="/notifications" component={Notifications} />
+                    <Redirect from="*" to="/" />
+                </Switch>
                 <Nav getNotifications={getNotifications} messageCount={messageCount} />
             </BrowserRouter>
         </Fragment>

@@ -1,34 +1,50 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 import PostCard from "../Common/PostCard";
-const Container = styled.div`
-    max-width: 1024px;
-    min-height: 100vh;
-    width: 100%;
+import Spinner from "../Common/Spinner";
+const Wrapper = styled.div`
+    margin: 3rem auto 3rem auto;
     display: flex;
-    justify-content: center;
+    height: 100%;
     flex-direction: column;
+    position: fixed;
+    max-width: 1024px;
+    width: 100%;
 `;
 const PostBox = styled.div`
-    height: 100%;
+    overflow: scroll;
+    position: relative;
+    height: calc(100% - 6rem);
 `;
-export default ({ postData, toggleLike, addComment, addChildComment, inputRef, history }) => {
+const PostPresenter = ({
+    postData,
+    toggleLike,
+    addComment,
+    addChildComment,
+    history,
+    scrollEl,
+    loading,
+    handleScroll
+}) => {
     return (
-        <Container>
-            <PostBox ref={inputRef}>
+        <Wrapper id="outterbox">
+            <PostBox id="innerbox" ref={scrollEl} onScroll={() => handleScroll()}>
                 {postData?.seePosts?.rows?.map(post => {
                     return (
-                        <div key={post.postId} onClick={() => history.push(`/post/${post.postId}`)}>
-                            <PostCard
-                                {...post}
-                                toggleLike={toggleLike}
-                                addComment={addComment}
-                                addChildComment={addChildComment}
-                            />
-                        </div>
+                        <PostCard
+                            history={history}
+                            {...post}
+                            key={post.postId}
+                            toggleLike={toggleLike}
+                            addComment={addComment}
+                            addChildComment={addChildComment}
+                        />
                     );
                 })}
             </PostBox>
-        </Container>
+            {loading ? <Spinner size={25} top={"unset"} bottom={"7rem"} /> : null}
+        </Wrapper>
     );
 };
+
+export default PostPresenter;
