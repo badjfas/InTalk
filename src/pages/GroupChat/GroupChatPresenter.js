@@ -5,6 +5,7 @@ import TextBar from "../../components/Chat/TextBar";
 import { FaPaperPlane } from "react-icons/fa";
 import MenuDrawer from "../../components/Chat/MenuDrawer";
 import InvitationTab from "../../components/Chat/InvitaionTab";
+import Spinner from "../../components/Common/Spinner";
 const Header = styled.div`
     position: fixed;
     padding: 1rem;
@@ -159,7 +160,7 @@ const GroupChatPresenter = ({
                         inviteChatMutation={inviteChatMutation}
                     />
                 ) : null}
-                {loading ? <div> loading ...</div> : null}
+                {loading ? <Spinner size={24} /> : null}
                 <ChatListBox id="chatlistbox">
                     <div
                         className="inner_box"
