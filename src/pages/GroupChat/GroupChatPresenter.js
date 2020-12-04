@@ -160,7 +160,7 @@ const GroupChatPresenter = ({
                         inviteChatMutation={inviteChatMutation}
                     />
                 ) : null}
-                {loading ? <Spinner size={24} /> : null}
+                {loading ? <Spinner size={24} top={"3rem"} bottom={"unset"} /> : null}
                 <ChatListBox id="chatlistbox">
                     <div
                         className="inner_box"
