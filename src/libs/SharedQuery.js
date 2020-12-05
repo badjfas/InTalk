@@ -15,6 +15,7 @@ export const ME = gql`
             }
             followings {
                 id
+                departmentName
                 fullName
                 isFollow
                 avatar
@@ -127,6 +128,19 @@ export const CREATE_CHAT_ROOM = gql`
     mutation createGroupChat($userId: String!, $title: String!, $src: String!) {
         createGroupChat(userId: $userId, title: $title, src: $src) {
             id
+        }
+    }
+`;
+
+export const SEE_USERS = gql`
+    {
+        seeUsers {
+            id
+            fullName
+            isFollow
+            isMe
+            avatar
+            departmentName
         }
     }
 `;

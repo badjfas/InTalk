@@ -16,30 +16,12 @@ const PostBox = styled.div`
     position: relative;
     height: calc(100% - 6rem);
 `;
-const PostPresenter = ({
-    postData,
-    toggleLike,
-    addComment,
-    addChildComment,
-    history,
-    scrollEl,
-    loading,
-    handleScroll
-}) => {
+const PostPresenter = ({ postData, toggleLike, history, scrollEl, loading, handleScroll }) => {
     return (
         <Wrapper id="outterbox">
             <PostBox id="innerbox" ref={scrollEl} onScroll={() => handleScroll()}>
                 {postData?.seePosts?.rows?.map(post => {
-                    return (
-                        <PostCard
-                            history={history}
-                            {...post}
-                            key={post.postId}
-                            toggleLike={toggleLike}
-                            addComment={addComment}
-                            addChildComment={addChildComment}
-                        />
-                    );
+                    return <PostCard history={history} {...post} key={post.postId} toggleLike={toggleLike} />;
                 })}
             </PostBox>
             {loading ? <Spinner size={25} top={"unset"} bottom={"7rem"} /> : null}

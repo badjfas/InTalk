@@ -33,35 +33,34 @@ const Sender = styled.div`
 const Me = styled.div`
     display: flexbox;
     position: relative;
-
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 1rem;
 `;
 
-const SenderTextBox = styled.pre`
+const SenderTextBox = styled.div`
     background-color: #eee;
     border-radius: 5px;
     padding: 0.5rem;
     font-size: 0.8rem;
     margin-left: 0.3rem;
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
     min-height: 2.3rem;
     max-width: 250px;
     line-height: 1.3rem;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 `;
 
 const MeTextBox = styled.div`
     display: flexbox;
     align-items: center;
     justify-content: flex-end;
-    width: 100%;
     font-size: 0.8rem;
     margin-right: 0.4rem;
     position: relative;
 `;
 
-const MeText = styled.pre`
+const MeText = styled.div`
     border-radius: 5px;
     padding: 0.5rem;
     background-color: #b7c5d3;
@@ -71,36 +70,30 @@ const MeText = styled.pre`
     white-space: pre-wrap;
     position: relative;
     color: #3b3c47;
-    div {
-        display: flex;
-        flex-flow: column-reverse;
-        bottom: 0;
-        color: #999;
-        padding-left: 0.5rem;
-        font-size: 0.3rem;
-        position: absolute;
-        height: 100%;
-        left: -39px;
-        div {
-            color: #999;
-            position: absolute;
-            display: flex;
-            top: 3px;
-            font-size: 0.4rem;
-            width: 100%;
-            left: 0.5rem;
-            > span {
-                position: absolute;
-                top: 0;
-                right: 0.5rem;
-            }
-        }
-    }
 `;
 
 const SenderName = styled.div`
     font-size: 0.7rem;
     margin: 0 0 0.3rem 0.3rem;
+`;
+
+const CountsBox = styled.div`
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    height: 100%;
+    margin: 0 0.2rem 0 0.2rem;
+    span {
+        font-size: 0.45rem;
+    }
+    .readCount {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .left {
+        text-align: left;
+    }
 `;
 
 const TextBar = ({ type, message: m }) => {
@@ -122,23 +115,21 @@ const TextBar = ({ type, message: m }) => {
                     )}
                     <SenderTextBox>{m.text}</SenderTextBox>
                 </div>
-                <h2>{m.isRead.split(",").length}</h2>
-                <h1>{time}</h1>
+                <CountsBox>
+                    <span className="left">{m.isRead.split(",").length}</span>
+                    <span>{time}</span>
+                </CountsBox>
             </Sender>
         );
     } else {
         return (
             <Me id={m.id} key={m.id}>
+                <CountsBox>
+                    <span className="readCount">{m.isRead.split(",").length}</span>
+                    <span className="time">{time}</span>
+                </CountsBox>
                 <MeTextBox>
-                    <MeText>
-                        <div>
-                            <div>
-                                <span>{m.isRead.split(",").length}</span>
-                            </div>
-                            {time}
-                        </div>
-                        {m.text}
-                    </MeText>
+                    <MeText>{m.text}</MeText>
                 </MeTextBox>
             </Me>
         );

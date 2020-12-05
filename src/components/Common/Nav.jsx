@@ -71,7 +71,7 @@ const NavBoxTop = styled.div`
     justify-content: space-between;
     align-items: center;
     background-color: #fff;
-    box-shadow: 0 1px 2px 0 rgba(40, 50, 60, 0.15);
+    box-shadow: 0 1px 5px 0 rgba(170, 170, 170, 0.7);
 `;
 
 const NaviTop = styled.a`
@@ -122,6 +122,36 @@ const Nav = ({ getNotifications, messageCount }) => {
     const {
         location: { pathname }
     } = history;
+
+    const [selected, setSelected] = useState("");
+    useEffect(() => {
+        switch (pathname) {
+            case "/": {
+                setSelected("/");
+                break;
+            }
+            case "/friends": {
+                setSelected("/friends");
+                break;
+            }
+            case "/add": {
+                setSelected("/add");
+                break;
+            }
+            case "/group": {
+                setSelected("/group");
+                break;
+            }
+            case "/mypage": {
+                setSelected("/mypage");
+                break;
+            }
+            default: {
+                setSelected("/");
+                break;
+            }
+        }
+    }, [pathname]);
 
     history.listen((newLocation, action) => {
         if (action === "PUSH") {
@@ -231,40 +261,45 @@ const Nav = ({ getNotifications, messageCount }) => {
             <Bottom>
                 <NavBox>
                     <NaviBottom
-                        className={pathname === "/" ? "selected" : null}
+                        className={selected === "/" ? "selected" : null}
                         onClick={() => {
                             history.push("/");
+                            setSelected("/");
                         }}
                     >
                         <AiOutlineHome />
                     </NaviBottom>
                     <NaviBottom
-                        className={pathname === "/friends" ? "selected" : null}
+                        className={selected === "/friends" ? "selected" : null}
                         onClick={() => {
                             history.push("/friends");
+                            setSelected("/friends");
                         }}
                     >
                         <BsPeople />
                     </NaviBottom>
                     <NaviBottom
-                        className={pathname === "/add" ? "selected" : null}
+                        className={selected === "/add" ? "selected" : null}
                         onClick={() => {
                             history.push("/add");
+                            setSelected("/add");
                         }}
                     >
                         <CgAddR />
                     </NaviBottom>
                     <NaviBottom
-                        className={pathname === "/group" ? "selected" : null}
+                        className={selected === "/group" ? "selected" : null}
                         onClick={() => {
                             history.push("/group");
+                            setSelected("/group");
                         }}
                     >
                         <TiGroupOutline />
                     </NaviBottom>
                     <NaviBottom
-                        className={pathname === "/mypage" ? "selected" : null}
+                        className={selected === "/mypage" ? "selected" : null}
                         onClick={() => {
+                            setSelected("/mypage");
                             history.push("/mypage");
                         }}
                     >

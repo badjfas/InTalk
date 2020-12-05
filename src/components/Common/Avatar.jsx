@@ -9,7 +9,8 @@ const Container = styled.div`
 `;
 
 const Image = styled.img`
-    background-color: #999;
+    background-color: #b7c5d3;
+    border: 1px solid #b7c5d3;
     outline: none;
     border-radius: ${props => props.radius}%;
     width: ${props => props.size}rem;
