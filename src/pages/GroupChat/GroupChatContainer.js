@@ -14,6 +14,7 @@ import {
 import GroupChatPresenter from "./GroupChatPresenter";
 
 const GroupChatContainer = props => {
+    const isNaver = navigator.vendor.split(" ")[0].toLowerCase();
     let arr = [];
     const inputMessageRef = useRef(null);
     const messageBoxRef = useRef(null);
@@ -118,21 +119,46 @@ const GroupChatContainer = props => {
         const scrollTop = messageBoxRef.current.scrollTop;
         const clientHeight = messageBoxRef.current.clientHeight;
 
-        if (Math.abs(scrollTop - clientHeight - 48) >= scrollHeight) {
-            messageBoxRef.current.style.cssText = "overflow : hidden;";
-            setLoading(true);
-            try {
-                const { data } = await refetch({
-                    roomId: parseInt(id),
-                    limit: message?.length + 30
-                });
-                setTimeout(() => {
-                    setLoading(false);
-                    messageBoxRef.current.style.cssText = "overflow : scroll;";
-                    setMessages([...data.getGroupMessage]);
-                }, 1500);
-            } catch (e) {
-                console.warn(e);
+        switch (isNaver) {
+            case "naver": {
+                if (scrollTop === 0) {
+                    messageBoxRef.current.style.cssText = "overflow : hidden;";
+                    setLoading(true);
+                    try {
+                        const { data } = await refetch({
+                            roomId: parseInt(id),
+                            limit: message?.length + 30
+                        });
+                        setTimeout(() => {
+                            setLoading(false);
+                            messageBoxRef.current.style.cssText = "overflow : scroll;";
+                            setMessages([...data.getGroupMessage]);
+                        }, 1500);
+                    } catch (e) {
+                        console.warn(e);
+                    }
+                }
+                break;
+            }
+            default: {
+                if (Math.abs(scrollTop - clientHeight - 48) >= scrollHeight) {
+                    messageBoxRef.current.style.cssText = "overflow : hidden;";
+                    setLoading(true);
+                    try {
+                        const { data } = await refetch({
+                            roomId: parseInt(id),
+                            limit: message?.length + 30
+                        });
+                        setTimeout(() => {
+                            setLoading(false);
+                            messageBoxRef.current.style.cssText = "overflow : scroll;";
+                            setMessages([...data.getGroupMessage]);
+                        }, 1500);
+                    } catch (e) {
+                        console.warn(e);
+                    }
+                }
+                break;
             }
         }
     }, [message?.length, id, refetch, loading]);
