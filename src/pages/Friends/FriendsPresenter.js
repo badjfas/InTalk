@@ -33,8 +33,8 @@ const FriendsPresenter = ({
             {visible.open ? (
                 <ProfilePopup
                     visible={visible}
-                    onClickAddFriend={onClickAddFriend}
                     setVisible={setVisible}
+                    onClickAddFriend={onClickAddFriend}
                     getProfile={getProfile}
                     userProfileData={userProfileData}
                     history={history}

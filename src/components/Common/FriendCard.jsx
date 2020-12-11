@@ -52,7 +52,7 @@ export default ({ userInfoData, visible, setVisible, location }) => {
                 <Avatar size={2.5} radius={30} src={userInfoData.avatar} />
                 <UserName>{userInfoData.fullName}</UserName>
                 <Major>{userInfoData.departmentName}</Major>
-                {location ? <button>친구 추가</button> : null}
+                {/* {location ? <button>친구 추가</button> : null} */}
             </Container>
         </Fragment>
     );
