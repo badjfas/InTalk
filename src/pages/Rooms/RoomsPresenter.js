@@ -10,11 +10,11 @@ const Container = styled.div`
     padding-top: 3rem;
     background-color: #fff;
 `;
-export default ({ roomsData }) => {
+export default ({ roomsData, myName }) => {
     return (
         <Container>
             {roomsData?.me?.group_rooms?.map((room, index) => {
-                return <RoomCard key={index} room={room} />;
+                return <RoomCard key={index} room={room} myName={myName} />;
             })}
         </Container>
     );

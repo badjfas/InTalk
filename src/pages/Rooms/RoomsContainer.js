@@ -27,7 +27,7 @@ const RoomsContainer = () => {
     }, [data]);
     if (loading) return <div>is loading</div>;
 
-    return <RoomsPresenter roomsData={roomsData} />;
+    return <RoomsPresenter roomsData={roomsData} myName={user.fullName} />;
 };
 
 export default RoomsContainer;
