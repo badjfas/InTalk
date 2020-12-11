@@ -43,7 +43,7 @@ const GroupChatContainer = props => {
     const { data: userData } = useQuery(ME);
     //메시지 목록
     const [message, setMessages] = useState([]);
-    const { data: oldMessage, refetch } = useQuery(GET_GROUP_MESSAGE, {
+    const { data: oldMessage, refetch, loading: getMessageLoading } = useQuery(GET_GROUP_MESSAGE, {
         variables: {
             roomId: parseInt(id),
             limit: 30
@@ -102,9 +102,13 @@ const GroupChatContainer = props => {
     //메시지 업데이트
     const handleNewMessage = async () => {
         if (data !== undefined) {
-            messageBoxRef.current.firstChild.scrollIntoView({ behavior: "smooth" });
-            const { data: d } = await refetch();
-            setMessages([...d.getGroupMessage]);
+            console.log(messageBoxRef.current.firstChild);
+            if (messageBoxRef.current.firstChild !== null) {
+                messageBoxRef.current.firstChild.scrollIntoView({ behavior: "smooth" });
+            }
+
+            const { data: newMessage } = await refetch();
+            setMessages([...newMessage.getGroupMessage]);
         }
     };
     const [loading, setLoading] = useState(false);
@@ -133,7 +137,7 @@ const GroupChatContainer = props => {
                             setLoading(false);
                             messageBoxRef.current.style.cssText = "overflow : scroll;";
                             setMessages([...data.getGroupMessage]);
-                        }, 1500);
+                        }, 500);
                     } catch (e) {
                         console.warn(e);
                     }
@@ -153,7 +157,7 @@ const GroupChatContainer = props => {
                             setLoading(false);
                             messageBoxRef.current.style.cssText = "overflow : scroll;";
                             setMessages([...data.getGroupMessage]);
-                        }, 1500);
+                        }, 500);
                     } catch (e) {
                         console.warn(e);
                     }
@@ -182,6 +186,8 @@ const GroupChatContainer = props => {
             roomId={id}
             loading={loading}
             fetchMore={fetchMore}
+            getMessageLoading={getMessageLoading}
+            myName={user.fullName}
         />
     );
 };

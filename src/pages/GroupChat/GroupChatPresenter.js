@@ -122,10 +122,14 @@ const GroupChatPresenter = ({
     toggleInvite,
     roomId,
     fetchMore,
-    loading
+    loading,
+    myName
 }) => {
     const [visible, setVisible] = useState(false);
     const [tab, setTab] = useState(false);
+    const roomName = participants?.seeRoom?.participants.map(element => {
+        return element.fullName;
+    });
     return (
         <Fragment>
             <Container>
@@ -133,7 +137,11 @@ const GroupChatPresenter = ({
                     <span className="left" onClick={() => (window.location.href = "/messages")}>
                         <IoMdArrowRoundBack />
                     </span>
-                    <span className="center">그룹채팅</span>
+                    <span className="center">
+                        {roomName?.length > 2
+                            ? roomName.join(",").slice(0, 15)
+                            : roomName?.filter(name => name !== myName)}
+                    </span>
                     <span className="right" onClick={() => setVisible(!visible)}>
                         <IoMdMenu />
                     </span>
@@ -169,11 +177,11 @@ const GroupChatPresenter = ({
                             fetchMore();
                         }}
                     >
-                        {messages?.map(message => {
+                        {messages?.map((message, index) => {
                             return userData?.me?.meId !== message.sender.id ? (
-                                <TextBar key={message.id} type={SENDER} message={message} />
+                                <TextBar key={message.id + index} type={SENDER} message={message} />
                             ) : (
-                                <TextBar key={message.id} type={ME} message={message} />
+                                <TextBar key={message.id + index} type={ME} message={message} />
                             );
                         })}
                     </div>
