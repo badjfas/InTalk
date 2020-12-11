@@ -48,13 +48,15 @@ const NotReadCount = styled.span`
     height: 1.5rem;
     border-radius: 70%;
 `;
-export default ({ room }) => {
+export default ({ room, myName }) => {
     return (
         <Wrapper>
             <Box to={`/groupchat/${room.id}`}>
                 <Avatar size={2.5} radius={30} src={room.roomImage.split("@")[0]} />
                 <UserName>
-                    {room.title.split(",").length > 2 ? room.title.split(",").join(",") : room.title.split(",")[0]}
+                    {room.title.split(",").length > 2
+                        ? room.title.split(",").join(",")
+                        : room.title.split(",").filter(name => myName !== name)}
                 </UserName>
                 {room.notReadMessage !== 0 ? <NotReadCount>{room.notReadMessage}</NotReadCount> : null}
                 <CgEnter />
