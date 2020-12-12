@@ -13,7 +13,7 @@ const Comment = ({ comment, addChildComment, postId }) => {
     return (
         <Fragment key={comment?.commentId}>
             <ParentComment className="comment">
-                <Avatar src={comment?.user?.avatar} size={2} radius={70} />
+                <Avatar src={comment?.user?.avatar} size={2} radius={30} />
                 <div className="user_box_container">
                     <div className="user_box">
                         <span className="name">{comment?.user?.fullName}</span>

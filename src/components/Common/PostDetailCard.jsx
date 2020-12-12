@@ -86,7 +86,7 @@ const PostDetailCard = ({
         <Wrapper className="post" id={postId} key={postId}>
             <div className="post_posting">
                 <UserBox className="title">
-                    <Avatar src={user?.avatar} size={2} radius={70} />
+                    <Avatar src={user?.avatar} size={2} radius={30} />
                     <div className="department_box">
                         <span>{user?.fullName}</span>
                         <span className="department_name">{user?.departmentName}</span>{" "}

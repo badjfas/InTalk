@@ -77,12 +77,9 @@ const NavDrawer = ({ setVisible, visible, participants, setTab }) => {
                 {visible ? (
                     <Fragment>
                         <Items>
-                            <Item>List Item1</Item>
-                            <Item>List Item2</Item>
-                            <Item>List Item3</Item>
-                            <Item>List Item4</Item>
-                            <Item>List Item5</Item>
-                            <Item>List Item6</Item>
+                            <Item onClick={() => (window.location.href = "http://student.induk.ac.kr/KR/login.do")}>
+                                학교 홈페이지
+                            </Item>
                         </Items>
                     </Fragment>
                 ) : null}

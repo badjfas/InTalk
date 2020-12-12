@@ -60,7 +60,7 @@ const ChildComment = ({ child, addChildComment, postId, commentId }) => {
     return (
         <Wrapper>
             <ChildBox className="child_box" onClick={() => setVisible(!visible)}>
-                <Avatar src={child.user.avatar} size={2} />
+                <Avatar src={child.user.avatar} size={2} radius={30} />
                 <TextBox>
                     <UserName>{child.user.fullName}</UserName>
                     <Text>{"@" + child.targetUser.fullName + " " + child.text}</Text>

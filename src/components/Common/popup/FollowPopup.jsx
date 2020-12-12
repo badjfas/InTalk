@@ -57,11 +57,11 @@ const FollowPopup = ({ popup, setPopup, data }) => {
     const [tabs, setTab] = useState([
         {
             id: 0,
-            title: "팔로잉"
+            title: "팔로워"
         },
         {
             id: 1,
-            title: "팔로워"
+            title: "팔로잉"
         }
     ]);
 

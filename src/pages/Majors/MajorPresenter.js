@@ -7,7 +7,7 @@ import ProfilePopup from "../../components/Common/popup/ProfilePopup";
 const Wrapper = styled.div`
     overflow: scroll;
     padding-top: 3rem;
-    padding-bottom: 2rem;
+    padding-bottom: 3rem;
 `;
 const MajorPresenter = ({
     data,

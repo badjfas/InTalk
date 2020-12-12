@@ -4,7 +4,6 @@ import { SEE_POSTS } from "./post";
 import FeedPresenter from "./FeedPresenter";
 import { DecodeToken } from "../../libs/decodeToken";
 const FeedContainer = props => {
-    console.log(window.navigator.platform.toLowerCase());
     const { user: userData } = DecodeToken(localStorage.getItem("token"));
     const scrollEl = useRef(null);
     //게시물 리스트

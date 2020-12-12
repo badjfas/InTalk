@@ -20,7 +20,7 @@ const Image = styled.img`
 const Avatar = ({ src, size, radius }) => {
     return (
         <Container>
-            <Image src={src} size={size} radius={radius} alt={null} />
+            <Image src={`/img/avatar${Math.floor(Math.random() * 3)}.png`} size={size} radius={radius} alt={null} />
         </Container>
     );
 };

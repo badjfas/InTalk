@@ -37,7 +37,7 @@ const src =
 export default ({ setVisible }) => {
     return (
         <Wrapper>
-            <Avatar src={src} size={2} radius={70} />
+            <Avatar src={src} size={2} radius={30} />
             <Input width={"100%"} height={2.2} onClick={setVisible} />
         </Wrapper>
     );

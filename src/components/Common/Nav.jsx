@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import NavDrawer from "./NavDrawer";
 import NotiDrawer from "./NotiDrawer";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_NOTIFICATIONS } from "../../libs/SharedQuery";
 
 const Container = styled.div`
@@ -18,7 +18,6 @@ const Container = styled.div`
     svg {
         width: 1.5rem;
         height: 1.5rem;
-        fill: #004680;
         font-weight: 300;
     }
 `;
@@ -56,8 +55,9 @@ const NavBox = styled.div`
     background-color: #fff;
     border-top: 2px solid #e9e9e9;
     .selected {
+        height: 3rem;
         border-radius: 0;
-        border-top: 2px solid #ffc548;
+        border-top: 3px solid #ffc548;
         transition: 0.1s ease;
     }
 `;
@@ -68,9 +68,10 @@ const NavBoxTop = styled.div`
     margin: 0px auto;
     height: 3rem;
     max-width: 1024px;
+    background-color: #0f4c82;
     justify-content: space-between;
     align-items: center;
-    background-color: #fff;
+    /* background-color: #fff; */
     box-shadow: 0 1px 5px 0 rgba(170, 170, 170, 0.7);
 `;
 
@@ -80,12 +81,13 @@ const NaviTop = styled.a`
     align-items: center;
     color: white;
     width: 2rem;
+    height: 3rem;
     margin: 0 0.5rem 0 0.5rem;
     font-size: 1.5rem;
     position: relative;
     cursor: pointer;
     .noti_count {
-        top: 0;
+        top: 8px;
         left: 15px;
         position: absolute;
         display: flex;
@@ -99,6 +101,10 @@ const NaviTop = styled.a`
         border-radius: 70%;
     }
 `;
+
+const CountsBox = styled.div`
+    display: flex;
+`;
 const NaviBottom = styled.a`
     display: flex;
     justify-content: center;
@@ -108,6 +114,9 @@ const NaviBottom = styled.a`
     color: white;
     &:nth-child(3) {
         color: #000;
+    }
+    svg {
+        fill: #004680;
     }
 `;
 const Title = styled.span`
@@ -127,7 +136,7 @@ const Nav = ({ getNotifications, messageCount }) => {
     useEffect(() => {
         switch (pathname) {
             case "/": {
-                setSelected("/");
+                setSelected("Intalk");
                 break;
             }
             case "/friends": {
@@ -196,14 +205,14 @@ const Nav = ({ getNotifications, messageCount }) => {
     });
 
     //알림 메뉴
-    const [get, { data, loading, refetch }] = useLazyQuery(GET_NOTIFICATIONS);
+    const { data, loading, refetch } = useQuery(GET_NOTIFICATIONS);
     const handelNotificationFetch = useCallback(() => {
         if (data === undefined) {
-            get();
+            return;
         } else {
             refetch();
         }
-    }, [data, get, refetch]);
+    }, [data, refetch]);
 
     useEffect(() => {
         if (visible.notifications || visible.menu) {
@@ -234,28 +243,41 @@ const Nav = ({ getNotifications, messageCount }) => {
                             <AiOutlineMenu />
                         </Title>
                     </NaviTop>
-                    <NaviTop onClick={() => setVisible({ notifications: false, menu: true })}>
-                        <Title>
-                            <AiOutlineSearch />
+                    <NaviTop>
+                        <Title
+                            onClick={() => {
+                                history.push("/");
+                                setSelected("/");
+                            }}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                height: "100%",
+                                fontFamily: "'Poppins', sans-serif"
+                            }}
+                        >
+                            Intalk
                         </Title>
                     </NaviTop>
-                    <NaviTop
-                        onClick={() => {
-                            handelNotificationFetch();
-                            setVisible({ menu: false, notifications: !visible.notifications });
-                        }}
-                    >
-                        {count.notification !== 0 ? <span className="noti_count">{count.notification}</span> : null}
-                        <AiOutlineBell />
-                    </NaviTop>
-                    <NaviTop
-                        onClick={() => {
-                            history.push("/messages");
-                        }}
-                    >
-                        {count.message !== 0 ? <span className="noti_count">{count.message}</span> : null}
-                        <AiOutlineMessage />
-                    </NaviTop>
+                    <CountsBox>
+                        <NaviTop
+                            onClick={() => {
+                                handelNotificationFetch();
+                                setVisible({ menu: false, notifications: !visible.notifications });
+                            }}
+                        >
+                            {count.notification !== 0 ? <span className="noti_count">{count.notification}</span> : null}
+                            <AiOutlineBell />
+                        </NaviTop>
+                        <NaviTop
+                            onClick={() => {
+                                history.push("/messages");
+                            }}
+                        >
+                            {count.message !== 0 ? <span className="noti_count">{count.message}</span> : null}
+                            <AiOutlineMessage />
+                        </NaviTop>
+                    </CountsBox>
                 </NavBoxTop>
             </Top>
             <Bottom>
