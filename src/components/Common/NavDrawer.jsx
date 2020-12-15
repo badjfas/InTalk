@@ -78,7 +78,18 @@ const NavDrawer = ({ setVisible, visible, participants, setTab }) => {
                     <Fragment>
                         <Items>
                             <Item onClick={() => (window.location.href = "http://student.induk.ac.kr/KR/login.do")}>
-                                학교 홈페이지
+                                종합정보시스템
+                            </Item>
+                            <Item onClick={() => (window.location.href = "http://lms.induk.ac.kr/")}>스마트클래스</Item>
+                            <Item onClick={() => (window.location.href = "http://jjam.induk.ac.kr/")}>
+                                비교과시스템
+                            </Item>
+                            <Item onClick={() => (window.location.href = "http://library.induk.ac.kr/")}>도서관</Item>
+                            <Item onClick={() => (window.location.href = "http://induk.certpia.com/default.asp")}>
+                                온라인증명서발급
+                            </Item>
+                            <Item onClick={() => (window.location.href = "http://sugang.induk.ac.kr/login.do")}>
+                                수강신청
                             </Item>
                         </Items>
                     </Fragment>

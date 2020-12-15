@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SEE_POSTS } from "./post";
 import FeedPresenter from "./FeedPresenter";
@@ -48,7 +48,6 @@ const FeedContainer = props => {
     }, [loading]);
     useEffect(() => {
         return () => {
-            console.log("feedsclean up");
             setPosts({});
         };
     }, []);
